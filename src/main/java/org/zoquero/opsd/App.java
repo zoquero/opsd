@@ -1,5 +1,7 @@
 package org.zoquero.opsd;
 
+import org.zoquero.opsd.dao.DaoFactory;
+
 /**
  * Operations descriptor
  *
@@ -17,6 +19,8 @@ public class App {
     }
     projectFilePath = args[0];
     System.out.println("Using project file " + projectFilePath);
+    DaoFactory df = new DaoFactory();
+    df.getDao(projectFilePath);
   }
 
   public static void usage() {

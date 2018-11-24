@@ -1,6 +1,6 @@
 # Summary
 
-Tool to generate monitoring and documentation of a Project (defined in an Excel file) and its resources, usefull in datacenter operations.
+**Operations Descriptor** is a tool to generate monitoring and documentation of a Project (defined in an Excel file) and its resources, usefull in datacenter operations.
 
 Angel Galindo Muñoz ( zoquero@gmail.com ), November of 2018
 
@@ -11,9 +11,9 @@ It validates the Excel file.
 It generates:
 * script to generate monitoring (based on a "addHost" and "addService" API)
 * mediawiki documents with:
-** inventory
-** procedures for incidences
-** procedures for requests
+    * inventory
+    * procedures for incidences
+    * procedures for requests
 * periodic operations
 * lifecycle operations for files
 
