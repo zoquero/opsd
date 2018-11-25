@@ -8,18 +8,21 @@ public interface OpsdDataTap {
 	 * Gets info about a project
 	 * @param projectName
 	 * @return
+	 * @throws OpsdDaoException
 	 */
-	OpsdProject getProject(String projectName);
+	OpsdProject getProject(String projectName) throws OpsdDaoException;
 
 	/**
 	 * Connect to backend
+	 * @throws OpsdDaoException
 	 */
-	void connect();
+	void connect() throws OpsdDaoException;
 
 
 	/**
 	 * Disconnect from backend
+	 * @throws OpsdDaoException
 	 */
-	void disconnect();
+	void disconnect() throws OpsdDaoException;
 
 }

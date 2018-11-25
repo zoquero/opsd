@@ -1,6 +1,7 @@
 package org.zoquero.opsd;
 
 import org.zoquero.opsd.dao.DaoFactory;
+import org.zoquero.opsd.dao.OpsdDaoException;
 import org.zoquero.opsd.dao.OpsdDataTap;
 
 /**
@@ -23,8 +24,16 @@ public class App {
     System.out.println("Using project file " + projectFilePath + " to get info from " + projectName);
     DaoFactory df = new DaoFactory();
     OpsdDataTap dt = df.getDao(projectFilePath);
-    OpsdExtractor oe = new OpsdExtractor(dt);
-    OpsdFullProjectData ope = oe.getFullProjectData(projectName);
+    try {
+		dt.connect();
+		OpsdExtractor oe = new OpsdExtractor(dt);
+		OpsdFullProjectData ope = oe.getFullProjectData(projectName);
+		dt.disconnect();
+	}
+    catch (OpsdDaoException e) {
+		System.out.println("Errors accessing data: " + e.getMessage());
+		e.printStackTrace();
+	}
   }
 
   /**

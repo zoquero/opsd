@@ -2,22 +2,29 @@ package org.zoquero.opsd.dao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
-
 import org.zoquero.opsd.entities.OpsdProject;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-// import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
-
+/**
+ * Opsd Datatap implementation over Excel files using POI.
+ * The most expensive operation is opening the filestream
+ * and creating the Workbook object, so it will be cache,
+ * we'll do it just in "connect()"
+ * @author agalindo
+ *
+ */
 public class OpsdPoiDao implements OpsdDataTap {
 
+	/** Path to the Excel file that cointains Opsd data */
 	private String path;
+	/** POI Workbook instance for xlsx/xls file input stream */
+	private Workbook workbook = null;
+    /** Input stream from the xlsx/xls file */
+	private FileInputStream fis = null;
 	
 	public OpsdPoiDao(String path) {
 		System.out.println("OpsdPoiDao created, path=" + path);
@@ -25,12 +32,12 @@ public class OpsdPoiDao implements OpsdDataTap {
 	}
 
 	@Override
-	public OpsdProject getProject(String projectName) {
+	public OpsdProject getProject(String projectName) throws OpsdDaoException {
 		System.out.println("OpsdPoiDao.getProject");
 
         try {
             //Create the input stream from the xlsx/xls file
-			FileInputStream fis = new FileInputStream(path);
+			fis = new FileInputStream(path);
 	
 			//Create Workbook instance for xlsx/xls file input stream
 			Workbook workbook = null;
@@ -92,26 +99,58 @@ public class OpsdPoiDao implements OpsdDataTap {
 	
 			} //end of sheets for loop
 	
-			//close file input stream
-			fis.close();
-
         }
         catch (IOException e) {
-        	e.printStackTrace();
+        	throw new OpsdDaoException("Errors getting a project: " +
+        								e.getMessage(), e);
         }
 
         return null;
 	}
 
 	@Override
-	public void connect() {
+	public void connect() throws OpsdDaoException {
 		System.out.println("OpsdPoiDao.connect");
-		
+
+		try {
+			//Create the input stream from the xlsx/xls file
+			FileInputStream fis = new FileInputStream(path);
+
+			// Create Workbook instance for xlsx/xls file input stream
+			workbook = null;
+			if(path.toLowerCase().endsWith("xlsx")) {
+				workbook = new XSSFWorkbook(fis);
+			}
+			else if(path.toLowerCase().endsWith("xls")) {
+				workbook = new HSSFWorkbook(fis);
+			}
+			else {
+				throw new OpsdDaoException("The file " + path +
+						" doesn't look like an Excel file");
+			}
+
+			//close file input stream
+			fis.close();
+
+		}
+		catch (IOException e) {
+			throw new OpsdDaoException("Can't open the file " + path, e);
+		}
+
 	}
 
 	@Override
-	public void disconnect() {
+	public void disconnect() throws OpsdDaoException {
 		System.out.println("OpsdPoiDao.disconnect");
+		
+		// Close file input stream
+		try {
+			fis.close();
+		}
+		catch (IOException e) {
+	    	throw new OpsdDaoException("Errors closing the file: " +
+			e.getMessage(), e);
+		}
 		
 	}
 }

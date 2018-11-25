@@ -1,5 +1,6 @@
 package org.zoquero.opsd;
 
+import org.zoquero.opsd.dao.OpsdDaoException;
 import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.entities.OpsdProject;
 
@@ -15,26 +16,25 @@ public class OpsdExtractor {
 
 	/**
 	 * Constructor that gets the DataTap
-	 * @param _dt
+	 * @param dt
 	 */
-	public OpsdExtractor(OpsdDataTap _dt) {
+	public OpsdExtractor(OpsdDataTap dt) {
 		System.out.println("Running OpsdExtractor constructor");
-		dt = _dt;
+		this.dt = dt;
 	}
 
 	/**
 	 * Get all the info from a Project
 	 * @param projectName
 	 * @return
+	 * @throws OpsdDaoException 
 	 */
-	public OpsdFullProjectData getFullProjectData(String projectName) {
+	public OpsdFullProjectData getFullProjectData(String projectName) throws OpsdDaoException {
 		System.out.println("Running OpsdExtractor.getFullProjectData()");
 		OpsdFullProjectData fpd = new OpsdFullProjectData();
 		
-		dt.connect();
 		OpsdProject project = dt.getProject(projectName);
 		fpd.setProject(project);
-		dt.disconnect();
 		return fpd;
 	}
 
