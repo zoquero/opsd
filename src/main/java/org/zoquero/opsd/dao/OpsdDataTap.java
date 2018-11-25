@@ -1,5 +1,6 @@
 package org.zoquero.opsd.dao;
 
+import org.zoquero.opsd.OpsdReport;
 import org.zoquero.opsd.entities.OpsdProject;
 
 public interface OpsdDataTap {
@@ -7,6 +8,7 @@ public interface OpsdDataTap {
 	/**
 	 * Gets info about a project
 	 * @param projectName
+	 * @param oReport 
 	 * @return
 	 * @throws OpsdDaoException
 	 */

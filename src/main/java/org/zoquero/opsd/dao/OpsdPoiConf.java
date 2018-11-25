@@ -46,4 +46,13 @@ public class OpsdPoiConf {
 		return classnameToSheetPositionMap.get(className).intValue();
 	}
 
+	/**
+	 * Get the first row number for all sheets (0..N-1)
+	 * @return
+	 */
+	public static int getFirstRow() {
+		ResourceBundle rb = ResourceBundle.getBundle("org.zoquero.opsd.dao.OpsdPoiConf");
+		return Integer.parseInt(rb.getString("firstRow"));
+	}
+
 }

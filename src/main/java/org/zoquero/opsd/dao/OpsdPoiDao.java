@@ -2,8 +2,12 @@ package org.zoquero.opsd.dao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -47,46 +51,84 @@ public class OpsdPoiDao implements OpsdDataTap {
 	
 			//Get the nth sheet from the workbook
 			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			int firstRow = OpsdPoiConf.getFirstRow();
 			System.out.println("Opening the sheet '" + sheet.getSheetName()
-								+ "' (position #" + sheetPosition + ")");
+					+ "' (position #" + sheetPosition + ")"
+					+ " row #" + firstRow);
+			
+			Row row = sheet.getRow(firstRow);
+			if(row == null) {
+				throw new OpsdDaoException("Can't find Project data in row #" + firstRow);
+			}
+			
+//			// Get the column iterator and iterate over it
+//			Iterator<Cell> cellIterator = row.cellIterator();
+//			while (cellIterator.hasNext()) {
+//				// Get the Cell object
+//				Cell cell = cellIterator.next();
+//
+//				// Check the cell type and process accordingly
+//				// getStringCellValue , getNumericCellValue , ...
+//				String s = cell.getStringCellValue();
+//				System.out.println("  * cel·la = " + s);
+//			}
+			
+			int i = 1;
+			String name = row.getCell(i++).getStringCellValue();
+			String description = row.getCell(i++).getStringCellValue();
+			String dateInStr = row.getCell(i++).getStringCellValue();
+			String dateOutStr = row.getCell(i++).getStringCellValue();
+			String responsibleName = row.getCell(i++).getStringCellValue();
+			String dependencies = row.getCell(i++).getStringCellValue();
+			String recoveryProcedure = row.getCell(i++).getStringCellValue();
+			String moreInfo = row.getCell(i++).getStringCellValue();
+			
+			// Let's set dates
+			Calendar dateIn  = Calendar.getInstance();
+			Calendar dateOut = Calendar.getInstance();
+			// Dates are in dd.MM.yyyy format
+			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+			try {
+				dateIn.setTime(sdf.parse(dateInStr));
+			} catch (ParseException e) {
+				throw new OpsdDaoException("Can't parse the initial date '" + dateInStr + "' from the project data");
+			}
+			if(dateOutStr.equals("Encara actiu") || dateOutStr.equals("")) {
+				dateOut = null;
+			}
+			else {
+				try {
+					dateOut.setTime(sdf.parse(dateOutStr));
+				} catch (ParseException e) {
+					throw new OpsdDaoException("Can't parse the end date '" + dateOutStr + "' from the project data");
+				}
+			}
+			
+			// Let's create the OpsdProject object:
+			OpsdProject op = new OpsdProject(name, description, responsibleName, dateIn, dateOut, dependencies, recoveryProcedure, moreInfo);
+
+//			Iterator<Row> rowIterator = sheet.iterator();
+//			while (rowIterator.hasNext()) {
+//				System.out.println("\n== Nova fila ==");
+//				
+//				// Get the row object
+//				Row row = rowIterator.next();
+//
+//				// Get the column iterator and iterate over it
+//				Iterator<Cell> cellIterator = row.cellIterator();
+//				while (cellIterator.hasNext()) {
+//					// Get the Cell object
+//					Cell cell = cellIterator.next();
+//
+//					// Check the cell type and process accordingly
+//					// getStringCellValue , getNumericCellValue , ...
+//					String s = cell.getStringCellValue();
+//					System.out.println("  * cel·la = " + s);
+//				}
+//				
+//			}
 	
-	//			//every sheet has rows, iterate over them
-	//			Iterator<Row> rowIterator = sheet.iterator();
-	//			while (rowIterator.hasNext()) {
-	//				String name = "";
-	//				String shortCode = "";
-	//
-	//				//Get the row object
-	//				Row row = rowIterator.next();
-	//
-	//				//Every row has columns, get the column iterator and iterate over them
-	//				Iterator<Cell> cellIterator = row.cellIterator();
-	//				while (cellIterator.hasNext()) {
-	//					//Get the Cell object
-	//					Cell cell = cellIterator.next();
-	//
-	//					//check the cell type and process accordingly
-	//					switch(cell.getCellType()){
-	//					case Cell.CELL_TYPE_STRING:
-	//						if(shortCode.equalsIgnoreCase("")){
-	//							shortCode = cell.getStringCellValue().trim();
-	//						}else if(name.equalsIgnoreCase("")){
-	//							//2nd column
-	//							name = cell.getStringCellValue().trim();
-	//						}else{
-	//							//random data, leave it
-	//							System.out.println("Random data::"+cell.getStringCellValue());
-	//						}
-	//						break;
-	//					case Cell.CELL_TYPE_NUMERIC:
-	//						System.out.println("Random data::"+cell.getNumericCellValue());
-	//					}
-	//				} //end of cell iterator
-	//				Country c = new Country(name, shortCode);
-	//				countriesList.add(c);
-	//			} //end of rows iterator
-	
-        return null;
+        return op;
 	}
 
 	@Override

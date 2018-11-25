@@ -27,7 +27,19 @@ public class App {
     try {
 		dt.connect();
 		OpsdExtractor oe = new OpsdExtractor(dt);
-		OpsdFullProjectData ope = oe.getFullProjectData(projectName);
+		OpsdFullProjectData ofpd = oe.getFullProjectData(projectName);
+		System.out.println("We got this project: " + ofpd.getProject());
+		
+		System.out.println("\nReport:");
+		System.out.println("With errors:    " + ofpd.getReport().isWithErrors());
+		for (String anError: ofpd.getReport().getErrors()) {
+			System.out.println("* " + anError);
+		}
+		System.out.println("With warningss: " + ofpd.getReport().isWithWarnings());
+		for (String aWarning: ofpd.getReport().getWarnings()) {
+			System.out.println("* " + aWarning);
+		}
+		
 		dt.disconnect();
 	}
     catch (OpsdDaoException e) {

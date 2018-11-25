@@ -13,7 +13,7 @@ public class OpsdProject {
 	private String description;
 
 	/** Field "responsible" */
-	private Responsible responsible;
+	private String responsibleName;
 
 	/** Field "dateIn" */
 	private Calendar dateIn;
@@ -43,11 +43,11 @@ public class OpsdProject {
 	 * @param moreInfo
 	 */
 	public OpsdProject(String name, String description,
-			Responsible responsible, Calendar dateIn, Calendar dateOut,
+			String responsibleName, Calendar dateIn, Calendar dateOut,
 			String dependencies, String recoveryProcedure, String moreInfo) {
 		this.name = name;
 		this.description = description;
-		this.responsible = responsible;
+		this.responsibleName = responsibleName;
 		this.dateIn = dateIn;
 		this.dateOut = dateOut;
 		this.dependencies = dependencies;
@@ -86,17 +86,17 @@ public class OpsdProject {
 	}
 
 	/**
-	 * @return the responsible
+	 * @return the responsibleName
 	 */
-	public Responsible getResponsible() {
-		return responsible;
+	public String getResponsibleName() {
+		return responsibleName;
 	}
 
 	/**
-	 * @param responsible the responsible to set
+	 * @param responsible the responsibleName to set
 	 */
-	private void setResponsible(Responsible responsible) {
-		this.responsible = responsible;
+	private void setResponsible(String responsibleName) {
+		this.responsibleName = responsibleName;
 	}
 
 	/**
@@ -167,6 +167,23 @@ public class OpsdProject {
 	 */
 	private void setMoreInfo(String moreInfo) {
 		this.moreInfo = moreInfo;
+	}
+	
+	public String toString() {
+		return "OpsdProject with name = " + name + ", description = "
+				+ description + ", responsibleName = " + responsibleName
+				+ ", dateIn = " + calendar2string(dateIn) + ", dateOut = "
+				+ calendar2string(dateOut) + ", dependencies = "
+				+ dependencies + ", recoveryProcedure = " + recoveryProcedure
+				+ ", moreInfo = " + moreInfo;
+	}
+	
+	private static String calendar2string(Calendar c) {
+		if (c == null) return "(null)";
+		int year  = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH) + 1;
+		int day   = c.get(Calendar.DAY_OF_MONTH);
+		return "" + day + "/" + month + "/" + year;
 	}
 
 }

@@ -30,11 +30,15 @@ public class OpsdExtractor {
 	 * @throws OpsdDaoException 
 	 */
 	public OpsdFullProjectData getFullProjectData(String projectName) throws OpsdDaoException {
+		OpsdReport oReport = new OpsdReport();
 		System.out.println("Running OpsdExtractor.getFullProjectData()");
-		OpsdFullProjectData fpd = new OpsdFullProjectData();
+		OpsdFullProjectData fpd = new OpsdFullProjectData(oReport);
 		
+		// OpsdProject
 		OpsdProject project = dt.getProject(projectName);
 		fpd.setProject(project);
+		OpsdValidator.validate(project, oReport);
+		
 		return fpd;
 	}
 
