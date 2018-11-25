@@ -4,8 +4,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdResponsible;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -29,6 +36,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 	private Workbook workbook = null;
     /** Input stream from the xlsx/xls file */
 	private FileInputStream fis = null;
+	/** Lazy initialized list of valid responsibles */
+	private List<OpsdResponsible> responsibles = null;
 	
 	public OpsdPoiDao(String path) {
 		System.out.println("OpsdPoiDao created, path=" + path);
@@ -104,8 +113,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 				}
 			}
 			
+			OpsdResponsible responsible = getResponsible(responsibleName);
 			// Let's create the OpsdProject object:
-			OpsdProject op = new OpsdProject(name, description, responsibleName, dateIn, dateOut, dependencies, recoveryProcedure, moreInfo);
+			OpsdProject op = new OpsdProject(name, description, responsible, dateIn, dateOut, dependencies, recoveryProcedure, moreInfo);
 
 //			Iterator<Row> rowIterator = sheet.iterator();
 //			while (rowIterator.hasNext()) {
@@ -129,6 +139,49 @@ public class OpsdPoiDao implements OpsdDataTap {
 //			}
 	
         return op;
+	}
+
+	/**
+	 * Get the Responsible object from his name.
+	 * On a future release all data will be on a Relational Database.
+	 * By now, the allowed project responsibles must be described here,
+	 * not in the Excel file.
+	 * @param responsibleName
+	 * @return
+	 */
+	private OpsdResponsible getResponsible(String responsibleName) {
+		if(responsibles == null) {
+			/* Lazy initialization of the array, read from properties file */
+			responsibles = new ArrayList<OpsdResponsible>();
+			
+			ResourceBundle rb = ResourceBundle.getBundle("org.zoquero.opsd.entities.Responsible");
+			Enumeration<String> keys = rb.getKeys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement();
+				if(key.startsWith("responsible.")) {
+					String value = rb.getString(key);
+					StringTokenizer st = new StringTokenizer(value, ";");
+					String name        = (String) st.nextElement();
+					String email       = (String) st.nextElement();
+					String department  = (String) st.nextElement();
+					String resourceAcl = (String) st.nextElement();
+					String moreInfo    = (String) st.nextElement();
+					if(name == null || email == null || department == null
+							|| resourceAcl == null || moreInfo == null) {
+						return null;
+					}
+					OpsdResponsible or = new OpsdResponsible(name, email,
+											department, resourceAcl, moreInfo);
+					responsibles.add(or);
+				}
+			}
+			for(OpsdResponsible aResponsible: responsibles) {
+				if(aResponsible.getName().equals(responsibleName)) {
+					return aResponsible;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
