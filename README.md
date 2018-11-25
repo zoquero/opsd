@@ -23,7 +23,7 @@ Poor monitoring or poor documentation provokes problems in datacenter operations
 
 # Usage
 
-`java -cp target/opsd-...-...jar org.zoquero.opsd.App /path/to/project_file.xlsx`
+`java -cp target/opsd-1.0-SNAPSHOT.jar:/your/jars/poi-ooxml-3.15.jar:/your/jars/poi-3.15.jar:/your/jars/xmlbeans-2.6.0.jar:/your/jars/commons-collections4-4.1.jar:/your/jars/poi-ooxml-schemas-3.15.jar org.zoquero.opsd.App /path/to/project_file.xlsx 'projectName'`
 
 # Output
 

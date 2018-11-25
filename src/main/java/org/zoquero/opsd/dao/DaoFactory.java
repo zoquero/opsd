@@ -1,7 +1,14 @@
 package org.zoquero.opsd.dao;
 
+/**
+ * Provides an implementation of the Interface OpsdDataTap
+ * to access to the Project objects.
+ * @author agalindo
+ *
+ */
 public class DaoFactory {
-	public OpsdDatatap getDao(String path) {
+	
+	public OpsdDataTap getDao(String path) {
 		return new OpsdPoiDao(path);
 	}
 
