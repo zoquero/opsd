@@ -35,30 +35,20 @@ public class OpsdPoiDao implements OpsdDataTap {
 	public OpsdProject getProject(String projectName) throws OpsdDaoException {
 		System.out.println("OpsdPoiDao.getProject");
 
-        try {
-            //Create the input stream from the xlsx/xls file
-			fis = new FileInputStream(path);
-	
-			//Create Workbook instance for xlsx/xls file input stream
-			Workbook workbook = null;
-			if(path.toLowerCase().endsWith("xlsx")) {
-				workbook = new XSSFWorkbook(fis);
-			} else if(path.toLowerCase().endsWith("xls")) {
-				workbook = new HSSFWorkbook(fis);
-			}
-			else {
-				return null;
-			}
-	
 			//Get the number of sheets in the xlsx file
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdProject");
+			if(sheetPosition > numberOfSheets - 1) {
+				throw new OpsdDaoException("The sheet " + path + " has "
+						+ numberOfSheets + " and OpsdProject objects should be"
+						+ " in sheet position # " + sheetPosition
+						+ " (0..N-1)");
+			}
 	
-			//loop through each of the sheets
-			for(int i=0; i < numberOfSheets; i++){
-	
-				//Get the nth sheet from the workbook
-				Sheet sheet = workbook.getSheetAt(i);
-				System.out.println("Un full: " + sheet.getSheetName());
+			//Get the nth sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			System.out.println("Opening the sheet '" + sheet.getSheetName()
+								+ "' (position #" + sheetPosition + ")");
 	
 	//			//every sheet has rows, iterate over them
 	//			Iterator<Row> rowIterator = sheet.iterator();
@@ -96,15 +86,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 	//				countriesList.add(c);
 	//			} //end of rows iterator
 	
-	
-			} //end of sheets for loop
-	
-        }
-        catch (IOException e) {
-        	throw new OpsdDaoException("Errors getting a project: " +
-        								e.getMessage(), e);
-        }
-
         return null;
 	}
 
@@ -114,7 +95,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 		try {
 			//Create the input stream from the xlsx/xls file
-			FileInputStream fis = new FileInputStream(path);
+			fis = new FileInputStream(path);
 
 			// Create Workbook instance for xlsx/xls file input stream
 			workbook = null;
@@ -128,9 +109,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 				throw new OpsdDaoException("The file " + path +
 						" doesn't look like an Excel file");
 			}
-
-			//close file input stream
-			fis.close();
 
 		}
 		catch (IOException e) {
