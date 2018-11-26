@@ -12,8 +12,12 @@ public class OpsdProject {
 	/** Field "description" */
 	private String description;
 
-	/** Field "responsible" */
+	/** Field "responsibleName", used for lazily initialize first with name
+	  * and latter with OpsdResonsible object */
 	private String responsibleName;
+
+	/** Field "responsible" */
+	private OpsdResponsible responsible;
 
 	/** Field "dateIn" */
 	private Calendar dateIn;
@@ -43,11 +47,11 @@ public class OpsdProject {
 	 * @param moreInfo
 	 */
 	public OpsdProject(String name, String description,
-			String responsibleName, Calendar dateIn, Calendar dateOut,
+			OpsdResponsible responsible, Calendar dateIn, Calendar dateOut,
 			String dependencies, String recoveryProcedure, String moreInfo) {
 		this.name = name;
 		this.description = description;
-		this.responsibleName = responsibleName;
+		this.responsible = responsible;
 		this.dateIn = dateIn;
 		this.dateOut = dateOut;
 		this.dependencies = dependencies;
@@ -95,8 +99,22 @@ public class OpsdProject {
 	/**
 	 * @param responsible the responsibleName to set
 	 */
-	private void setResponsible(String responsibleName) {
+	private void setResponsibleName(String responsibleName) {
 		this.responsibleName = responsibleName;
+	}
+
+	/**
+	 * @return the responsible
+	 */
+	public OpsdResponsible getResponsible() {
+		return responsible;
+	}
+
+	/**
+	 * @param responsible the responsible to set
+	 */
+	private void setResponsible(OpsdResponsible responsible) {
+		this.responsible = responsible;
 	}
 
 	/**
@@ -170,8 +188,12 @@ public class OpsdProject {
 	}
 	
 	public String toString() {
+		String r = "(Still unnamed responsible)";
+		if(responsible != null) {
+			r = responsible.getName();
+		}
 		return "OpsdProject with name = " + name + ", description = "
-				+ description + ", responsibleName = " + responsibleName
+				+ description + ", responsibleName = " + r
 				+ ", dateIn = " + calendar2string(dateIn) + ", dateOut = "
 				+ calendar2string(dateOut) + ", dependencies = "
 				+ dependencies + ", recoveryProcedure = " + recoveryProcedure

@@ -22,7 +22,7 @@ public class OpsdValidator {
 		if(project.getDescription() == null || project.getDescription().trim().equals("")) {
 			oReport.pushError("Project has null description");
 		}
-		if(project.getResponsibleName() == null || project.getResponsibleName().trim().equals("")) {
+		if(project.getResponsible() == null || project.getResponsible().getName().trim().equals("")) {
 			oReport.pushError("Project has null responsible name");
 		}
 		if(project.getDateIn() == null) {
