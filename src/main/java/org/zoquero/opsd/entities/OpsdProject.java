@@ -12,7 +12,8 @@ public class OpsdProject {
 	/** Field "description" */
 	private String description;
 
-	/** Field "responsibleName" */
+	/** Field "responsibleName", used for lazily initialize first with name
+	  * and latter with OpsdResonsible object */
 	private String responsibleName;
 
 	/** Field "responsible" */

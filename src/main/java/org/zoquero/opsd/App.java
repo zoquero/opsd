@@ -41,6 +41,9 @@ public class App {
 		}
 		
 		dt.disconnect();
+		OpsdOutputGenerator oog = new OpsdOutputGenerator(ofpd);
+		String output = oog.getOutputFile();
+		System.out.println("output = " + output);
 	}
     catch (OpsdDaoException e) {
 		System.out.println("Errors accessing data: " + e.getMessage());
