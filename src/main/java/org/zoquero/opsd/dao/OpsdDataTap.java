@@ -3,36 +3,72 @@ package org.zoquero.opsd.dao;
 import java.util.List;
 
 import org.zoquero.opsd.OpsdReport;
+import org.zoquero.opsd.entities.OpsdDeviceType;
+import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdSystem;
 
 public interface OpsdDataTap {
 
 	/**
 	 * Connect to backend
-	 * @throws OpsdDaoException
+	 * @throws OpsdException
 	 */
-	void connect() throws OpsdDaoException;
+	void connect() throws OpsdException;
 
 	/**
 	 * Disconnect from backend
-	 * @throws OpsdDaoException
+	 * @throws OpsdException
 	 */
-	void disconnect() throws OpsdDaoException;
+	void disconnect() throws OpsdException;
 
 	/**
 	 * Gets info about a project
 	 * @param projectName
 	 * @return
-	 * @throws OpsdDaoException
+	 * @throws OpsdException
 	 */
-	OpsdProject getProject(String projectName) throws OpsdDaoException;
+	OpsdProject getProject(String projectName) throws OpsdException;
 
 	/**
 	 * Gets the roles of a Project
 	 * @param project
 	 * @return List of roles
+	 * @throws OpsdException
 	 */
-	List<OpsdRole> getRoles(OpsdProject project) throws OpsdDaoException;
+	List<OpsdRole> getRoles(OpsdProject project) throws OpsdException;
 
+	/**
+	 * Get the Systems of a project
+	 * @param project
+	 * @return List of systems
+	 * @throws OpsdException
+	 */
+	List<OpsdSystem> getSystems(OpsdProject project) throws OpsdException;
+
+	/**
+	 * Get a OpsdDeviceType by name
+	 * @param devTypeName
+	 * @return
+	 * @throws OpsdException
+	 */
+	OpsdDeviceType getDeviceTypeByName(String devTypeName) throws OpsdException;
+	
+	/**
+	 * Get a OpsdOSType by name
+	 * @param osNameStr
+	 * @return
+	 * @throws OpsdException
+	 */
+	OpsdOSType getOSTypeByName(String osNameStr) throws OpsdException;
+	
+	/**
+	 * Get a role by name
+	 * @param project
+	 * @param roleName
+	 * @return
+	 * @throws OpsdException
+	 */
+	OpsdRole getRoleByName(OpsdProject project, String roleName) throws OpsdException;
 }

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.zoquero.opsd.dao.OpsdDaoException;
+import org.zoquero.opsd.dao.OpsdException;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
@@ -54,7 +54,7 @@ public class OpsdOutputGenerator {
 		this.setFullProjectData(ofpd);
 	}
 
-	public String getOutputFile() throws OpsdDaoException {
+	public String getOutputFile() throws OpsdException {
 		// 1. Configure FreeMarker
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 		// We'll load the templates from org.zoquero.opsd.templates:
@@ -101,15 +101,15 @@ public class OpsdOutputGenerator {
 		    return tempDirWithPrefix.toString();
 		    
 		} catch (TemplateNotFoundException e) {
-			throw new OpsdDaoException("TemplateNotFoundException thrown", e);
+			throw new OpsdException("TemplateNotFoundException thrown", e);
 		} catch (MalformedTemplateNameException e) {
-			throw new OpsdDaoException("MalformedTemplateNameException thrown", e);
+			throw new OpsdException("MalformedTemplateNameException thrown", e);
 		} catch (ParseException e) {
-			throw new OpsdDaoException("ParseException thrown", e);
+			throw new OpsdException("ParseException thrown", e);
 		} catch (IOException e) {
-			throw new OpsdDaoException("IOException thrown", e);
+			throw new OpsdException("IOException thrown", e);
 		} catch (TemplateException e) {
-			throw new OpsdDaoException("TemplateException thrown", e);
+			throw new OpsdException("TemplateException thrown", e);
 		}
 	}
 }

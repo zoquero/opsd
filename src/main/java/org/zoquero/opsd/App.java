@@ -1,7 +1,7 @@
 package org.zoquero.opsd;
 
 import org.zoquero.opsd.dao.DaoFactory;
-import org.zoquero.opsd.dao.OpsdDaoException;
+import org.zoquero.opsd.dao.OpsdException;
 import org.zoquero.opsd.dao.OpsdDataTap;
 
 /**
@@ -25,11 +25,14 @@ public class App {
     DaoFactory df = new DaoFactory();
     OpsdDataTap dt = df.getDao(projectFilePath);
     try {
+    	// Let' extract info from project:
 		dt.connect();
 		OpsdExtractor oe = new OpsdExtractor(dt);
 		OpsdFullProjectData ofpd = oe.getFullProjectData(projectName);
-		System.out.println("We got this project: " + ofpd.getProject());
+		// System.out.println("We got this project: " + ofpd.getProject());
+		dt.disconnect();
 		
+		// Let's validate it
 		System.out.println("\nReport:");
 		System.out.println("With errors:    " + ofpd.getReport().isWithErrors());
 		for (String anError: ofpd.getReport().getErrors()) {
@@ -40,12 +43,12 @@ public class App {
 			System.out.println("* " + aWarning);
 		}
 		
-		dt.disconnect();
+		// Let's generate the output
 		OpsdOutputGenerator oog = new OpsdOutputGenerator(ofpd);
 		String output = oog.getOutputFile();
 		System.out.println("output = " + output);
 	}
-    catch (OpsdDaoException e) {
+    catch (OpsdException e) {
 		System.out.println("Errors accessing data: " + e.getMessage());
 		e.printStackTrace();
 	}

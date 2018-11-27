@@ -42,10 +42,10 @@ public class OpsdPoiConf {
 	 * @param className
 	 * @return
 	 */
-	public static int getSheetPosition(String className) throws OpsdDaoException {
+	public static int getSheetPosition(String className) throws OpsdException {
 		Integer i = classnameToSheetPositionMap.get(className);
 		if(i == null)
-			throw new OpsdDaoException("Wrong configuration: "
+			throw new OpsdException("Wrong configuration: "
 					+ "Can't get sheet position for " + className
 					+ " in classnameToSheetPositionMap.");
 		return i.intValue();
@@ -56,8 +56,14 @@ public class OpsdPoiConf {
 	 * @return
 	 */
 	public static int getFirstRow() {
-		ResourceBundle rb = ResourceBundle.getBundle("org.zoquero.opsd.dao.OpsdPoiConf");
-		return Integer.parseInt(rb.getString("firstRow"));
+		ResourceBundle rb
+			= ResourceBundle.getBundle("org.zoquero.opsd.dao.OpsdPoiConf");
+		int i = Integer.parseInt(rb.getString("firstRow"));
+		if(i < 0) {
+			throw new RuntimeException(
+				"Wrong value (negative) looking for firstRow in bundle");
+		}
+		return i;
 	}
 
 }

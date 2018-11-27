@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdSystem;
 
 class OpsdFullProjectData {
 
@@ -13,6 +14,8 @@ class OpsdFullProjectData {
 	private OpsdProject project;
 	/** Role data */
 	private List<OpsdRole> roles;
+	/** Systems data */
+	private List<OpsdSystem> systems;
 	
 	OpsdFullProjectData(OpsdReport oReport) {
 		System.out.println("OpsdFullProjectData constructor");
@@ -56,6 +59,20 @@ class OpsdFullProjectData {
 	 */
 	public void setRoles(List<OpsdRole> roles) {
 		this.roles = roles;
+	}
+	
+	/**
+	 * @return the systems
+	 */
+	public List<OpsdSystem> getSystems() {
+		return systems;
+	}
+
+	/**
+	 * @param systems the system to set
+	 */
+	public void setSystems(List<OpsdSystem> systems) {
+		this.systems = systems;
 	}
 
 }

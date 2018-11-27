@@ -8,7 +8,7 @@ package org.zoquero.opsd.dao;
  * @author agalindo
  *
  */
-public class OpsdDaoException extends Exception {
+public class OpsdException extends Exception {
 
 	/**
 	 * 
@@ -18,14 +18,14 @@ public class OpsdDaoException extends Exception {
 	/**
 	 * 
 	 */
-	public OpsdDaoException() {
+	public OpsdException() {
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @param arg0
 	 */
-	public OpsdDaoException(String arg0) {
+	public OpsdException(String arg0) {
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
@@ -33,7 +33,7 @@ public class OpsdDaoException extends Exception {
 	/**
 	 * @param arg0
 	 */
-	public OpsdDaoException(Throwable arg0) {
+	public OpsdException(Throwable arg0) {
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
@@ -42,7 +42,7 @@ public class OpsdDaoException extends Exception {
 	 * @param arg0
 	 * @param arg1
 	 */
-	public OpsdDaoException(String arg0, Throwable arg1) {
+	public OpsdException(String arg0, Throwable arg1) {
 		super(arg0, arg1);
 		// TODO Auto-generated constructor stub
 	}
@@ -53,7 +53,7 @@ public class OpsdDaoException extends Exception {
 	 * @param arg2
 	 * @param arg3
 	 */
-	public OpsdDaoException(String arg0, Throwable arg1, boolean arg2,
+	public OpsdException(String arg0, Throwable arg1, boolean arg2,
 			boolean arg3) {
 		super(arg0, arg1, arg2, arg3);
 		// TODO Auto-generated constructor stub

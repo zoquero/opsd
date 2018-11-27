@@ -2,10 +2,11 @@ package org.zoquero.opsd;
 
 import java.util.List;
 
-import org.zoquero.opsd.dao.OpsdDaoException;
+import org.zoquero.opsd.dao.OpsdException;
 import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdSystem;
 
 /**
  * Accesses the Project objects throught a OpsdDataTap
@@ -30,9 +31,9 @@ public class OpsdExtractor {
 	 * Get all the info from a Project
 	 * @param projectName
 	 * @return
-	 * @throws OpsdDaoException 
+	 * @throws OpsdException 
 	 */
-	public OpsdFullProjectData getFullProjectData(String projectName) throws OpsdDaoException {
+	public OpsdFullProjectData getFullProjectData(String projectName) throws OpsdException {
 		OpsdReport oReport = new OpsdReport();
 		System.out.println("Running OpsdExtractor.getFullProjectData()");
 		OpsdFullProjectData fpd = new OpsdFullProjectData(oReport);
@@ -44,6 +45,11 @@ public class OpsdExtractor {
 		// OpsdRole
 		List<OpsdRole> roles = dt.getRoles(project);
 		fpd.setRoles(roles);
+		
+		// OpsdSystem
+		List<OpsdSystem> systems = dt.getSystems(project);
+		fpd.setSystems(systems);
+
 		
 		// Validation
 		OpsdValidator.validate(project, oReport);
