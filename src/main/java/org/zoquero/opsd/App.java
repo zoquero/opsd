@@ -35,7 +35,7 @@ public class App {
 		for (String anError: ofpd.getReport().getErrors()) {
 			System.out.println("* " + anError);
 		}
-		System.out.println("With warningss: " + ofpd.getReport().isWithWarnings());
+		System.out.println("With warnings:  " + ofpd.getReport().isWithWarnings());
 		for (String aWarning: ofpd.getReport().getWarnings()) {
 			System.out.println("* " + aWarning);
 		}

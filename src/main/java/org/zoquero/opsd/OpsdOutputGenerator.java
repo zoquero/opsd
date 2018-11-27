@@ -69,6 +69,7 @@ public class OpsdOutputGenerator {
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("title", "Mediawiki code for Project");
 		input.put("project", getFullProjectData().getProject());		
+		input.put("roles", getFullProjectData().getRoles());		
 		
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);

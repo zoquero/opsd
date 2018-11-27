@@ -42,8 +42,13 @@ public class OpsdPoiConf {
 	 * @param className
 	 * @return
 	 */
-	public static int getSheetPosition(String className) {
-		return classnameToSheetPositionMap.get(className).intValue();
+	public static int getSheetPosition(String className) throws OpsdDaoException {
+		Integer i = classnameToSheetPositionMap.get(className);
+		if(i == null)
+			throw new OpsdDaoException("Wrong configuration: "
+					+ "Can't get sheet position for " + className
+					+ " in classnameToSheetPositionMap.");
+		return i.intValue();
 	}
 
 	/**

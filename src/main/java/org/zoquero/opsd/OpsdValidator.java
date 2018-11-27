@@ -3,7 +3,10 @@
  */
 package org.zoquero.opsd;
 
+import java.util.List;
+
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdRole;
 
 /**
  * Validates the objects got from the project.
@@ -13,6 +16,8 @@ import org.zoquero.opsd.entities.OpsdProject;
 public class OpsdValidator {
 
 	public static void validate(OpsdProject project, OpsdReport oReport) {
+		
+		// Let's validate the Project:
 		if(project == null) {
 			oReport.pushError("Project is null");
 		}
@@ -40,6 +45,23 @@ public class OpsdValidator {
 		}
 		if(project.getMoreInfo() == null || project.getMoreInfo().trim().equals("")) {
 			oReport.pushWarning("Project has null moreInfo");
+		}
+	}
+	
+
+	public static void validate(List<OpsdRole> roles, OpsdReport oReport) {
+		
+		// Let's validate the Roles:
+		for (OpsdRole role : roles) {
+			if(role == null) {
+				oReport.pushError("Role is null");
+			}
+			if(role.getName() == null || role.getName().trim().equals("")) {
+				oReport.pushError("Role has null name");
+			}
+			if(role.getDescription() == null || role.getDescription().trim().equals("")) {
+				oReport.pushWarning("Role has null description");
+			}			
 		}
 	}
 

@@ -30,6 +30,13 @@ ${project.dependencies}
 == Recovery procedure ==
 ${project.recoveryProcedure}
 
+== Roles ==
+
+<#list roles as role>
+=== ${role.name} ===
+  <p>role name = ${role.name} , role description = ${role.description} </p> 
+</#list>
+
         </pre>
       </td></tr>
     </table>

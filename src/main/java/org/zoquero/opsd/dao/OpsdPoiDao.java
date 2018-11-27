@@ -7,13 +7,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdResponsible;
+import org.zoquero.opsd.entities.OpsdRole;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -225,5 +228,51 @@ public class OpsdPoiDao implements OpsdDataTap {
 			e.getMessage(), e);
 		}
 		
+	}
+
+	@Override
+	public List<OpsdRole> getRoles(OpsdProject project) throws OpsdDaoException {
+		List<OpsdRole> roles = new ArrayList<OpsdRole>();
+
+		System.out.println("OpsdPoiDao.getRoles");
+
+		//Get the number of sheets in the xlsx file
+		int numberOfSheets = workbook.getNumberOfSheets();
+		int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdRole");
+		if(sheetPosition > numberOfSheets - 1) {
+			throw new OpsdDaoException("The sheet " + path + " has "
+					+ numberOfSheets + " and OpsdRole objects should be"
+					+ " in sheet position # " + sheetPosition
+					+ " (0..N-1)");
+		}
+
+		//Get the nth sheet from the workbook
+		Sheet sheet = workbook.getSheetAt(sheetPosition);
+		int firstRow = OpsdPoiConf.getFirstRow();
+		
+		for(int rowNum = 0; rowNum <= sheet.getLastRowNum(); rowNum++) {
+			if(rowNum < firstRow)
+				continue;
+			
+			// Get the row object
+			Row row = sheet.getRow(rowNum);
+
+			int i = 0;
+			String name = row.getCell(i++).getStringCellValue();
+			String description = row.getCell(i++).getStringCellValue();
+			
+			// We will drop empty rows
+			if((name == null || name.equals(""))
+					&& (description == null || description.equals(""))) {
+				continue;
+			}
+
+			// Let's create the OpsdRole object:
+			OpsdRole role = new OpsdRole(name, description);
+			roles.add(role);
+			System.out.println("Role added: " + role);
+
+		}
+		return roles;
 	}
 }
