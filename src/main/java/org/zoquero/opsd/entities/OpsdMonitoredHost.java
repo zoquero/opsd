@@ -301,7 +301,7 @@ public class OpsdMonitoredHost {
 				"' defaultChecksNeeded = '" + defaultChecksNeeded +
 				"' moreInfo = '" + moreInfo +
 				"' environment = '" + environment +
-				"' role.getName() = '" + role.getName() +
+				"'" + (role == null ? " without role " : "role.getName() = '" + role.getName()) +
 				"' scaleTo = '" + scaleTo;
 	}
 

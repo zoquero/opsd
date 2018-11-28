@@ -56,8 +56,7 @@ public class OpsdExtractor {
 		fpd.setMonitoredHosts(monitoredHosts);
 		
 		// Validation
-		OpsdValidator.validate(project, oReport);
-		OpsdValidator.validate(roles, oReport);
+		OpsdValidator.validate(fpd);
 		
 		return fpd;
 	}
