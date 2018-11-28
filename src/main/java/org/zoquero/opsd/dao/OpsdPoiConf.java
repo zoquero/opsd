@@ -14,11 +14,13 @@ import javax.management.RuntimeErrorException;
  */
 public class OpsdPoiConf {
 	private static final Map<String, Integer> classnameToSheetPositionMap;
+	private final static String CONF_PROPERTIES
+			= "org.zoquero.opsd.dao.OpsdPoiConf";
 	static {
 		/* Initialize the classnameToSheetPositionMap static map */
 		classnameToSheetPositionMap = new HashMap<String, Integer>();
 
-		ResourceBundle rb = ResourceBundle.getBundle("org.zoquero.opsd.dao.OpsdPoiConf");
+		ResourceBundle rb = ResourceBundle.getBundle(CONF_PROPERTIES);
 		Enumeration<String> keys = rb.getKeys();
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
@@ -32,7 +34,7 @@ public class OpsdPoiConf {
 			throw new RuntimeException("OpsdPoiConf just could initialize "
 					+ classnameToSheetPositionMap.size() + " sheet positions "
 					+ "reading 'sp.' fields from "
-					+ "org.zoquero.opsd.dao.OpsdPoiConf.properties");
+					+ CONF_PROPERTIES + ".properties");
 		}
 		
 	}
@@ -57,13 +59,30 @@ public class OpsdPoiConf {
 	 */
 	public static int getFirstRow() {
 		ResourceBundle rb
-			= ResourceBundle.getBundle("org.zoquero.opsd.dao.OpsdPoiConf");
+			= ResourceBundle.getBundle(CONF_PROPERTIES);
 		int i = Integer.parseInt(rb.getString("firstRow"));
 		if(i < 0) {
 			throw new RuntimeException(
 				"Wrong value (negative) looking for firstRow in bundle");
 		}
 		return i;
+	}
+
+	/**
+	 * Get the name of the systems to represent the MonitoredHosts
+	 * that have no fix Systems underlying it.
+	 * @return
+	 */
+	public static String getSystemNameForFloatingMonitoredHosts() {
+		ResourceBundle rb
+			= ResourceBundle.getBundle(CONF_PROPERTIES);
+		String s = rb.getString("systemNameForFloatingMonitoredHosts");
+		if(s == null) {
+			throw new RuntimeException(
+				"Can't find systemNameForFloatingMonitoredHosts in "
+						+ CONF_PROPERTIES + ".properties");
+		}
+		return s;
 	}
 
 }

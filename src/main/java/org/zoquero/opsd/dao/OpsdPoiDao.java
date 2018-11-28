@@ -15,12 +15,14 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import org.zoquero.opsd.entities.OpsdDeviceType;
+import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdResponsible;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -67,8 +69,17 @@ public class OpsdPoiDao implements OpsdDataTap {
     private static final Map<String, String>  staticOSTypeDesc;
     
 	List<OpsdRole> cachedRoles = null;
-    
+	List<OpsdSystem> cachedSystems = null;
+	
+	static public OpsdSystem FLOATING_HOST = null;
+	
     static {
+		if(FLOATING_HOST == null) {
+			String FLOATING_HOST_NAME = OpsdPoiConf.getSystemNameForFloatingMonitoredHosts();
+			FLOATING_HOST = new OpsdSystem(FLOATING_HOST_NAME, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+		}
+    	
     	/* Initialize the static maps */
     	staticDeviceTypeDesc    = new HashMap<String, String>();
     	staticDeviceTypeIsVirt  = new HashMap<String, Boolean>();
@@ -371,64 +382,65 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public List<OpsdSystem> getSystems(OpsdProject project)
 			throws OpsdException {
-		
+
 		System.out.println("OpsdPoiDao.getSystems");
-		List<OpsdSystem> systems = new ArrayList<OpsdSystem>();
+		if (cachedSystems == null) {
+			cachedSystems = new ArrayList<OpsdSystem>();
 
-		//Get the number of sheets in the xlsx file
-		int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-		int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdSystem");
-		if(sheetPosition > numberOfSheets - 1) {
-			throw new OpsdException("The sheet " + path + " has "
-					+ numberOfSheets + " and OpsdSystem objects should be"
-					+ " in sheet position # " + sheetPosition
-					+ " (0..N-1)");
+			// Get the number of sheets in the xlsx file
+			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdSystem");
+			if (sheetPosition > numberOfSheets - 1) {
+				throw new OpsdException("The sheet " + path + " has "
+						+ numberOfSheets + " and OpsdSystem objects should be"
+						+ " in sheet position # " + sheetPosition + " (0..N-1)");
+			}
+
+			// Get the nth sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			int firstRow = OpsdPoiConf.getFirstRow(); // cachable
+
+			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
+
+				// Get the row object
+				Row row = sheet.getRow(rowNum);
+
+				int i = 0;
+				String name = row.getCell(i++).getStringCellValue();
+				// We'll drop rows without name
+				if (name == null || name.equals(""))
+					continue;
+				String alias = row.getCell(i++).getStringCellValue();
+				String fqdnOrIp = row.getCell(i++).getStringCellValue();
+				String deviceTypeStr = row.getCell(i++).getStringCellValue();
+				String osStr = row.getCell(i++).getStringCellValue();
+				String osAccess = row.getCell(i++).getStringCellValue();
+				String lomIP = row.getCell(i++).getStringCellValue();
+				String lomAccess = row.getCell(i++).getStringCellValue();
+				String moreInfo = row.getCell(i++).getStringCellValue();
+				String environment = row.getCell(i++).getStringCellValue();
+				String roleName = row.getCell(i++).getStringCellValue();
+				String hostDownRecoveryProcedure = row.getCell(i++)
+						.getStringCellValue();
+				String responsibleName = row.getCell(i++).getStringCellValue();
+				String scaleTo = row.getCell(i++).getStringCellValue();
+
+				OpsdDeviceType dt = getDeviceTypeByName(deviceTypeStr);
+				OpsdOSType ost = getOSTypeByName(osStr);
+				OpsdRole role = getRoleByName(project, roleName);
+				OpsdResponsible responsible = getResponsible(responsibleName);
+
+				// Let's create the OpsdSystem object:
+				OpsdSystem system = new OpsdSystem(name, alias, fqdnOrIp, dt,
+						ost, osAccess, lomIP, lomAccess, moreInfo, environment,
+						role, hostDownRecoveryProcedure, responsible, scaleTo);
+				cachedSystems.add(system);
+				System.out.println("* System added: " + system);
+
+			}
 		}
 
-		//Get the nth sheet from the workbook
-		Sheet sheet = workbook.getSheetAt(sheetPosition);
-		int firstRow = OpsdPoiConf.getFirstRow(); // cachable
-		
-		for(int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
-			
-			// Get the row object
-			Row row = sheet.getRow(rowNum);
-
-			int i = 0;
-			String name = row.getCell(i++).getStringCellValue();
-			// We'll drop rows without name
-			if(name == null || name.equals("")) continue;
-			String alias = row.getCell(i++).getStringCellValue();
-			String fqdnOrIp = row.getCell(i++).getStringCellValue();
-			OpsdDeviceType dt = null;
-			String deviceTypeStr = row.getCell(i++).getStringCellValue();
-			String osStr = row.getCell(i++).getStringCellValue();
-			OpsdOSType ost = null;
-			String osAccess = row.getCell(i++).getStringCellValue();
-			String lomIP = row.getCell(i++).getStringCellValue();
-			String lomAccess = row.getCell(i++).getStringCellValue();
-			String moreInfo = row.getCell(i++).getStringCellValue();
-			String environment = row.getCell(i++).getStringCellValue();
-			String roleName = row.getCell(i++).getStringCellValue();
-			OpsdRole role = null;
-			String hostDownRecoveryProcedure = row.getCell(i++).getStringCellValue();
-			String responsibleName = row.getCell(i++).getStringCellValue();
-			OpsdResponsible responsible = null;
-			String scaleTo = row.getCell(i++).getStringCellValue();
-			
-			dt   = getDeviceTypeByName(deviceTypeStr);
-			ost  = getOSTypeByName(osStr);
-			role = getRoleByName(project, roleName);
-			responsible = getResponsible(responsibleName);
-			
-			System.out.println("* system: " + name + " alias = " + alias);
-			// Let's create the OpsdSystem object:
-			OpsdSystem system = new OpsdSystem(name, alias, fqdnOrIp, dt, ost, osAccess, lomIP, lomAccess, moreInfo, environment, role, hostDownRecoveryProcedure, responsible, scaleTo);
-			systems.add(system);
-			System.out.println("* System added: " + system);
-
-		}
-		return systems;
+		return cachedSystems;
 	}
 
 	@Override
@@ -467,6 +479,113 @@ public class OpsdPoiDao implements OpsdDataTap {
 				return aRole;
 			}
 		}
+		return null;
+	}
+
+	@Override
+	public List<OpsdMonitoredHost> getOpsdMonitoredHosts(OpsdProject project)
+			throws OpsdException {
+		
+		DataFormatter formatter = new DataFormatter();
+		System.out.println("OpsdPoiDao.getOpsdMonitoredHosts");
+		List<OpsdMonitoredHost> monitoredHosts = new ArrayList<OpsdMonitoredHost>();
+
+		//Get the number of sheets in the xlsx file
+		int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+		int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdMonitoredHost");
+		if(sheetPosition > numberOfSheets - 1) {
+			throw new OpsdException("The sheet " + path + " has "
+					+ numberOfSheets + " and OpsdMonitoredHost objects should be"
+					+ " in sheet position # " + sheetPosition
+					+ " (0..N-1)");
+		}
+
+		//Get the nth sheet from the workbook
+		Sheet sheet = workbook.getSheetAt(sheetPosition);
+		int firstRow = OpsdPoiConf.getFirstRow(); // cachable
+		
+		for(int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
+			
+			// Get the row object
+			Row row = sheet.getRow(rowNum);
+
+			int i = 0;
+			// String fields:
+			String name = row.getCell(i++).getStringCellValue();
+			// We'll drop rows without name
+			if(name == null || name.equals("")) continue;
+			String ip = row.getCell(i++).getStringCellValue();
+			String systemStr = row.getCell(i++).getStringCellValue();
+			String forManagingStr = formatter.formatCellValue(row.getCell(i++));
+			String forServiceStr = formatter.formatCellValue(row.getCell(i++));
+			String forBackupStr = formatter.formatCellValue(row.getCell(i++));
+			String forNasStr = formatter.formatCellValue(row.getCell(i++));
+			String defaultChecksNeededStr = formatter.formatCellValue(row.getCell(i++));
+			String moreInfo = row.getCell(i++).getStringCellValue();
+			String environment = row.getCell(i++).getStringCellValue();
+			String roleStr = row.getCell(i++).getStringCellValue();
+			String scaleTo = row.getCell(i++).getStringCellValue();
+
+			OpsdSystem system;
+			Boolean forManaging = null;
+			Boolean forService = null;
+			Boolean forBackup = null;
+			Boolean forNas = null;
+			Boolean defaultChecksNeeded = null;
+			OpsdRole role;
+
+			// Non-String fields:
+			System.out.println("Comparant systemStr " + systemStr + " amb " + FLOATING_HOST.getName());
+			if(systemStr.equals(FLOATING_HOST.getName())) {
+				system = FLOATING_HOST;
+			}
+			else {
+				system = getSystemByName(project, systemStr);
+			}
+			if(forManagingStr == null) forManaging = null;
+			else if(forManagingStr.equals("0")) forManaging = new Boolean(false);
+			else if(forManagingStr.equals("1")) forManaging = new Boolean(true);
+			else forManaging = null;
+			if(forServiceStr == null) forService = null;
+			else if(forServiceStr.equals("0")) forService = new Boolean(false);
+			else if(forServiceStr.equals("1")) forService = new Boolean(true);
+			else forService = null;
+			if(forBackupStr == null) forBackup = null;
+			else if(forBackupStr.equals("0")) forBackup = new Boolean(false);
+			else if(forBackupStr.equals("1")) forBackup = new Boolean(true);
+			else forBackup = null;
+			if(forNasStr == null) forNas = null;
+			else if(forNasStr.equals("0")) forNas = new Boolean(false);
+			else if(forNasStr.equals("1")) forNas = new Boolean(true);
+			else forNas = null;
+			if(defaultChecksNeededStr == null) defaultChecksNeeded = null;
+			else if(defaultChecksNeededStr.equals("0")) defaultChecksNeeded = new Boolean(false);
+			else if(defaultChecksNeededStr.equals("1")) defaultChecksNeeded = new Boolean(true);
+			else defaultChecksNeeded = null;
+			role = getRoleByName(project, roleStr);
+
+			// Let's create the OpsdSystem object:
+			System.out.println("* creo mh: name = " + name + ", ip = " + ip);
+			OpsdMonitoredHost monitoredHost = new OpsdMonitoredHost(name, ip, system, forManaging, forService, forBackup, forNas, defaultChecksNeeded, moreInfo, environment, role, scaleTo);
+			monitoredHosts.add(monitoredHost);
+			System.out.println("* MonitoredHost added: " + monitoredHost);
+
+		}
+		return monitoredHosts;
+		
+	}
+
+	@Override
+	public OpsdSystem getSystemByName(OpsdProject project,
+			String systemName) throws OpsdException {
+		List<OpsdSystem> systems = getSystems(project);
+		for(OpsdSystem aSystem: systems) {
+			if(aSystem != null && aSystem.getName() != null
+				&& aSystem.getName().equals(systemName)) {
+				return aSystem;
+			}
+		}
+		// not found
 		return null;
 	}
 }

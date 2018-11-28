@@ -2,7 +2,7 @@ package org.zoquero.opsd.dao;
 
 import java.util.List;
 
-import org.zoquero.opsd.OpsdReport;
+import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -71,4 +71,22 @@ public interface OpsdDataTap {
 	 * @throws OpsdException
 	 */
 	OpsdRole getRoleByName(OpsdProject project, String roleName) throws OpsdException;
+
+	/**
+	 * Get the MonitoredHosts of a Project
+	 * @param project
+	 * @return
+	 * @throws OpsdException
+	 */
+	List<OpsdMonitoredHost> getOpsdMonitoredHosts(OpsdProject project) throws OpsdException;
+	
+	/**
+	 * Get a System from a Project by name
+	 * @param project
+	 * @param systemName
+	 * @return
+	 * @throws OpsdException
+	 */
+	OpsdSystem getSystemByName(OpsdProject project, String systemName) throws OpsdException;
+
 }
