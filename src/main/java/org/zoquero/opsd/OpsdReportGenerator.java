@@ -32,7 +32,7 @@ import freemarker.template.Version;
  * @author agalindo
  *
  */
-public class OpsdOutputGenerator {
+public class OpsdReportGenerator {
 
 	private OpsdFullProjectData fullProjectData;
 	
@@ -50,11 +50,21 @@ public class OpsdOutputGenerator {
 		this.fullProjectData = fullProjectData;
 	}
 
-	public OpsdOutputGenerator(OpsdFullProjectData ofpd) {
+	public OpsdReportGenerator(OpsdFullProjectData ofpd) {
 		this.setFullProjectData(ofpd);
 	}
+	
+	public static Path createDirectory(String prefix) throws OpsdException {
+		Path tempDirWithPrefix = null;
+		try {
+			tempDirWithPrefix = Files.createTempDirectory(prefix);
+		} catch (IOException e) {
+			throw new OpsdException("Can't create a temporary folder: " + e.getMessage(), e);
+		}
+		return tempDirWithPrefix;
+	}
 
-	public String getOutputFile() throws OpsdException {
+	public String getOutputFile(Path directory) throws OpsdException {
 		// 1. Configure FreeMarker
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 		// We'll load the templates from org.zoquero.opsd.templates:
@@ -69,7 +79,9 @@ public class OpsdOutputGenerator {
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("title", "Mediawiki code for Project");
 		input.put("project", getFullProjectData().getProject());		
-		input.put("roles", getFullProjectData().getRoles());		
+		input.put("roles", getFullProjectData().getRoles());
+		input.put("systems", getFullProjectData().getSystems());
+		input.put("monitoredHosts", getFullProjectData().getMonitoredHosts());
 		
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
@@ -83,7 +95,6 @@ public class OpsdOutputGenerator {
 
 		// Let's get the template
 		try {
-			Path tempDirWithPrefix = Files.createTempDirectory("ProjectInfo.");
 			Template template = cfg.getTemplate("project.ftl");
 
 //			// Write output to the console
@@ -95,10 +106,10 @@ public class OpsdOutputGenerator {
 //			template.process(input, stringWriter);
 //			return stringWriter.toString();
 
-			Writer fileWriter = new FileWriter(new File(tempDirWithPrefix.toString() + "/project.html"));
+			Writer fileWriter = new FileWriter(new File(directory.toString() + "/project.html"));
 		    template.process(input, fileWriter);
 		    fileWriter.close();
-		    return tempDirWithPrefix.toString();
+		    return directory.toString();
 		    
 		} catch (TemplateNotFoundException e) {
 			throw new OpsdException("TemplateNotFoundException thrown", e);

@@ -37,6 +37,20 @@ ${project.recoveryProcedure}
   <p>role name = ${role.name} , role description = ${role.description} </p> 
 </#list>
 
+== Systems ==
+
+<#list systems as system>
+=== ${system.name} ===
+  <p>system name = ${system.name} , system os = ${system.os} </p> 
+</#list>
+
+== MonitoredHosts ==
+
+<#list monitoredHosts as monitoredHost>
+=== ${monitoredHost.name} ===
+  <p>monitoredHost name = ${monitoredHost.name} , monitoredHost IP = ${monitoredHost.ip} </p> 
+</#list>
+
         </pre>
       </td></tr>
     </table>
