@@ -87,9 +87,10 @@ Procedures for the services of the project '''${project.name}''':
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
-addHost.pl ...
-addHost.pl ...
-addHost.pl ...
+
+<#list monitoredHosts as monitoredHost>
+addHost.pl -host ${monitoredHost.name} -ip ${monitoredHost.ip} -... STILL UNFINISHED
+</#list>
         </pre>
       </td></tr>
     </table>
@@ -98,9 +99,9 @@ addHost.pl ...
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
-addService.pl ...
-addService.pl ...
-addService.pl ...
+addService.pl ... -... STILL UNFINISHED
+addService.pl ... -... STILL UNFINISHED
+addService.pl ... -... STILL UNFINISHED
         </pre>
       </td></tr>
     </table>
