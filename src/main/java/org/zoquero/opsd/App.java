@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.DaoFactory;
 import org.zoquero.opsd.dao.OpsdConf;
-import org.zoquero.opsd.dao.OpsdException;
 import org.zoquero.opsd.dao.OpsdDataTap;
 
 /**

@@ -7,6 +7,8 @@ import java.util.ResourceBundle;
 
 import javax.management.RuntimeErrorException;
 
+import org.zoquero.opsd.OpsdException;
+
 /**
  * Static configuration for accessing Opsd data through POI
  * @author agalindo

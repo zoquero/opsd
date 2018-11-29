@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.zoquero.opsd.dao;
+package org.zoquero.opsd;
 
 /**
  * Exception accessing Opsd's DataTap.

@@ -18,13 +18,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.zoquero.opsd.App;
+import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.OpsdHtmlLogFormatter;
+import org.zoquero.opsd.entities.OpsdCriticity;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdResponsible;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdServiceMacroDefinition;
+import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -53,6 +58,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 	private FileInputStream fis = null;
 	/** Lazy initialized list of valid responsibles */
 	private List<OpsdResponsible> responsibles = null;
+	/** Lazy initialized list of valid criticies */
+	private List<OpsdCriticity> criticities = null;
+	private List<OpsdServiceTemplate> serviceTemplates = null;
 
 	/**
 	 * Static map to read device types from the properties. Such a field should
@@ -295,6 +303,153 @@ public class OpsdPoiDao implements OpsdDataTap {
 		}
 		return null;
 	}
+
+	/**
+	 * Get all the Criticity objects. On a future release all data
+	 * will be on a Relational Database. By now, the allowed
+	 * criticities must be described here, not in the Excel file.
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	private List<OpsdCriticity> getAllCriticities() throws OpsdException {
+		if (criticities == null) {
+			/* Lazy initialization of the array, read from properties file */
+			criticities = new ArrayList<OpsdCriticity>();
+
+			ResourceBundle rb = ResourceBundle
+					.getBundle("org.zoquero.opsd.entities.Criticity");
+			Enumeration<String> keys = rb.getKeys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement();
+				if (key.startsWith("criticity.")) {
+					String value = rb.getString(key);
+					StringTokenizer st = new StringTokenizer(value, ";");
+					String name = (String) st.nextElement();
+					String description = (String) st.nextElement();
+					if (name == null || description == null) {
+						throw new OpsdException(
+								"Can't read the criticity with value '"
+									+ value + "'");
+					}
+					OpsdCriticity aCriticity = new OpsdCriticity(name, description);
+					criticities.add(aCriticity);
+				}
+			}
+		}
+		return criticities;
+	}
+
+
+	/**
+	 * Get all the OpsdServiceTemplate objects. On a future release all data
+	 * will be on a Relational Database. By now, the allowed
+	 * serviceTemplates must be described here, not in the Excel file.
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	private List<OpsdServiceTemplate> getAllServiceTemplates() throws OpsdException {
+		if (serviceTemplates == null) {
+			/* Lazy initialization of the array, read from properties file */
+			serviceTemplates = new ArrayList<OpsdServiceTemplate>();
+
+			ResourceBundle rb = ResourceBundle
+					.getBundle("org.zoquero.opsd.entities.ServiceTemplate");
+			Enumeration<String> keys = rb.getKeys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement();
+				if (key.startsWith("serviceTemplate.")) {
+					String value = rb.getString(key);
+					StringTokenizer st = new StringTokenizer(value, ";");
+					String name = (String) st.nextElement();
+					String nrpeStr = (String) st.nextElement();
+					boolean nrpe;
+					if(nrpeStr != null && nrpeStr.equals("0")) {
+						nrpe = false;
+					}
+					else if(nrpeStr != null && nrpeStr.equals("1")) {
+						nrpe = true;
+					}
+					else {
+						throw new OpsdException(
+								"Can't parse the ServiceTemplate with value '"
+										+ value + "'");
+					}
+					String defaultName = (String) st.nextElement();
+					String description = (String) st.nextElement();
+					String macroName, macroDescription, macroDefaultValue;
+					List<OpsdServiceMacroDefinition> osmdList = new ArrayList<OpsdServiceMacroDefinition>();
+					for (int i = 0; i < 7; i++) {
+						macroName = (String) st.nextElement();
+						macroDescription = (String) st.nextElement();
+						macroDefaultValue = (String) st.nextElement();
+						OpsdServiceMacroDefinition osmd
+							= new OpsdServiceMacroDefinition(
+									macroName,
+									macroDescription,
+									macroDefaultValue);
+
+						OpsdServiceMacroDefinition aServiceTemplate = new OpsdServiceMacroDefinition(macroName, macroDescription, macroDefaultValue);
+						osmdList.add(aServiceTemplate);
+						
+					}
+					if (name == null || defaultName == null 
+							|| description == null || osmdList == null) {
+						throw new OpsdException(
+								"Can't read the ServiceTemplate with value '"
+									+ value + "'");
+					}
+
+					OpsdServiceTemplate aServiceTemplate = new OpsdServiceTemplate(name, nrpe, defaultName, description, osmdList);
+					serviceTemplates.add(aServiceTemplate);
+					
+				}
+			}
+		}
+		return serviceTemplates;
+	}
+	
+
+	/**
+	 * Get a ServiceTemplate
+	 * @param serviceTemplateName name of the service template
+	 * @return
+	 * @throws OpsdException
+	 */
+	private OpsdServiceTemplate getServiceTemplates(String serviceTemplateName) throws OpsdException {
+		List<OpsdServiceTemplate> serviceTemlates = getAllServiceTemplates();
+		for(OpsdServiceTemplate aServiceTemplate: serviceTemplates) {
+			if(aServiceTemplate.getName().equals(serviceTemplateName)) {
+				return aServiceTemplate;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Get the Criticity object from his name. On a future release all data
+	 * will be on a Relational Database. By now, the allowed
+	 * criticities must be described here, not in the Excel file.
+	 * 
+	 * @param criticityName
+	 * @throws OpsdException
+	 * @return
+	 */
+	private OpsdCriticity getCriticity(String criticityName) throws OpsdException {
+		if (criticities == null) {
+			criticities = getAllCriticities();
+			
+			for (OpsdCriticity aCriticity: criticities) {
+				if (aCriticity.getName().equals(criticityName)) {
+					return aCriticity;
+				}
+			}
+		}
+		return null;
+	}
+
 
 	@Override
 	public void connect() throws OpsdException {

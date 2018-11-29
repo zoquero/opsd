@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.zoquero.opsd.dao.OpsdException;
 import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -56,7 +55,7 @@ public class OpsdExtractor {
 		// OpsdMonitoredHost
 		List<OpsdMonitoredHost> monitoredHosts = dt.getOpsdMonitoredHosts(project);
 		fpd.setMonitoredHosts(monitoredHosts);
-		
+
 		// Validation
 		OpsdValidator.validate(fpd);
 		

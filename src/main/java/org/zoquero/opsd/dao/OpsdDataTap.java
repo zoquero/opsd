@@ -2,6 +2,7 @@ package org.zoquero.opsd.dao;
 
 import java.util.List;
 
+import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdOSType;

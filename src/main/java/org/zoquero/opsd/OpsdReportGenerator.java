@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.zoquero.opsd.dao.OpsdException;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
