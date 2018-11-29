@@ -123,4 +123,49 @@ public class OpsdReportGenerator {
 			throw new OpsdException("TemplateException thrown", e);
 		}
 	}
+	
+	/**
+	 * Generate the file containing the status of the Project and get it's path
+	 * @param directory
+	 * @return
+	 * @throws OpsdException
+	 */
+	public String getStatusFile(Path directory) throws OpsdException {
+		// 1. Configure FreeMarker
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
+		// We'll load the templates from org.zoquero.opsd.templates:
+		cfg.setClassForTemplateLoading(this.getClass(), "templates");
+		// Some other recommended settings:
+		cfg.setIncompatibleImprovements(new Version(2, 3, 28));
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setLocale(Locale.getDefault());
+		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+		// Let's process the template
+		Map<String, Object> input = new HashMap<String, Object>();
+		input.put("title", "Results of the analysis of the data of the Project");
+		input.put("project", getFullProjectData().getProject());
+		input.put("report",  getFullProjectData().getReport());
+		
+		// Let's get the template
+		try {
+			Template template = cfg.getTemplate("status.ftl");
+
+			Writer fileWriter = new FileWriter(new File(directory.toString() + "/status.html"));
+		    template.process(input, fileWriter);
+		    fileWriter.close();
+		    return directory.toString();
+		    
+		} catch (TemplateNotFoundException e) {
+			throw new OpsdException("TemplateNotFoundException thrown", e);
+		} catch (MalformedTemplateNameException e) {
+			throw new OpsdException("MalformedTemplateNameException thrown", e);
+		} catch (ParseException e) {
+			throw new OpsdException("ParseException thrown", e);
+		} catch (IOException e) {
+			throw new OpsdException("IOException thrown", e);
+		} catch (TemplateException e) {
+			throw new OpsdException("TemplateException thrown", e);
+		}
+	}
 }

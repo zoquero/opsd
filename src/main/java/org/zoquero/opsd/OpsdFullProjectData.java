@@ -11,7 +11,7 @@ import org.zoquero.opsd.entities.OpsdSystem;
 class OpsdFullProjectData {
 
 	/** Report with errors and warnings */
-	private OpsdReport  oReport;
+	private OpsdReport  report;
 	/** Project data */
 	private OpsdProject project;
 	/** Role data */
@@ -27,17 +27,17 @@ class OpsdFullProjectData {
 	}
 	
 	/**
-	 * @return the oReport
+	 * @return the report
 	 */
 	public OpsdReport getReport() {
-		return oReport;
+		return report;
 	}
 
 	/**
-	 * @param oReport the oReport to set
+	 * @param report the report to set
 	 */
-	private void setReport(OpsdReport oReport) {
-		this.oReport = oReport;
+	private void setReport(OpsdReport report) {
+		this.report = report;
 	}
 
 	public void setProject(OpsdProject project) {

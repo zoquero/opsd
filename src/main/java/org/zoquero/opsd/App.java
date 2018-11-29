@@ -121,9 +121,12 @@ public class App {
 				System.out.println("* " + aWarning);
 			}
 
-			// Let's generate the output
+			// Let's generate the status (analysis of the project)
 			OpsdReportGenerator org = new OpsdReportGenerator(ofpd);
+			String report = org.getStatusFile(outputFolder);
+			// Let's generate the output
 			String output = org.getOutputFile(outputFolder);
+			
 			System.out.println("output = " + output);
 		} catch (OpsdException e) {
 			System.out.println("Errors accessing data: " + e.getMessage());

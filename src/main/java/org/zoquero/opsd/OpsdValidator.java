@@ -8,6 +8,7 @@ import java.util.List;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdSystem;
 
 /**
  * Validates the objects got from the project.
@@ -63,6 +64,55 @@ public class OpsdValidator {
 			if(role.getDescription() == null || role.getDescription().trim().equals("")) {
 				oReport.pushWarning("Role #" + i + " has null description");
 			}
+		}
+		
+
+		// Systems
+		List<OpsdSystem> systems = fpd.getSystems();
+		for (int i = 0; i < systems.size(); i++) {
+			OpsdSystem system = systems.get(i);
+			if(system == null) {
+				oReport.pushError("System #" + i + " is null");
+			}
+			if(system.getName() == null || system.getName().trim().equals("")) {
+				oReport.pushError("System #" + i + " has null name");
+			}
+			if(system.getFqdnOrIp() == null || system.getFqdnOrIp().trim().equals("")) {
+				oReport.pushError("System #" + i + " has null fqdnOrIp");
+			}
+			if(system.getDeviceType() == null) {
+				oReport.pushError("System #" + i + " has null deviceType");
+			}
+			if(system.getOs() == null) {
+				oReport.pushError("System #" + i + " has null OS");
+			}
+			if(system.getOsAccess() == null || system.getOsAccess().trim().equals("")) {
+				oReport.pushError("System #" + i + " has null osAccess");
+			}
+			if(system.getLomIP() == null || system.getLomIP().trim().equals("")) {
+				oReport.pushWarning("System #" + i + " has null lomIP (if it's not physical there's no problem)");
+			}
+			if(system.getLomAccess() == null || system.getLomAccess().trim().equals("")) {
+				oReport.pushWarning("System #" + i + " has null lomAccess (if it's not physical there's no problem)");
+			}		
+			if(system.getMoreInfo() == null || system.getMoreInfo().trim().equals("")) {
+				oReport.pushWarning("System #" + i + " has null moreInfo");
+			}
+			if(system.getEnvironment() == null || system.getEnvironment().trim().equals("")) {
+				oReport.pushWarning("System #" + i + " has null environment");
+			}
+			if(system.getRole() == null) {
+				oReport.pushWarning("System #" + i + " has null role");
+			}
+//			if(system.getHostDownRecoveryProcedure() == null || system.getHostDownRecoveryProcedure().trim().equals("")) {
+//				oReport.pushWarning("System #" + i + " has null hostDownRecoveryProcedure");
+//			}
+//			if(system.getResponsible() == null) {
+//				oReport.pushWarning("System #" + i + " has null responsible");
+//			}
+//			if(system.getScaleTo() == null || system.getScaleTo().trim().equals("")) {
+//				oReport.pushWarning("System #" + i + " has null scaleTo");
+//			}
 		}
 
 		// MonitoredHosts

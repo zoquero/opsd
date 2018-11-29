@@ -41,7 +41,10 @@ ${project.recoveryProcedure}
 
 <#list systems as system>
 === ${system.name} ===
-  <p>system name = ${system.name} , system os = ${system.os} </p> 
+  <p>system name = ${system.name}
+  <#if system.os?hasContent>
+    system os = ${system.os} </p> 
+  </#if>
 </#list>
 
 == MonitoredHosts ==
