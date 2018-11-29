@@ -66,7 +66,6 @@ public class OpsdValidator {
 			}
 		}
 		
-
 		// Systems
 		List<OpsdSystem> systems = fpd.getSystems();
 		for (int i = 0; i < systems.size(); i++) {
@@ -76,6 +75,9 @@ public class OpsdValidator {
 			}
 			if(system.getName() == null || system.getName().trim().equals("")) {
 				oReport.pushError("System #" + i + " has null name");
+			}
+			if(system.getAlias() != null && ! system.getAlias().trim().equals("")) {
+				oReport.pushError("System #" + i + " has an alias. Alias support is still not implemented");
 			}
 			if(system.getFqdnOrIp() == null || system.getFqdnOrIp().trim().equals("")) {
 				oReport.pushError("System #" + i + " has null fqdnOrIp");
@@ -89,11 +91,13 @@ public class OpsdValidator {
 			if(system.getOsAccess() == null || system.getOsAccess().trim().equals("")) {
 				oReport.pushError("System #" + i + " has null osAccess");
 			}
-			if(system.getLomIP() == null || system.getLomIP().trim().equals("")) {
-				oReport.pushWarning("System #" + i + " has null lomIP (if it's not physical there's no problem)");
-			}
-			if(system.getLomAccess() == null || system.getLomAccess().trim().equals("")) {
-				oReport.pushWarning("System #" + i + " has null lomAccess (if it's not physical there's no problem)");
+			if(system.getDeviceType() != null && ! system.getDeviceType().isVirtual()) {
+				if(system.getLomIP() == null || system.getLomIP().trim().equals("")) {
+					oReport.pushError("System #" + i + " has null lomIP and it's a physical device");
+				}
+				if(system.getLomAccess() == null || system.getLomAccess().trim().equals("")) {
+					oReport.pushError("System #" + i + " has null lomAccess and it's a physical device");
+				}
 			}		
 			if(system.getMoreInfo() == null || system.getMoreInfo().trim().equals("")) {
 				oReport.pushWarning("System #" + i + " has null moreInfo");

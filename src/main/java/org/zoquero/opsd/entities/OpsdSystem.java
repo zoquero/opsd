@@ -5,60 +5,60 @@ package org.zoquero.opsd.entities;
 
 /**
  * @author agalindo
- *
+ * 
  */
 public class OpsdSystem {
 
 	/* Fields */
 
-	  /** Field "name" */
-	  private String name;
+	/** Field "name" */
+	private String name;
 
-	  /** Field "alias"
-	   * @deprecated Supported but its use is un-adviced
-	   *  */
-	  private String alias;
+	/**
+	 * Field "alias"
+	 * 
+	 * @deprecated Supported but its use is un-adviced
+	 * */
+	private String alias;
 
-	  /** Field "fqdnOrIp" */
-	  private String fqdnOrIp;
+	/** Field "fqdnOrIp" */
+	private String fqdnOrIp;
 
-	  /** Field "deviceType" */
-	  private OpsdDeviceType deviceType;
+	/** Field "deviceType" */
+	private OpsdDeviceType deviceType;
 
-	  /** Field "os" */
-	  private OpsdOSType os;
+	/** Field "os" */
+	private OpsdOSType os;
 
-	  /** Field "osAccess" */
-	  private String osAccess;
+	/** Field "osAccess" */
+	private String osAccess;
 
-	  /** Field "lomIP" */
-	  private String lomIP;
+	/** Field "lomIP" */
+	private String lomIP;
 
-	  /** Field "lomAccess" */
-	  private String lomAccess;
+	/** Field "lomAccess" */
+	private String lomAccess;
 
-	  /** Field "moreInfo" */
-	  private String moreInfo;
+	/** Field "moreInfo" */
+	private String moreInfo;
 
-	  /** Field "environment" */
-	  private String environment;
+	/** Field "environment" */
+	private String environment;
 
-	  /** Field "role" */
-	  private OpsdRole role;
+	/** Field "role" */
+	private OpsdRole role;
 
-	  /** Field "hostDownRecoveryProcedure" */
-	  private String hostDownRecoveryProcedure;
+	/** Field "hostDownRecoveryProcedure" */
+	private String hostDownRecoveryProcedure;
 
-	  /** Field "responsible" */
-	  private OpsdResponsible responsible;
+	/** Field "responsible" */
+	private OpsdResponsible responsible;
 
-	  /** Field "scaleTo" */
-	  private String scaleTo;
+	/** Field "scaleTo" */
+	private String scaleTo;
 
+	/* Accessors */
 
-		/* Accessors */
-
-	  
 	/**
 	 * @return the name
 	 */
@@ -67,7 +67,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	private void setName(String name) {
 		this.name = name;
@@ -81,7 +82,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param alias the alias to set
+	 * @param alias
+	 *            the alias to set
 	 */
 	private void setAlias(String alias) {
 		this.alias = alias;
@@ -95,7 +97,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param fqdnOrIp the fqdnOrIp to set
+	 * @param fqdnOrIp
+	 *            the fqdnOrIp to set
 	 */
 	private void setFqdnOrIp(String fqdnOrIp) {
 		this.fqdnOrIp = fqdnOrIp;
@@ -109,7 +112,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param deviceType the deviceType to set
+	 * @param deviceType
+	 *            the deviceType to set
 	 */
 	private void setDeviceType(OpsdDeviceType deviceType) {
 		this.deviceType = deviceType;
@@ -123,7 +127,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param os the os to set
+	 * @param os
+	 *            the os to set
 	 */
 	private void setOs(OpsdOSType os) {
 		this.os = os;
@@ -137,7 +142,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param os the os to set
+	 * @param os
+	 *            the os to set
 	 */
 	private void setOsAccess(String osAccess) {
 		this.osAccess = osAccess;
@@ -151,7 +157,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param lomIP the lomIP to set
+	 * @param lomIP
+	 *            the lomIP to set
 	 */
 	private void setLomIP(String lomIP) {
 		this.lomIP = lomIP;
@@ -165,7 +172,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param lomAccess the lomAccess to set
+	 * @param lomAccess
+	 *            the lomAccess to set
 	 */
 	private void setLomAccess(String lomAccess) {
 		this.lomAccess = lomAccess;
@@ -179,7 +187,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param moreInfo the moreInfo to set
+	 * @param moreInfo
+	 *            the moreInfo to set
 	 */
 	private void setMoreInfo(String moreInfo) {
 		this.moreInfo = moreInfo;
@@ -193,7 +202,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param environment the environment to set
+	 * @param environment
+	 *            the environment to set
 	 */
 	private void setEnvironment(String environment) {
 		this.environment = environment;
@@ -207,7 +217,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param role the role to set
+	 * @param role
+	 *            the role to set
 	 */
 	private void setRole(OpsdRole role) {
 		this.role = role;
@@ -221,7 +232,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param hostDownRecoveryProcedure the hostDownRecoveryProcedure to set
+	 * @param hostDownRecoveryProcedure
+	 *            the hostDownRecoveryProcedure to set
 	 */
 	private void setHostDownRecoveryProcedure(String hostDownRecoveryProcedure) {
 		this.hostDownRecoveryProcedure = hostDownRecoveryProcedure;
@@ -235,7 +247,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param responsible the responsible to set
+	 * @param responsible
+	 *            the responsible to set
 	 */
 	private void setResponsible(OpsdResponsible responsible) {
 		this.responsible = responsible;
@@ -249,7 +262,8 @@ public class OpsdSystem {
 	}
 
 	/**
-	 * @param scaleTo the scaleTo to set
+	 * @param scaleTo
+	 *            the scaleTo to set
 	 */
 	private void setScaleTo(String scaleTo) {
 		this.scaleTo = scaleTo;
