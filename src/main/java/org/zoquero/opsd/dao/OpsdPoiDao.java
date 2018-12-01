@@ -8,22 +8,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.zoquero.opsd.App;
 import org.zoquero.opsd.OpsdException;
-import org.zoquero.opsd.OpsdHtmlLogFormatter;
 import org.zoquero.opsd.entities.OpsdCriticity;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
-import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -167,6 +162,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	public OpsdProject getProject(String projectName) throws OpsdException {
 		LOGGER.log(Level.FINE, this.getClass().getName() + ": Getting project "
 				+ projectName);
+		DataFormatter formatter = new DataFormatter();
 
 		// Get the number of sheets in the xlsx file
 		int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
@@ -202,14 +198,14 @@ public class OpsdPoiDao implements OpsdDataTap {
 		// }
 
 		int i = 1;
-		String name = row.getCell(i++).getStringCellValue();
-		String description = row.getCell(i++).getStringCellValue();
-		String dateInStr = row.getCell(i++).getStringCellValue();
-		String dateOutStr = row.getCell(i++).getStringCellValue();
-		String responsibleName = row.getCell(i++).getStringCellValue();
-		String dependencies = row.getCell(i++).getStringCellValue();
-		String recoveryProcedure = row.getCell(i++).getStringCellValue();
-		String moreInfo = row.getCell(i++).getStringCellValue();
+		String name = formatter.formatCellValue(row.getCell(i++));
+		String description = formatter.formatCellValue(row.getCell(i++));
+		String dateInStr = formatter.formatCellValue(row.getCell(i++));
+		String dateOutStr = formatter.formatCellValue(row.getCell(i++));
+		String responsibleName = formatter.formatCellValue(row.getCell(i++));
+		String dependencies = formatter.formatCellValue(row.getCell(i++));
+		String recoveryProcedure = formatter.formatCellValue(row.getCell(i++));
+		String moreInfo = formatter.formatCellValue(row.getCell(i++));
 
 		// Let's set dates
 		Calendar dateIn = Calendar.getInstance();
@@ -272,6 +268,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 */
 	private OpsdResponsible getResponsible(String responsibleName) {
 		if (responsibles == null) {
+			DataFormatter formatter = new DataFormatter();
 			/* Lazy initialization of the array, read from properties file */
 			responsibles = new ArrayList<OpsdResponsible>();
 
@@ -315,6 +312,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @throws OpsdException 
 	 */
 	private List<OpsdCriticity> getAllCriticities() throws OpsdException {
+		DataFormatter formatter = new DataFormatter();
 		if (criticities == null) {
 			/* Lazy initialization of the array, read from properties file */
 			criticities = new ArrayList<OpsdCriticity>();
@@ -352,6 +350,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @throws OpsdException 
 	 */
 	private List<OpsdServiceTemplate> getAllServiceTemplates() throws OpsdException {
+		DataFormatter formatter = new DataFormatter();
 		if (cachedServiceTemplates == null) {
 			/* Lazy initialization of the array, read from properties file */
 			cachedServiceTemplates = new ArrayList<OpsdServiceTemplate>();
@@ -506,6 +505,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public List<OpsdRole> getRoles(OpsdProject project) throws OpsdException {
 		LOGGER.log(Level.FINE, "OpsdPoiDao.getRoles");
+		DataFormatter formatter = new DataFormatter();
 
 		if (cachedRoles == null) {
 			cachedRoles = new ArrayList<OpsdRole>();
@@ -529,8 +529,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 				Row row = sheet.getRow(rowNum);
 
 				int i = 0;
-				String name = row.getCell(i++).getStringCellValue();
-				String description = row.getCell(i++).getStringCellValue();
+				String name = formatter.formatCellValue(row.getCell(i++));
+				String description = formatter.formatCellValue(row.getCell(i++));
 
 				// We will drop empty rows
 				if ((name == null || name.equals(""))
@@ -551,8 +551,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public List<OpsdSystem> getSystems(OpsdProject project)
 			throws OpsdException {
-
 		LOGGER.log(Level.FINE, "OpsdPoiDao.getSystems");
+		DataFormatter formatter = new DataFormatter();
 		if (cachedSystems == null) {
 			cachedSystems = new ArrayList<OpsdSystem>();
 
@@ -575,24 +575,24 @@ public class OpsdPoiDao implements OpsdDataTap {
 				Row row = sheet.getRow(rowNum);
 
 				int i = 0;
-				String name = row.getCell(i++).getStringCellValue();
+				String name = formatter.formatCellValue(row.getCell(i++));
 				// We'll drop rows without name
 				if (name == null || name.equals(""))
 					continue;
-				String alias = row.getCell(i++).getStringCellValue();
-				String fqdnOrIp = row.getCell(i++).getStringCellValue();
-				String deviceTypeStr = row.getCell(i++).getStringCellValue();
-				String osStr = row.getCell(i++).getStringCellValue();
-				String osAccess = row.getCell(i++).getStringCellValue();
-				String lomIP = row.getCell(i++).getStringCellValue();
-				String lomAccess = row.getCell(i++).getStringCellValue();
-				String moreInfo = row.getCell(i++).getStringCellValue();
-				String environment = row.getCell(i++).getStringCellValue();
-				String roleName = row.getCell(i++).getStringCellValue();
+				String alias = formatter.formatCellValue(row.getCell(i++));
+				String fqdnOrIp = formatter.formatCellValue(row.getCell(i++));
+				String deviceTypeStr = formatter.formatCellValue(row.getCell(i++));
+				String osStr = formatter.formatCellValue(row.getCell(i++));
+				String osAccess = formatter.formatCellValue(row.getCell(i++));
+				String lomIP = formatter.formatCellValue(row.getCell(i++));
+				String lomAccess = formatter.formatCellValue(row.getCell(i++));
+				String moreInfo = formatter.formatCellValue(row.getCell(i++));
+				String environment = formatter.formatCellValue(row.getCell(i++));
+				String roleName = formatter.formatCellValue(row.getCell(i++));
 				String hostDownRecoveryProcedure = row.getCell(i++)
 						.getStringCellValue();
-				String responsibleName = row.getCell(i++).getStringCellValue();
-				String scaleTo = row.getCell(i++).getStringCellValue();
+				String responsibleName = formatter.formatCellValue(row.getCell(i++));
+				String scaleTo = formatter.formatCellValue(row.getCell(i++));
 
 				OpsdDeviceType dt = getDeviceTypeByName(deviceTypeStr);
 				OpsdOSType ost = getOSTypeByName(osStr);
@@ -644,8 +644,12 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public OpsdRole getRoleByName(OpsdProject project, String roleName)
 			throws OpsdException {
+		LOGGER.log(Level.FINEST, "OpsdPoiDao.getRoleByName loading role "
+			+ roleName);
 		for (OpsdRole aRole : getRoles(project)) {
 			if (aRole.getName().equals(roleName)) {
+				LOGGER.log(Level.FINEST, "OpsdPoiDao.getRoleByName found role "
+					+ roleName);
 				return aRole;
 			}
 		}
@@ -655,9 +659,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public List<OpsdMonitoredHost> getMonitoredHosts(OpsdProject project)
 			throws OpsdException {
-
 		DataFormatter formatter = new DataFormatter();
-		LOGGER.log(Level.FINE, "OpsdPoiDao.getOpsdMonitoredHosts");
+		LOGGER.log(Level.FINEST, "OpsdPoiDao.getOpsdMonitoredHosts");
 		List<OpsdMonitoredHost> monitoredHosts = new ArrayList<OpsdMonitoredHost>();
 
 		// Get the number of sheets in the xlsx file
@@ -681,22 +684,22 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 			int i = 0;
 			// String fields:
-			String name = row.getCell(i++).getStringCellValue();
+			String name = formatter.formatCellValue(row.getCell(i++));
 			// We'll drop rows without name
 			if (name == null || name.equals(""))
 				continue;
-			String ip = row.getCell(i++).getStringCellValue();
-			String systemStr = row.getCell(i++).getStringCellValue();
+			String ip = formatter.formatCellValue(row.getCell(i++));
+			String systemStr = formatter.formatCellValue(row.getCell(i++));
 			String forManagingStr = formatter.formatCellValue(row.getCell(i++));
 			String forServiceStr = formatter.formatCellValue(row.getCell(i++));
 			String forBackupStr = formatter.formatCellValue(row.getCell(i++));
 			String forNasStr = formatter.formatCellValue(row.getCell(i++));
 			String defaultChecksNeededStr = formatter.formatCellValue(row
 					.getCell(i++));
-			String moreInfo = row.getCell(i++).getStringCellValue();
-			String environment = row.getCell(i++).getStringCellValue();
-			String roleStr = row.getCell(i++).getStringCellValue();
-			String scaleTo = row.getCell(i++).getStringCellValue();
+			String moreInfo = formatter.formatCellValue(row.getCell(i++));
+			String environment = formatter.formatCellValue(row.getCell(i++));
+			String roleStr = formatter.formatCellValue(row.getCell(i++));
+			String scaleTo = formatter.formatCellValue(row.getCell(i++));
 
 			OpsdSystem system;
 			Boolean forManaging = null;
@@ -759,11 +762,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 					system, forManaging, forService, forBackup, forNas,
 					defaultChecksNeeded, moreInfo, environment, role, scaleTo);
 			monitoredHosts.add(monitoredHost);
-			LOGGER.log(Level.FINEST, "* MonitoredHost added: " + monitoredHost);
-
+			LOGGER.log(Level.FINEST, "MonitoredHost added: " + monitoredHost);
 		}
 		return monitoredHosts;
-
 	}
 
 	@Override
@@ -783,8 +784,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public List<OpsdRoleService> getRoleServices(
 			OpsdProject project) throws OpsdException {
-		
-		LOGGER.log(Level.FINE, "OpsdPoiDao.getRoles");
+		DataFormatter formatter = new DataFormatter();		
+		LOGGER.log(Level.FINEST, "OpsdPoiDao.getRoles");
 		if (cachedRoleServices == null) {
 			cachedRoleServices =
 					new ArrayList<OpsdRoleService>();
@@ -824,24 +825,24 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 				int i = 0;
 				String name = null;
-				String proposedName = row.getCell(i++).getStringCellValue();
-				String description = row.getCell(i++).getStringCellValue();
-				String procedure = row.getCell(i++).getStringCellValue();
-				String criticityName = row.getCell(i++).getStringCellValue();
+				String proposedName = formatter.formatCellValue(row.getCell(i++));
+				String description = formatter.formatCellValue(row.getCell(i++));
+				String procedure = formatter.formatCellValue(row.getCell(i++));
+				String criticityName = formatter.formatCellValue(row.getCell(i++));
 				OpsdCriticity criticity = null;
-				String roleName = row.getCell(i++).getStringCellValue();
+				String roleName = formatter.formatCellValue(row.getCell(i++));
 				OpsdRole role = null;
-				String serviceTemplateName = row.getCell(i++).getStringCellValue();
+				String serviceTemplateName = formatter.formatCellValue(row.getCell(i++));
 				OpsdServiceTemplate serviceTemplate = null;
 				String[] macroAndValueArray = new String[7];
-				macroAndValueArray[0] = row.getCell(i++).getStringCellValue();
-				macroAndValueArray[1] = row.getCell(i++).getStringCellValue();
-				macroAndValueArray[2] = row.getCell(i++).getStringCellValue();
-				macroAndValueArray[3] = row.getCell(i++).getStringCellValue();
-				macroAndValueArray[4] = row.getCell(i++).getStringCellValue();
-				macroAndValueArray[5] = row.getCell(i++).getStringCellValue();
-				macroAndValueArray[6] = row.getCell(i++).getStringCellValue();
-				String scaleTo = row.getCell(i++).getStringCellValue();
+				macroAndValueArray[0] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[1] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[2] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[3] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[4] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[5] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[6] = formatter.formatCellValue(row.getCell(i++));
+				String scaleTo = formatter.formatCellValue(row.getCell(i++));
 				
 				if((name == null || name.equals(""))
 						&& (serviceTemplateName == null
@@ -852,10 +853,11 @@ public class OpsdPoiDao implements OpsdDataTap {
 				
 				if(serviceTemplateName == null || serviceTemplateName.equals("")) {
 					// it will appear as an error in validation
-//					throw new OpsdException("Can't find the "
-//							+ "service template serviceTemplate called "
-//							+ serviceTemplateName
-//							+ " when loading the RoleService #" + rowNum);
+					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getRoleServices: "
+							+ "Can't find the "
+							+ "service template serviceTemplate called "
+							+ serviceTemplateName
+							+ " when loading the RoleService #" + rowNum);
 					serviceTemplate = null;
 				}
 				else {
@@ -887,14 +889,17 @@ public class OpsdPoiDao implements OpsdDataTap {
 				else {
 					role = getRoleByName(project, roleName);
 				}
+				if(role == null) {
+					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getRoleServices: "
+						+ "the RoleService #" + rowNum + " has null role");
+				}
 
 				// Let's create the OpsdSystem object:
 				OpsdRoleService roleService = new OpsdRoleService(name,
 						description, procedure, criticity, role,
 						serviceTemplate, macroAndValueArray, scaleTo);
 				cachedRoleServices.add(roleService);
-				LOGGER.log(Level.FINEST, "* RoleService added: " + roleService);
-System.out.println("DEBUG: Created a roleService: " + roleService.toString());
+				LOGGER.log(Level.FINEST, "RoleService added: " + roleService);
 			}
 		}
 
@@ -906,14 +911,27 @@ System.out.println("DEBUG: Created a roleService: " + roleService.toString());
 	public List<OpsdRoleService> getRoleServicesByRole(OpsdProject project,
 			OpsdRole aRole) throws OpsdException {
 		List<OpsdRoleService> roleServices = new ArrayList<OpsdRoleService>();
-		LOGGER.log(Level.FINE, "OpsdPoiDao.getRoleServicesByRole");
+		LOGGER.log(Level.FINE, "OpsdPoiDao.getRoleServicesByRole for role "
+				+ aRole.getName());
 		if (cachedRoleServices == null) {
 			cachedRoleServices = getRoleServices(project);
 		}
 		for(OpsdRoleService roleService: cachedRoleServices) {
+			if(roleService.getRole() == null) {
+				LOGGER.log(Level.SEVERE,
+						"getRoleServicesByRole: got a roleService ("
+						+ roleService.getName() + ") with null role");
+			}
+			else {
+				LOGGER.log(Level.FINEST,
+						"getRoleServicesByRole: comparing with roleService: "
+						+ roleService.getName() + " that's for role "
+						+ roleService.getRole().getName());
+			}
 			if(roleService.getRole() != null
 				&& roleService.getRole().getName().equals(aRole.getName())) {
 				roleServices.add(roleService);
+				LOGGER.log(Level.FINEST, "getRoleServicesByRole: ADDED roleService " + roleService.getName());
 			}
 		}
 		return roleServices;

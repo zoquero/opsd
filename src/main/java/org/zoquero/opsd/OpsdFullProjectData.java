@@ -29,7 +29,6 @@ class OpsdFullProjectData {
 	private HashMap<OpsdRole, List<OpsdRoleService>> role2servicesMap = null;
 	
 	OpsdFullProjectData(OpsdReport oReport) {
-		System.out.println("OpsdFullProjectData constructor");
 		setReport(oReport);
 	}
 	

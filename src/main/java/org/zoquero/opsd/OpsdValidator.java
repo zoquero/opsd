@@ -96,10 +96,10 @@ public class OpsdValidator {
 				oReport.pushError("System #" + i + " has null fqdnOrIp");
 			}
 			if(system.getDeviceType() == null) {
-				oReport.pushError("System #" + i + " has null deviceType");
+				oReport.pushError("System #" + i + " has null deviceType or it can't be found");
 			}
 			if(system.getOs() == null) {
-				oReport.pushError("System #" + i + " has null OS");
+				oReport.pushError("System #" + i + " has null OS or it can't be found");
 			}
 			if(system.getOsAccess() == null
 					|| system.getOsAccess().trim().equals("")) {
@@ -127,7 +127,7 @@ public class OpsdValidator {
 				oReport.pushWarning("System #" + i + " has null environment");
 			}
 			if(system.getRole() == null) {
-				oReport.pushWarning("System #" + i + " has null role");
+				oReport.pushWarning("System #" + i + " has null role or it can't be found");
 			}
 //			if(system.getHostDownRecoveryProcedure() == null || system.getHostDownRecoveryProcedure().trim().equals("")) {
 //				oReport.pushWarning("System #" + i + " has null hostDownRecoveryProcedure");
@@ -156,7 +156,7 @@ public class OpsdValidator {
 				oReport.pushError("MonitoredHost #" + i + " has null ip");
 			}
 			if(monHost.getSystem() == null) {
-				oReport.pushError("MonitoredHost #" + i + " has null system");
+				oReport.pushError("MonitoredHost #" + i + " has null system or it can't be found");
 			}
 			if(monHost.isForManaging() == null) {
 				oReport.pushError("MonitoredHost #"
@@ -188,7 +188,7 @@ public class OpsdValidator {
 			}
 			if(monHost.getRole() == null) {
 				oReport.pushWarning("MonitoredHost #"
-						+ i + " has null role");
+						+ i + " has null role or it can't be found");
 			}
 //			if(monHost.getScaleTo() == null || monHost.getScaleTo().trim().equals("")) {
 //				oReport.pushWarning("MonitoredHost #" + i + " has null scaleTo");
@@ -219,15 +219,15 @@ public class OpsdValidator {
 			}
 			if(roleService.getCriticity() == null) {
 				oReport.pushError("RoleService #"
-						+ i + " has null criticity");
+						+ i + " has null criticity or it can't be found");
 			}
 			if(roleService.getRole() == null) {
 				oReport.pushError("RoleService #"
-						+ i + " has null role");
+						+ i + " has null role or it can't be found");
 			}
 			if(roleService.getServiceTemplate() == null) {
 				oReport.pushError("RoleService #"
-						+ i + " has null ServiceTemplate");
+						+ i + " has null ServiceTemplate or it can't be found");
 			}
 			if(roleService.getMacroAndValueArray() == null
 						|| roleService.getMacroAndValueArray().length < 1) {

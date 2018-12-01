@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.OpsdDataTap;
+import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -21,13 +22,13 @@ import org.zoquero.opsd.entities.OpsdSystem;
 public class OpsdExtractor {
 
 	OpsdDataTap dt;
+	private static Logger LOGGER = Logger.getLogger(OpsdPoiDao.class.getName());
 
 	/**
 	 * Constructor that gets the DataTap
 	 * @param dt
 	 */
 	public OpsdExtractor(OpsdDataTap dt) {
-		System.out.println("Running OpsdExtractor constructor");
 		this.dt = dt;
 	}
 
@@ -39,7 +40,7 @@ public class OpsdExtractor {
 	 */
 	public OpsdFullProjectData getFullProjectData(String projectName) throws OpsdException {
 		OpsdReport oReport = new OpsdReport();
-		System.out.println("Running OpsdExtractor.getFullProjectData()");
+		LOGGER.log(Level.FINE,"Running OpsdExtractor.getFullProjectData()");
 		OpsdFullProjectData fpd = new OpsdFullProjectData(oReport);
 		
 		// OpsdProject
@@ -66,7 +67,6 @@ public class OpsdExtractor {
 		for(OpsdRole aRole: roles) {
 			List<OpsdRoleService> roleservices = dt.getRoleServicesByRole(project, aRole);
 			role2servicesMap.put(aRole, roleservices);
-System.out.println("DEBUGGG: pel role " + aRole.getName() + " apilem " + roleservices.size() + " roleservices");
 		}
 		fpd.setRole2servicesMap(role2servicesMap);
 

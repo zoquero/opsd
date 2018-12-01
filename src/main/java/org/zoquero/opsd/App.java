@@ -120,15 +120,12 @@ public class App {
 				System.out.println("* " + aWarning);
 			}
 
-			// Let's generate the status (analysis of the project)
 			OpsdReportGenerator org = new OpsdReportGenerator(ofpd);
-			String statusFile = org.getStatusFile(outputFolder);
 			// Let's generate the output
 			// (generated docs with monitoring and documentation)
 			String outputFile = org.getOutputFile(outputFolder);
 			
 			System.out.println("Output files:");
-			System.out.println("* Status file:    " + statusFile);
 			System.out.println("* Generated docs: " + outputFile);
 			System.out.println("* Execution log:: " + htmlLogFile);
 			// htmlLogFile
