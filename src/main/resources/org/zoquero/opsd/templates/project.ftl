@@ -75,17 +75,12 @@ ${project.recoveryProcedure}
 
 == RoleServices by map ==
 
-<#list role2servicesMap?keys as role>
+<#list role2servicesMap as role, roleServices> 
 === Role '${role.name}' ===
-<#assign z = role2servicesMap[role]?size>
-num of services = ${z}
-<#if role2servicesMap[role]?hasContent>
-<#list role2servicesMap[role] as roleService>
-==== RoleService '${roleService.name}' ==== 
+<#list roleServices as aService>
+==== Service '${aService.name}' ====
+</#list>
 </#list> 
-</#if>
-</#list> 
-
 
         </pre>
       </td></tr>

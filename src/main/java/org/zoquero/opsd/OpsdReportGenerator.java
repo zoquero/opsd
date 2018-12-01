@@ -98,6 +98,34 @@ public class OpsdReportGenerator {
 		input.put("monitoredHosts", getFullProjectData().getMonitoredHosts());
 		input.put("roleServices", getFullProjectData().getRoleServices());
 		input.put("role2servicesMap", getFullProjectData().getRole2servicesMap());
+
+for(OpsdRole aRole: getFullProjectData().getRole2servicesMap().keySet()) {
+	System.out.println("DEBUGG: key = " + aRole.getName());
+	System.out.println("DEBUGG: value size = " + getFullProjectData().getRole2servicesMap().get(aRole).size());
+}
+		
+		HashMap<String, String> testArray = new HashMap<String, String>();
+		testArray.put("un", "uannn");
+		testArray.put("dos", "tuuu");
+		testArray.put("tres", "zriii");
+		testArray.put("quatre", "forrrr");
+		input.put("testArray", testArray);
+		
+		
+		/*
+		 * 
+<#list role2servicesMap?keys as role>
+=== Role '${role.name}' ===
+<#assign z = role2servicesMap[role]?size>
+num of services = ${z}
+<#if role2servicesMap[role]?hasContent>
+<#list role2servicesMap[role] as roleService>
+==== RoleService '${roleService.name}' ==== 
+</#list> 
+</#if>
+</#list>  
+		 * 
+		 */
 		
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
