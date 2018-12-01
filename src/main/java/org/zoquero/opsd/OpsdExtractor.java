@@ -1,11 +1,13 @@
 package org.zoquero.opsd;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
@@ -53,8 +55,21 @@ public class OpsdExtractor {
 		fpd.setSystems(systems);
 
 		// OpsdMonitoredHost
-		List<OpsdMonitoredHost> monitoredHosts = dt.getOpsdMonitoredHosts(project);
+		List<OpsdMonitoredHost> monitoredHosts = dt.getMonitoredHosts(project);
 		fpd.setMonitoredHosts(monitoredHosts);
+		
+		// OpsdMonitoredHost
+		List<OpsdRoleService> roleServices = dt.getRoleServices(project);
+		fpd.setRoleServices(roleServices);
+		
+		HashMap<OpsdRole, List<OpsdRoleService>> role2servicesMap = new HashMap<OpsdRole, List<OpsdRoleService>>();
+		for(OpsdRole aRole: roles) {
+			List<OpsdRoleService> roleservices = dt.getRoleServicesByRole(project, aRole);
+			role2servicesMap.put(aRole, roleservices);
+System.out.println("DEBUGGG: pel role " + aRole.getName() + " apilem " + roleservices.size() + " roleservices");
+		}
+		fpd.setRole2servicesMap(role2servicesMap);
+
 
 		// Validation
 		OpsdValidator.validate(fpd);

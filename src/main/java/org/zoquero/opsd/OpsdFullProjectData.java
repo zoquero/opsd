@@ -1,11 +1,13 @@
 package org.zoquero.opsd;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.zoquero.opsd.dao.OpsdPoiConf;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
 
 class OpsdFullProjectData {
@@ -20,6 +22,11 @@ class OpsdFullProjectData {
 	private List<OpsdSystem> systems;
 	/** MonitoredHosts data */
 	private List<OpsdMonitoredHost> monitoredHosts;
+	/** RoleServices data */
+	private List<OpsdRoleService> roleServices;
+	/** Map Role > RoleService
+	 * that will be very usefull generating the output */
+	private HashMap<OpsdRole, List<OpsdRoleService>> role2servicesMap = null;
 	
 	OpsdFullProjectData(OpsdReport oReport) {
 		System.out.println("OpsdFullProjectData constructor");
@@ -91,6 +98,35 @@ class OpsdFullProjectData {
 	 */
 	public void setMonitoredHosts(List<OpsdMonitoredHost> monitoredHosts) {
 		this.monitoredHosts = monitoredHosts;
+	}
+
+	/**
+	 * @return the roleServices
+	 */
+	public List<OpsdRoleService> getRoleServices() {
+		return roleServices;
+	}
+
+	/**
+	 * @param roleServices the roleServices to set
+	 */
+	public void setRoleServices(List<OpsdRoleService> roleServices) {
+		this.roleServices = roleServices;
+	}
+
+	/**
+	 * @return the role2servicesMap
+	 */
+	public HashMap<OpsdRole, List<OpsdRoleService>> getRole2servicesMap() {
+		return role2servicesMap;
+	}
+
+	/**
+	 * @param role2servicesMap the role2servicesMap to set
+	 */
+	public void setRole2servicesMap(
+			HashMap<OpsdRole, List<OpsdRoleService>> role2servicesMap) {
+		this.role2servicesMap = role2servicesMap;
 	}
 
 }

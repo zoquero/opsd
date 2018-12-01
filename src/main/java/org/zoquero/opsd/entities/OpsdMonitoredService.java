@@ -23,9 +23,6 @@ public abstract class OpsdMonitoredService {
 	/** Field "criticity" */
 	private OpsdCriticity criticity;
 
-	/** Field "hostOrService" */
-	private OpsdMonitoredHostOrService hostOrService;
-
 	/** Field "serviceTemplate" */
 	private OpsdServiceTemplate serviceTemplate;
 
@@ -85,7 +82,7 @@ public abstract class OpsdMonitoredService {
 	/**
 	 * @return the criticity
 	 */
-	public OpsdCriticity getOpsdCriticity() {
+	public OpsdCriticity getCriticity() {
 		return criticity;
 	}
 
@@ -93,29 +90,14 @@ public abstract class OpsdMonitoredService {
 	 * @param criticity
 	 *            the criticity to set
 	 */
-	private void setOpsdCriticity(OpsdCriticity criticity) {
+	private void setCriticity(OpsdCriticity criticity) {
 		this.criticity = criticity;
-	}
-
-	/**
-	 * @return the hostOrService
-	 */
-	public OpsdMonitoredHostOrService getHostOrService() {
-		return hostOrService;
-	}
-
-	/**
-	 * @param hostOrService
-	 *            the hostOrService to set
-	 */
-	private void setHostOrService(OpsdMonitoredHostOrService hostOrService) {
-		this.hostOrService = hostOrService;
 	}
 
 	/**
 	 * @return the serviceTemplate
 	 */
-	public OpsdServiceTemplate getOpsdServiceTemplate() {
+	public OpsdServiceTemplate getServiceTemplate() {
 		return serviceTemplate;
 	}
 
@@ -123,7 +105,7 @@ public abstract class OpsdMonitoredService {
 	 * @param serviceTemplate
 	 *            the serviceTemplate to set
 	 */
-	private void setOpsdServiceTemplate(OpsdServiceTemplate serviceTemplate) {
+	private void setServiceTemplate(OpsdServiceTemplate serviceTemplate) {
 		this.serviceTemplate = serviceTemplate;
 	}
 
@@ -162,20 +144,18 @@ public abstract class OpsdMonitoredService {
 	 * @param description
 	 * @param procedure
 	 * @param criticity
-	 * @param hostOrService
 	 * @param serviceTemplate
 	 * @param macroAndValueArray
 	 * @param scaleTo
 	 */
-	public OpsdMonitoredService(String name, String description, String procedure,
-			OpsdCriticity criticity, OpsdMonitoredHostOrService hostOrService,
+	public OpsdMonitoredService(String name, String description,
+			String procedure, OpsdCriticity criticity,
 			OpsdServiceTemplate serviceTemplate, String[] macroAndValueArray,
 			String scaleTo) {
 		this.name = name;
 		this.description = description;
 		this.procedure = procedure;
 		this.criticity = criticity;
-		this.hostOrService = hostOrService;
 		this.serviceTemplate = serviceTemplate;
 		this.macroAndValueArray = macroAndValueArray;
 		this.scaleTo = scaleTo;

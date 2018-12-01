@@ -108,7 +108,7 @@ public class App {
 			dt.disconnect();
 
 			// Let's validate it
-			System.out.println("\nReport:");
+			System.out.println("Report:");
 			System.out.println("With errors:    "
 					+ ofpd.getReport().isWithErrors());
 			for (String anError : ofpd.getReport().getErrors()) {
@@ -122,11 +122,16 @@ public class App {
 
 			// Let's generate the status (analysis of the project)
 			OpsdReportGenerator org = new OpsdReportGenerator(ofpd);
-			String report = org.getStatusFile(outputFolder);
+			String statusFile = org.getStatusFile(outputFolder);
 			// Let's generate the output
-			String output = org.getOutputFile(outputFolder);
+			// (generated docs with monitoring and documentation)
+			String outputFile = org.getOutputFile(outputFolder);
 			
-			System.out.println("output = " + output);
+			System.out.println("Output files:");
+			System.out.println("* Status file:    " + statusFile);
+			System.out.println("* Generated docs: " + outputFile);
+			System.out.println("* Execution log:: " + htmlLogFile);
+			// htmlLogFile
 		} catch (OpsdException e) {
 			System.out.println("Errors accessing data: " + e.getMessage());
 			e.printStackTrace();
@@ -137,8 +142,9 @@ public class App {
 	 * Usage explanation.
 	 */
 	public static void usage() {
+		String newLine = System.getProperty("line.separator");
 		String s = new StringBuilder()
-				.append("Usage:\n")
+				.append("Usage:" + newLine)
 				.append("java -cp target/opsd-...-...jar org.zoquero.opsd.App /path/to/project_file.xlsx projectName")
 				.toString();
 		System.out.println(s);

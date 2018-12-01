@@ -7,7 +7,7 @@ package org.zoquero.opsd.entities;
  * @author agalindo
  *
  */
-public class OpsdRole extends OpsdMonitoredHostOrService {
+public class OpsdRole {
 	
 	/* Fields */
 

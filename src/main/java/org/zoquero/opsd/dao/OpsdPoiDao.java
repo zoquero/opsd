@@ -24,6 +24,7 @@ import org.zoquero.opsd.entities.OpsdCriticity;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
+import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdResponsible;
@@ -60,7 +61,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 	private List<OpsdResponsible> responsibles = null;
 	/** Lazy initialized list of valid criticies */
 	private List<OpsdCriticity> criticities = null;
-	private List<OpsdServiceTemplate> serviceTemplates = null;
 
 	/**
 	 * Static map to read device types from the properties. Such a field should
@@ -80,6 +80,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 	List<OpsdRole> cachedRoles = null;
 	List<OpsdSystem> cachedSystems = null;
+	List<OpsdRoleService> cachedRoleServices = null;
+	private List<OpsdServiceTemplate> cachedServiceTemplates = null;
 
 	static public OpsdSystem FLOATING_HOST = null;
 
@@ -344,15 +346,15 @@ public class OpsdPoiDao implements OpsdDataTap {
 	/**
 	 * Get all the OpsdServiceTemplate objects. On a future release all data
 	 * will be on a Relational Database. By now, the allowed
-	 * serviceTemplates must be described here, not in the Excel file.
+	 * cachedServiceTemplates must be described here, not in the Excel file.
 	 * 
 	 * @return
 	 * @throws OpsdException 
 	 */
 	private List<OpsdServiceTemplate> getAllServiceTemplates() throws OpsdException {
-		if (serviceTemplates == null) {
+		if (cachedServiceTemplates == null) {
 			/* Lazy initialization of the array, read from properties file */
-			serviceTemplates = new ArrayList<OpsdServiceTemplate>();
+			cachedServiceTemplates = new ArrayList<OpsdServiceTemplate>();
 
 			ResourceBundle rb = ResourceBundle
 					.getBundle("org.zoquero.opsd.entities.ServiceTemplate");
@@ -361,9 +363,15 @@ public class OpsdPoiDao implements OpsdDataTap {
 				String key = keys.nextElement();
 				if (key.startsWith("serviceTemplate.")) {
 					String value = rb.getString(key);
-					StringTokenizer st = new StringTokenizer(value, ";");
-					String name = (String) st.nextElement();
-					String nrpeStr = (String) st.nextElement();
+					String[] parts = value.split(";", -1);
+					if(parts.length < 11) {
+						throw new OpsdException(
+								"Can't parse the ServiceTemplate with value '"
+								+ value + "', few many fields ("
+								+ parts.length + ")");
+					}
+					String name = parts[0];
+					String nrpeStr = parts[1];
 					boolean nrpe;
 					if(nrpeStr != null && nrpeStr.equals("0")) {
 						nrpe = false;
@@ -376,21 +384,24 @@ public class OpsdPoiDao implements OpsdDataTap {
 								"Can't parse the ServiceTemplate with value '"
 										+ value + "'");
 					}
-					String defaultName = (String) st.nextElement();
-					String description = (String) st.nextElement();
+					String defaultName = parts[2];
+					String description = parts[3];
 					String macroName, macroDescription, macroDefaultValue;
-					List<OpsdServiceMacroDefinition> osmdList = new ArrayList<OpsdServiceMacroDefinition>();
+					List<OpsdServiceMacroDefinition> osmdList
+						= new ArrayList<OpsdServiceMacroDefinition>();
 					for (int i = 0; i < 7; i++) {
-						macroName = (String) st.nextElement();
-						macroDescription = (String) st.nextElement();
-						macroDefaultValue = (String) st.nextElement();
+						macroName = parts[4+i];
+						macroDescription = parts[4+i];
+						macroDefaultValue = parts[4+i];
 						OpsdServiceMacroDefinition osmd
 							= new OpsdServiceMacroDefinition(
 									macroName,
 									macroDescription,
 									macroDefaultValue);
 
-						OpsdServiceMacroDefinition aServiceTemplate = new OpsdServiceMacroDefinition(macroName, macroDescription, macroDefaultValue);
+						OpsdServiceMacroDefinition aServiceTemplate =
+							new OpsdServiceMacroDefinition(macroName,
+									macroDescription, macroDefaultValue);
 						osmdList.add(aServiceTemplate);
 						
 					}
@@ -402,12 +413,12 @@ public class OpsdPoiDao implements OpsdDataTap {
 					}
 
 					OpsdServiceTemplate aServiceTemplate = new OpsdServiceTemplate(name, nrpe, defaultName, description, osmdList);
-					serviceTemplates.add(aServiceTemplate);
+					cachedServiceTemplates.add(aServiceTemplate);
 					
 				}
 			}
 		}
-		return serviceTemplates;
+		return cachedServiceTemplates;
 	}
 	
 
@@ -417,9 +428,11 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @return
 	 * @throws OpsdException
 	 */
-	private OpsdServiceTemplate getServiceTemplates(String serviceTemplateName) throws OpsdException {
-		List<OpsdServiceTemplate> serviceTemlates = getAllServiceTemplates();
-		for(OpsdServiceTemplate aServiceTemplate: serviceTemplates) {
+	private OpsdServiceTemplate getServiceTemplate(String serviceTemplateName) throws OpsdException {
+		if(cachedServiceTemplates == null) {
+			cachedServiceTemplates = getAllServiceTemplates();
+		}
+		for(OpsdServiceTemplate aServiceTemplate: cachedServiceTemplates) {
 			if(aServiceTemplate.getName().equals(serviceTemplateName)) {
 				return aServiceTemplate;
 			}
@@ -640,7 +653,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	}
 
 	@Override
-	public List<OpsdMonitoredHost> getOpsdMonitoredHosts(OpsdProject project)
+	public List<OpsdMonitoredHost> getMonitoredHosts(OpsdProject project)
 			throws OpsdException {
 
 		DataFormatter formatter = new DataFormatter();
@@ -765,5 +778,144 @@ public class OpsdPoiDao implements OpsdDataTap {
 		}
 		// not found
 		return null;
+	}
+
+	@Override
+	public List<OpsdRoleService> getRoleServices(
+			OpsdProject project) throws OpsdException {
+		
+		LOGGER.log(Level.FINE, "OpsdPoiDao.getRoles");
+		if (cachedRoleServices == null) {
+			cachedRoleServices =
+					new ArrayList<OpsdRoleService>();
+
+			// Get the number of sheets in the xlsx file
+			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdRoleService");
+			if (sheetPosition > numberOfSheets - 1) {
+				throw new OpsdException("The sheet " + path + " has "
+						+ numberOfSheets
+						+ " and OpsdRoleService objects should be"
+						+ " in sheet position # "
+						+ sheetPosition + " (0..N-1)");
+			}
+
+			// Get the nth sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			int firstRow = OpsdPoiConf.getFirstRow(); // cachable
+
+			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
+				
+				/* Nom proposat pel servei monitorat (opcional)
+				 * Descripció del servei monitorat
+				 * Procediment
+				 * Criticitat
+				 * Nom de Rol monitorat
+				 * Service Template per crear el Service al monitoratge
+				 * Macro1=Value1
+				 * Macro2=Value2
+				 * ...
+				 * Macro7=Value7
+				 * A qui escalar
+				 */
+
+				// Get the row object
+				Row row = sheet.getRow(rowNum);
+
+				int i = 0;
+				String name = null;
+				String proposedName = row.getCell(i++).getStringCellValue();
+				String description = row.getCell(i++).getStringCellValue();
+				String procedure = row.getCell(i++).getStringCellValue();
+				String criticityName = row.getCell(i++).getStringCellValue();
+				OpsdCriticity criticity = null;
+				String roleName = row.getCell(i++).getStringCellValue();
+				OpsdRole role = null;
+				String serviceTemplateName = row.getCell(i++).getStringCellValue();
+				OpsdServiceTemplate serviceTemplate = null;
+				String[] macroAndValueArray = new String[7];
+				macroAndValueArray[0] = row.getCell(i++).getStringCellValue();
+				macroAndValueArray[1] = row.getCell(i++).getStringCellValue();
+				macroAndValueArray[2] = row.getCell(i++).getStringCellValue();
+				macroAndValueArray[3] = row.getCell(i++).getStringCellValue();
+				macroAndValueArray[4] = row.getCell(i++).getStringCellValue();
+				macroAndValueArray[5] = row.getCell(i++).getStringCellValue();
+				macroAndValueArray[6] = row.getCell(i++).getStringCellValue();
+				String scaleTo = row.getCell(i++).getStringCellValue();
+				
+				if((name == null || name.equals(""))
+						&& (serviceTemplateName == null
+						||  serviceTemplateName.equals(""))) {
+					// It must be an empty row
+					continue;
+				}
+				
+				if(serviceTemplateName == null || serviceTemplateName.equals("")) {
+					// it will appear as an error in validation
+//					throw new OpsdException("Can't find the "
+//							+ "service template serviceTemplate called "
+//							+ serviceTemplateName
+//							+ " when loading the RoleService #" + rowNum);
+					serviceTemplate = null;
+				}
+				else {
+					serviceTemplate = getServiceTemplate(serviceTemplateName);
+				}
+				if (proposedName == null || proposedName.equals("")) {
+					// it will appear as an error in validation
+					if(serviceTemplate == null) {
+						name = null;
+					}
+					else {
+						name = serviceTemplate.getDefaultName();
+					}
+				}
+				else {
+					name = proposedName;
+				}
+				if(criticityName == null || criticityName.equals("")) {
+					// it will appear as an error in validation
+					criticity = null;
+				}
+				else {
+					criticity = getCriticity(criticityName);
+				}
+				if(roleName == null || roleName.equals("")) {
+					// it will appear as an error in validation
+					role = null;
+				}
+				else {
+					role = getRoleByName(project, roleName);
+				}
+
+				// Let's create the OpsdSystem object:
+				OpsdRoleService roleService = new OpsdRoleService(name,
+						description, procedure, criticity, role,
+						serviceTemplate, macroAndValueArray, scaleTo);
+				cachedRoleServices.add(roleService);
+				LOGGER.log(Level.FINEST, "* RoleService added: " + roleService);
+System.out.println("DEBUG: Created a roleService: " + roleService.toString());
+			}
+		}
+
+		return cachedRoleServices;
+		
+	}
+
+	@Override
+	public List<OpsdRoleService> getRoleServicesByRole(OpsdProject project,
+			OpsdRole aRole) throws OpsdException {
+		List<OpsdRoleService> roleServices = new ArrayList<OpsdRoleService>();
+		LOGGER.log(Level.FINE, "OpsdPoiDao.getRoleServicesByRole");
+		if (cachedRoleServices == null) {
+			cachedRoleServices = getRoleServices(project);
+		}
+		for(OpsdRoleService roleService: cachedRoleServices) {
+			if(roleService.getRole() != null
+				&& roleService.getRole().getName().equals(aRole.getName())) {
+				roleServices.add(roleService);
+			}
+		}
+		return roleServices;
 	}
 }

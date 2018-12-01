@@ -13,8 +13,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdRoleService;
 
 
 import freemarker.core.ParseException;
@@ -63,6 +67,17 @@ public class OpsdReportGenerator {
 		return tempDirWithPrefix;
 	}
 
+	/**
+	 * Generate an output file with:
+	 * <ul>
+	 *   <li>Source of scripts to set up the monitoring</li>
+	 *   <li>Source for mediawiki articles describing
+	 *   		the project and its procedures</li>
+	 * </ul>
+	 * @param directory
+	 * @return
+	 * @throws OpsdException
+	 */
 	public String getOutputFile(Path directory) throws OpsdException {
 		// 1. Configure FreeMarker
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
@@ -81,6 +96,8 @@ public class OpsdReportGenerator {
 		input.put("roles", getFullProjectData().getRoles());
 		input.put("systems", getFullProjectData().getSystems());
 		input.put("monitoredHosts", getFullProjectData().getMonitoredHosts());
+		input.put("roleServices", getFullProjectData().getRoleServices());
+		input.put("role2servicesMap", getFullProjectData().getRole2servicesMap());
 		
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
@@ -105,10 +122,12 @@ public class OpsdReportGenerator {
 //			template.process(input, stringWriter);
 //			return stringWriter.toString();
 
-			Writer fileWriter = new FileWriter(new File(directory.toString() + "/project.html"));
+			String filename = new File(directory.toString())
+								+ File.separator + "project.html";
+			Writer fileWriter = new FileWriter(filename);
 		    template.process(input, fileWriter);
 		    fileWriter.close();
-		    return directory.toString();
+		    return filename;
 		    
 		} catch (TemplateNotFoundException e) {
 			throw new OpsdException("TemplateNotFoundException thrown", e);
@@ -150,10 +169,12 @@ public class OpsdReportGenerator {
 		try {
 			Template template = cfg.getTemplate("status.ftl");
 
-			Writer fileWriter = new FileWriter(new File(directory.toString() + "/status.html"));
+			String filename = directory.toString()
+					+ File.separator + "status.html";
+			Writer fileWriter = new FileWriter(new File(filename));
 		    template.process(input, fileWriter);
 		    fileWriter.close();
-		    return directory.toString();
+		    return filename;
 		    
 		} catch (TemplateNotFoundException e) {
 			throw new OpsdException("TemplateNotFoundException thrown", e);

@@ -5,6 +5,7 @@ import java.util.List;
 import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
+import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -79,7 +80,7 @@ public interface OpsdDataTap {
 	 * @return
 	 * @throws OpsdException
 	 */
-	List<OpsdMonitoredHost> getOpsdMonitoredHosts(OpsdProject project) throws OpsdException;
+	List<OpsdMonitoredHost> getMonitoredHosts(OpsdProject project) throws OpsdException;
 	
 	/**
 	 * Get a System from a Project by name
@@ -90,4 +91,21 @@ public interface OpsdDataTap {
 	 */
 	OpsdSystem getSystemByName(OpsdProject project, String systemName) throws OpsdException;
 
+	/**
+	 * Get all OpsdRoleService objects
+	 * @param project
+	 * @return
+	 * @throws OpsdException
+	 */
+	List<OpsdRoleService> getRoleServices(
+			OpsdProject project) throws OpsdException;
+
+	/**
+	 * Get all the RoleServices for a Role
+	 * @param project
+	 * @param aRole
+	 * @return
+	 */
+	List<OpsdRoleService> getRoleServicesByRole(OpsdProject project,
+			OpsdRole aRole) throws OpsdException;
 }

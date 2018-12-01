@@ -15,7 +15,7 @@ package org.zoquero.opsd.entities;
  * @author agalindo
  * 
  */
-public class OpsdMonitoredHost extends OpsdMonitoredHostOrService {
+public class OpsdMonitoredHost {
 
 	/* Fields */
 	/** Field "name", will be shown as hostname in monitoring */

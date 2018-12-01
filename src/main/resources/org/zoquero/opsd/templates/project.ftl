@@ -65,6 +65,28 @@ ${project.recoveryProcedure}
 === ${monitoredHost.name} ===
   <p>monitoredHost name = ${monitoredHost.name} , monitoredHost IP = ${monitoredHost.ip} </p> 
 </#list>
+
+== RoleServices SIMPLE ==
+
+<#list roleServices as roleService>
+=== ${roleService.name} ===
+  <p>roleService name = ${roleService.name} , roleService description = ${roleService.description} </p> 
+</#list>
+
+== RoleServices by map ==
+
+<#list role2servicesMap?keys as role>
+=== Role '${role.name}' ===
+<#assign z = role2servicesMap[role]?size>
+num of services = ${z}
+<#if role2servicesMap[role]?hasContent>
+<#list role2servicesMap[role] as roleService>
+==== RoleService '${roleService.name}' ==== 
+</#list> 
+</#if>
+</#list> 
+
+
         </pre>
       </td></tr>
     </table>
