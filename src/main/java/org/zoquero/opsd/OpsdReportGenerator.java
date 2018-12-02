@@ -93,13 +93,15 @@ public class OpsdReportGenerator {
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("title", "Validation of the project "
 				+ "and generation of monitoring and documentation");
-		input.put("project", getFullProjectData().getProject());
-		input.put("report",  getFullProjectData().getReport());
-		input.put("roles", getFullProjectData().getRoles());
-		input.put("systems", getFullProjectData().getSystems());
-		input.put("monitoredHosts", getFullProjectData().getMonitoredHosts());
-		input.put("roleServices", getFullProjectData().getRoleServices());
+		input.put("project",          getFullProjectData().getProject());
+		input.put("report",           getFullProjectData().getReport());
+		input.put("roles",            getFullProjectData().getRoles());
+		input.put("systems",          getFullProjectData().getSystems());
+		input.put("monitoredHosts",   getFullProjectData().getMonitoredHosts());
+		input.put("roleServices",     getFullProjectData().getRoleServices());
 		input.put("role2servicesMap", getFullProjectData().getRole2servicesMap());
+		input.put("hostServices",     getFullProjectData().getHostServices());
+		input.put("host2servicesMap", getFullProjectData().getHost2servicesMap());
 
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
@@ -114,16 +116,6 @@ public class OpsdReportGenerator {
 		// Let's get the template
 		try {
 			Template template = cfg.getTemplate("project.ftl");
-
-//			// Write output to the console
-//			Writer consoleWriter = new OutputStreamWriter(System.out);
-//			template.process(input, consoleWriter);
-
-//			// Write output to a String
-//			StringWriter stringWriter = new StringWriter();
-//			template.process(input, stringWriter);
-//			return stringWriter.toString();
-
 			String filename = new File(directory.toString())
 								+ File.separator + "project.html";
 			Writer fileWriter = new FileWriter(filename);

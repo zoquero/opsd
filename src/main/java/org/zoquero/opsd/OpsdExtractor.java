@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.dao.OpsdPoiDao;
+import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -59,17 +60,29 @@ public class OpsdExtractor {
 		List<OpsdMonitoredHost> monitoredHosts = dt.getMonitoredHosts(project);
 		fpd.setMonitoredHosts(monitoredHosts);
 		
-		// OpsdMonitoredHost
+		// OpsdRoleServices
 		List<OpsdRoleService> roleServices = dt.getRoleServices(project);
 		fpd.setRoleServices(roleServices);
-		
+
+		// role2servicesMap
 		HashMap<OpsdRole, List<OpsdRoleService>> role2servicesMap = new HashMap<OpsdRole, List<OpsdRoleService>>();
 		for(OpsdRole aRole: roles) {
-			List<OpsdRoleService> roleservices = dt.getRoleServicesByRole(project, aRole);
-			role2servicesMap.put(aRole, roleservices);
+			List<OpsdRoleService> aRoleServices = dt.getRoleServicesByRole(project, aRole);
+			role2servicesMap.put(aRole, aRoleServices);
 		}
 		fpd.setRole2servicesMap(role2servicesMap);
 
+		// OpsdHostServices
+		List<OpsdHostService> hostServices = dt.getHostServices(project);
+		fpd.setHostServices(hostServices);
+
+		// host2servicesMap
+		HashMap<OpsdMonitoredHost, List<OpsdHostService>> host2servicesMap = new HashMap<OpsdMonitoredHost, List<OpsdHostService>>();
+		for(OpsdMonitoredHost aHost: monitoredHosts) {
+			List<OpsdHostService> aHostServices = dt.getHostServicesByHost(project, aHost);
+			host2servicesMap.put(aHost, aHostServices);
+		}
+		fpd.setHost2servicesMap(host2servicesMap);
 
 		// Validation
 		OpsdValidator.validate(fpd);

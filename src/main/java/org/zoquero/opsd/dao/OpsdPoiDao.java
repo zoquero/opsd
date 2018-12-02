@@ -20,6 +20,7 @@ import org.zoquero.opsd.entities.OpsdCriticity;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdRoleService;
+import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdResponsible;
@@ -76,6 +77,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	List<OpsdRole> cachedRoles = null;
 	List<OpsdSystem> cachedSystems = null;
 	List<OpsdRoleService> cachedRoleServices = null;
+	List<OpsdHostService> cachedHostServices = null;
 	private List<OpsdServiceTemplate> cachedServiceTemplates = null;
 
 	static public OpsdSystem FLOATING_HOST = null;
@@ -655,6 +657,21 @@ public class OpsdPoiDao implements OpsdDataTap {
 		}
 		return null;
 	}
+	
+	@Override
+	public OpsdMonitoredHost getHostByName(OpsdProject project, String roleName)
+			throws OpsdException {
+		LOGGER.log(Level.FINEST, "OpsdPoiDao.getHostByName loading role "
+			+ roleName);
+		for (OpsdMonitoredHost aHost : getMonitoredHosts(project)) {
+			if (aHost.getName().equals(roleName)) {
+				LOGGER.log(Level.FINEST, "OpsdPoiDao.getHostByName found role "
+					+ roleName);
+				return aHost;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public List<OpsdMonitoredHost> getMonitoredHosts(OpsdProject project)
@@ -935,5 +952,162 @@ public class OpsdPoiDao implements OpsdDataTap {
 			}
 		}
 		return roleServices;
+	}
+	
+	@Override
+	public List<OpsdHostService> getHostServices(
+			OpsdProject project) throws OpsdException {
+		DataFormatter formatter = new DataFormatter();		
+		LOGGER.log(Level.FINEST, "OpsdPoiDao.getHosts");
+		if (cachedHostServices == null) {
+			cachedHostServices =
+					new ArrayList<OpsdHostService>();
+
+			// Get the number of sheets in the xlsx file
+			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdHostService");
+			if (sheetPosition > numberOfSheets - 1) {
+				throw new OpsdException("The sheet " + path + " has "
+						+ numberOfSheets
+						+ " and OpsdHostService objects should be"
+						+ " in sheet position # "
+						+ sheetPosition + " (0..N-1)");
+			}
+
+			// Get the nth sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			int firstRow = OpsdPoiConf.getFirstRow(); // cachable
+
+			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
+				
+				/* Nom proposat pel servei monitorat (opcional)
+				 * Descripció del servei monitorat
+				 * Procediment
+				 * Criticitat
+				 * Nom de Rol monitorat
+				 * Service Template per crear el Service al monitoratge
+				 * Macro1=Value1
+				 * Macro2=Value2
+				 * ...
+				 * Macro7=Value7
+				 * A qui escalar
+				 */
+
+				// Get the row object
+				Row row = sheet.getRow(rowNum);
+
+				int i = 0;
+				String name = null;
+				String proposedName = formatter.formatCellValue(row.getCell(i++));
+				String description = formatter.formatCellValue(row.getCell(i++));
+				String procedure = formatter.formatCellValue(row.getCell(i++));
+				String criticityName = formatter.formatCellValue(row.getCell(i++));
+				OpsdCriticity criticity = null;
+				String hostName = formatter.formatCellValue(row.getCell(i++));
+				OpsdMonitoredHost host = null;
+				String serviceTemplateName = formatter.formatCellValue(row.getCell(i++));
+				OpsdServiceTemplate serviceTemplate = null;
+				String[] macroAndValueArray = new String[7];
+				macroAndValueArray[0] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[1] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[2] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[3] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[4] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[5] = formatter.formatCellValue(row.getCell(i++));
+				macroAndValueArray[6] = formatter.formatCellValue(row.getCell(i++));
+				String scaleTo = formatter.formatCellValue(row.getCell(i++));
+				
+				if((name == null || name.equals(""))
+						&& (serviceTemplateName == null
+						||  serviceTemplateName.equals(""))) {
+					// It must be an empty row
+					continue;
+				}
+				
+				if(serviceTemplateName == null || serviceTemplateName.equals("")) {
+					// it will appear as an error in validation
+					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getHostServices: "
+							+ "Can't find the "
+							+ "service template serviceTemplate called "
+							+ serviceTemplateName
+							+ " when loading the HostService #" + rowNum);
+					serviceTemplate = null;
+				}
+				else {
+					serviceTemplate = getServiceTemplate(serviceTemplateName);
+				}
+				if (proposedName == null || proposedName.equals("")) {
+					// it will appear as an error in validation
+					if(serviceTemplate == null) {
+						name = null;
+					}
+					else {
+						name = serviceTemplate.getDefaultName();
+					}
+				}
+				else {
+					name = proposedName;
+				}
+				if(criticityName == null || criticityName.equals("")) {
+					// it will appear as an error in validation
+					criticity = null;
+				}
+				else {
+					criticity = getCriticity(criticityName);
+				}
+				if(hostName == null || hostName.equals("")) {
+					// it will appear as an error in validation
+					host = null;
+				}
+				else {
+					host = getHostByName(project, hostName);
+				}
+				if(host == null) {
+					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getHostServices: "
+						+ "the HostService #" + rowNum
+						+ " has null monitoredHost");
+				}
+
+				// Let's create the OpsdSystem object:
+				OpsdHostService hostService = new OpsdHostService(name,
+						description, procedure, criticity, host,
+						serviceTemplate, macroAndValueArray, scaleTo);
+				cachedHostServices.add(hostService);
+				LOGGER.log(Level.FINEST, "HostService added: " + hostService);
+			}
+		}
+
+		return cachedHostServices;
+		
+	}
+
+	@Override
+	public List<OpsdHostService> getHostServicesByHost(OpsdProject project,
+			OpsdMonitoredHost aHost) throws OpsdException {
+		List<OpsdHostService> hostServices = new ArrayList<OpsdHostService>();
+		LOGGER.log(Level.FINE, "OpsdPoiDao.getHostServicesByHost "
+				+ "for monitoredHost " + aHost.getName());
+		if (cachedHostServices == null) {
+			cachedHostServices = getHostServices(project);
+		}
+		for(OpsdHostService hostService: cachedHostServices) {
+			if(hostService.getHost() == null) {
+				LOGGER.log(Level.SEVERE,
+						"getHostServicesByHost: got a hostService ("
+						+ hostService.getName() + ") with null host");
+			}
+			else {
+				LOGGER.log(Level.FINEST,
+						"getHostServicesByHost: comparing with hostService: "
+						+ hostService.getName() + " that's for host "
+						+ hostService.getHost().getName());
+			}
+			if(hostService.getHost() != null
+				&& hostService.getHost().getName().equals(aHost.getName())) {
+				hostServices.add(hostService);
+				LOGGER.log(Level.FINEST, "getHostServicesByHost: ADDED hostService " + hostService.getName());
+			}
+		}
+		return hostServices;
 	}
 }

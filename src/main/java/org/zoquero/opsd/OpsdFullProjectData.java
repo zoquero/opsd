@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.zoquero.opsd.dao.OpsdPoiConf;
+import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -27,6 +28,11 @@ class OpsdFullProjectData {
 	/** Map Role > RoleService
 	 * that will be very usefull generating the output */
 	private HashMap<OpsdRole, List<OpsdRoleService>> role2servicesMap = null;
+	/** HostServices data */
+	private List<OpsdHostService> hostServices;
+	/** Map MonitoredHost > HostService
+	 * that will be very usefull generating the output */
+	private HashMap<OpsdMonitoredHost, List<OpsdHostService>> host2servicesMap = null;
 	
 	OpsdFullProjectData(OpsdReport oReport) {
 		setReport(oReport);
@@ -126,6 +132,35 @@ class OpsdFullProjectData {
 	public void setRole2servicesMap(
 			HashMap<OpsdRole, List<OpsdRoleService>> role2servicesMap) {
 		this.role2servicesMap = role2servicesMap;
+	}
+
+	/**
+	 * @return the hostServices
+	 */
+	public List<OpsdHostService> getHostServices() {
+		return hostServices;
+	}
+
+	/**
+	 * @param hostServices the hostServices to set
+	 */
+	public void setHostServices(List<OpsdHostService> hostServices) {
+		this.hostServices = hostServices;
+	}
+
+	/**
+	 * @return the host2servicesMap
+	 */
+	public HashMap<OpsdMonitoredHost, List<OpsdHostService>> getHost2servicesMap() {
+		return host2servicesMap;
+	}
+
+	/**
+	 * @param host2servicesMap the host2servicesMap to set
+	 */
+	public void setHost2servicesMap(
+			HashMap<OpsdMonitoredHost, List<OpsdHostService>> host2servicesMap) {
+		this.host2servicesMap = host2servicesMap;
 	}
 
 }

@@ -17,6 +17,12 @@ import java.util.logging.LogRecord;
  */
 public class OpsdHtmlLogFormatter extends Formatter {
 	
+	private String contentToAddInBody;
+	
+	public OpsdHtmlLogFormatter(String contentToAddInBody) {
+		setContentToAddInBody(contentToAddInBody);
+	}
+
 	/**
 	 * Get HTML color for a Log level
 	 * @param l
@@ -97,7 +103,8 @@ public class OpsdHtmlLogFormatter extends Formatter {
     	.append("    </style>\n")
     	.append("  </head>\n")
     	.append("  <body>\n")
-    	.append("    <h1>" + (new java.util.Date()) + "</h1>\n")
+    	.append("    " + getContentToAddInBody() + "\n")    	
+    	.append("    <h1> Execution of project analysis done at " + (new java.util.Date()) + "</h1>\n")
     	.append("    <table border=\"1\" cellpadding=\"5\" cellspacing=\"3\">\n")
     	.append("      <tr align=\"left\">\n")
     	.append("        <th style=\"width:10%\">Loglevel</th>\n")
@@ -115,5 +122,19 @@ public class OpsdHtmlLogFormatter extends Formatter {
     	.append("  </body>\n")
     	.append("</html>\n").toString();
     }
+
+	/**
+	 * @return the contentToAddInBody
+	 */
+	public String getContentToAddInBody() {
+		return contentToAddInBody;
+	}
+
+	/**
+	 * @param contentToAddInBody the contentToAddInBody to set
+	 */
+	public void setContentToAddInBody(String contentToAddInBody) {
+		this.contentToAddInBody = contentToAddInBody;
+	}
 
 }

@@ -7,6 +7,7 @@
     <h1>${title}</h1>
     Contents:
     <ul>
+      <li> <a href="#log">0) Output log</a> </li>
       <li> <a href="#validation">1) Validation of the data</a> </li>
       <li> <a href="#gd">2) Generated documentation</a> </li>
       <li> * <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
@@ -18,6 +19,9 @@
       <li> * <a href="#addServices">Script to setup monitored services</a> </li>
       <li> * ...</li>
     </ul>
+    
+    <h2 id="log">0) Output log</h2>
+    <p>Here's the <a href="./output.html">output log</a>.</p>
     
     <h2 id="validation">1) Validation of the data</h2>
 
@@ -120,12 +124,28 @@ ${project.recoveryProcedure}
 
 <#list role2servicesMap as role, roleServices> 
 === Role '${role.name}' ===
-
-  <#list roleServices as aRoleService>
+  <#if hostServices?hasContent>
+    <#list roleServices as aRoleService>
 ==== Service '${aRoleService.name}' ====
   <p>aRoleService name = ${aRoleService.name} , aRoleService description = ${aRoleService.description} </p>
-  
-  </#list>
+    </#list>
+  <#else>
+  <p>Role without services</p>
+  </#if>
+</#list>
+
+== Services for monitoredHosts ==
+
+<#list host2servicesMap as host, hostServices> 
+=== MonitoredHost '${host.name}' ===
+  <#if hostServices?hasContent>
+    <#list hostServices as aRoleService>
+==== Service '${aRoleService.name}' ====
+  <p>aRoleService name = ${aRoleService.name} , aRoleService description = ${aRoleService.description} </p>
+    </#list>
+  <#else>
+  <p>Host without direct services, maybe by role</p>
+  </#if>
 </#list> 
 
         </pre>

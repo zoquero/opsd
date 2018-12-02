@@ -5,6 +5,7 @@ package org.zoquero.opsd;
 
 import java.util.List;
 
+import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -195,6 +196,7 @@ public class OpsdValidator {
 //			}
 		}
 	}
+	
 	private static void validateRoleServices(OpsdFullProjectData fpd) {
 		OpsdReport oReport = fpd.getReport();
 		List<OpsdRoleService> roleServices = fpd.getRoleServices();
@@ -241,11 +243,60 @@ public class OpsdValidator {
 //			}
 		}
 	}
+	
+	private static void validateHostServices(OpsdFullProjectData fpd) {
+		OpsdReport oReport = fpd.getReport();
+		List<OpsdHostService> hostServices = fpd.getHostServices();
+		for (int i = 0; i < hostServices.size(); i++) {
+			OpsdHostService hostService = hostServices.get(i);
+			if(hostService == null) {
+				oReport.pushError("HostService #" + i + " is null");
+			}
+			if(hostService.getName() == null
+						|| hostService.getName().trim().equals("")) {
+				oReport.pushError("HostService #" + i + " has null name");
+			}
+			if(hostService.getDescription() == null
+						|| hostService.getDescription().trim().equals("")) {
+				oReport.pushError("HostService #" + i + " has null description");
+			}
+			if(hostService.getProcedure() == null
+						|| hostService.getProcedure().equals("")) {
+				oReport.pushWarning("HostService #" + i
+						+ " has null procedure."
+						+ " Incidences just will be able to be scaled out");
+			}
+			if(hostService.getCriticity() == null) {
+				oReport.pushError("HostService #"
+						+ i + " has null criticity or it can't be found");
+			}
+			if(hostService.getHost() == null) {
+				oReport.pushError("HostService #"
+						+ i + " has null host or it can't be found");
+			}
+			if(hostService.getServiceTemplate() == null) {
+				oReport.pushError("HostService #"
+						+ i + " has null ServiceTemplate or it can't be found");
+			}
+			if(hostService.getMacroAndValueArray() == null
+						|| hostService.getMacroAndValueArray().length < 1) {
+				oReport.pushError("HostService #"
+						+ i + " has null or empty MacroAndValueArray");
+			}
+//			if(roleService.getScaleTo() == null
+//						|| roleService.getScaleTo().equals("")) {
+//				oReport.pushWarning("HostService #"
+//						+ i + " has null scaleTo");
+//			}
+		}
+	}
+	
 	public static void validate(OpsdFullProjectData fpd) {
 		validateProject(fpd);
 		validateRoles(fpd);
 		validateSystems(fpd);
 		validateMonitoredHosts(fpd);
 		validateRoleServices(fpd);
+		validateHostServices(fpd);
 	}
 }

@@ -15,7 +15,7 @@ import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdDataTap;
 
 /**
- * Operations descriptor
+ * Operations descriptor application
  *
  */
 public class App {
@@ -58,9 +58,13 @@ public class App {
 		}
 
 		fileHTML = new FileHandler(filePath);
+		
+		String contentToAddAtBody = new StringBuilder("<p>")
+			.append("<a href=\"project.html\">Link to project report</a></p>")
+			.toString();
 
 		// Create the HTML formatter
-		formatterHTML = new OpsdHtmlLogFormatter();
+		formatterHTML = new OpsdHtmlLogFormatter(contentToAddAtBody);
 		fileHTML.setFormatter(formatterHTML);
 		LOGGER.addHandler(fileHTML);
 
@@ -127,7 +131,7 @@ public class App {
 			
 			System.out.println("Output files:");
 			System.out.println("* Generated docs: " + outputFile);
-			System.out.println("* Execution log:: " + htmlLogFile);
+			System.out.println("* Execution log:  " + htmlLogFile);
 			// htmlLogFile
 		} catch (OpsdException e) {
 			System.out.println("Errors accessing data: " + e.getMessage());
