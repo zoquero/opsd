@@ -6,6 +6,7 @@ import java.util.List;
 import org.zoquero.opsd.dao.OpsdPoiConf;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
@@ -33,6 +34,15 @@ class OpsdFullProjectData {
 	/** Map MonitoredHost > HostService
 	 * that will be very usefull generating the output */
 	private HashMap<OpsdMonitoredHost, List<OpsdHostService>> host2servicesMap = null;
+	/**
+	 * Mix of host2servicesMap and role2servicesMap:
+	 * it contains all the OpsdMonitoredService for a OpsdHost:
+	 * Both the ones directly associated with that host
+	 * and also the ones from the OpsdRole to which the host belongs.
+	 */
+	private HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>
+		host2effectiveServicesMap
+			= new HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>();
 	
 	OpsdFullProjectData(OpsdReport oReport) {
 		setReport(oReport);
@@ -161,6 +171,21 @@ class OpsdFullProjectData {
 	public void setHost2servicesMap(
 			HashMap<OpsdMonitoredHost, List<OpsdHostService>> host2servicesMap) {
 		this.host2servicesMap = host2servicesMap;
+	}
+
+	/**
+	 * @return the host2effectiveServicesMap
+	 */
+	public HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>> getHost2effectiveServicesMap() {
+		return host2effectiveServicesMap;
+	}
+
+	/**
+	 * @param host2effectiveServicesMap the host2effectiveServicesMap to set
+	 */
+	public void setHost2effectiveServicesMap(
+			HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>> host2effectiveServicesMap) {
+		this.host2effectiveServicesMap = host2effectiveServicesMap;
 	}
 
 }

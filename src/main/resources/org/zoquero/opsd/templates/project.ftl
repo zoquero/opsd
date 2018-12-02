@@ -125,9 +125,9 @@ ${project.recoveryProcedure}
 <#list role2servicesMap as role, roleServices> 
 === Role '${role.name}' ===
   <#if hostServices?hasContent>
-    <#list roleServices as aRoleService>
-==== Service '${aRoleService.name}' ====
-  <p>aRoleService name = ${aRoleService.name} , aRoleService description = ${aRoleService.description} </p>
+    <#list roleServices as aService>
+==== Service '${aService.name}' ====
+  <p>aService name = ${aService.name} , aService description = ${aService.description} </p>
     </#list>
   <#else>
   <p>Role without services</p>
@@ -139,14 +139,27 @@ ${project.recoveryProcedure}
 <#list host2servicesMap as host, hostServices> 
 === MonitoredHost '${host.name}' ===
   <#if hostServices?hasContent>
-    <#list hostServices as aRoleService>
-==== Service '${aRoleService.name}' ====
-  <p>aRoleService name = ${aRoleService.name} , aRoleService description = ${aRoleService.description} </p>
+    <#list hostServices as aService>
+==== Service '${aService.name}' ====
+  <p>aService name = ${aService.name} , aService description = ${aService.description} </p>
     </#list>
   <#else>
   <p>Host without direct services, maybe by role</p>
   </#if>
-</#list> 
+</#list>
+
+== Effective Services for monitoredHosts (mixing direct services + role services) ==
+<#list hosteffectiveServicesMap as host, hostServices> 
+=== MonitoredHost '${host.name}' ===
+  <#if hostServices?hasContent>
+    <#list hostServices as aService>
+==== Service '${aService.name}' ====
+  <p>aService name = ${aService.name} , aService description = ${aService.description} </p>
+    </#list>
+  <#else>
+  <p><strong>Host without direct services</strong></p>
+  </#if>
+</#list>
 
         </pre>
       </td></tr>

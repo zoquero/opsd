@@ -1,7 +1,9 @@
 package org.zoquero.opsd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,6 +11,7 @@ import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -84,6 +87,34 @@ public class OpsdExtractor {
 		}
 		fpd.setHost2servicesMap(host2servicesMap);
 
+		
+		// host2effectiveServicesMap: Mixing host2servicesMap and role2servicesMap
+		HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>
+			host2effectiveServicesMap
+				= new HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>();
+		for(OpsdMonitoredHost aHost: monitoredHosts) {
+			List<OpsdMonitoredService> monitoredServices = new ArrayList<OpsdMonitoredService>();
+			LOGGER.finer("Mixing effective services for host " + aHost.getName());
+			OpsdRole role = aHost.getRole();
+			if(role != null) {
+				StringBuilder servicesDump = new StringBuilder("Services from its role '" + role.getName() + "': ");
+				for(OpsdRoleService aRoleService: dt.getRoleServicesByRole(project, role)) {
+					monitoredServices.add(aRoleService);
+					servicesDump.append(aRoleService.getName() + ", ");
+				}
+				LOGGER.finer(servicesDump.toString());
+				
+			}
+			monitoredServices.addAll(host2servicesMap.get(aHost));
+			StringBuilder servicesDump = new StringBuilder("Direct services: ");
+			for(OpsdMonitoredService aService: host2servicesMap.get(aHost)) {
+				servicesDump.append(aService.getName() + ", ");
+			}
+			LOGGER.finer(servicesDump.toString());
+			host2effectiveServicesMap.put(aHost, monitoredServices);
+		}
+		fpd.setHost2effectiveServicesMap(host2effectiveServicesMap);
+		
 		// Validation
 		OpsdValidator.validate(fpd);
 		

@@ -16,7 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import org.zoquero.opsd.dao.OpsdPoiDao;
+import org.zoquero.opsd.entities.OpsdHostService;
+import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 
@@ -38,6 +43,7 @@ import freemarker.template.Version;
 public class OpsdReportGenerator {
 
 	private OpsdFullProjectData fullProjectData;
+	private static Logger LOGGER = Logger.getLogger(OpsdPoiDao.class.getName());
 	
 	/**
 	 * @return the fullProjectData
@@ -102,6 +108,14 @@ public class OpsdReportGenerator {
 		input.put("role2servicesMap", getFullProjectData().getRole2servicesMap());
 		input.put("hostServices",     getFullProjectData().getHostServices());
 		input.put("host2servicesMap", getFullProjectData().getHost2servicesMap());
+		input.put("hosteffectiveServicesMap",
+				getFullProjectData().getHost2effectiveServicesMap());
+		for(OpsdMonitoredHost aHost: getFullProjectData().getHost2effectiveServicesMap().keySet()) {
+			LOGGER.fine("Pushing to the template the services for the host '" + aHost.getName() + "'");
+			for(OpsdMonitoredService aService: getFullProjectData().getHost2effectiveServicesMap().get(aHost)) {
+				LOGGER.fine("* Service: '" + aService.getName() + "'");				
+			}
+		}
 
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);

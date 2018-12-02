@@ -4,6 +4,7 @@
 package org.zoquero.opsd.entities;
 
 /**
+ * Base class for OpsdHostService and OpsdRoleService.
  * @author agalindo
  * 
  */
