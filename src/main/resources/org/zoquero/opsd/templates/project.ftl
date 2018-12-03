@@ -78,7 +78,13 @@
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
+ 
+<#if project.responsible?hasContent>
 Project called '''${project.name}''', from responsible '''${project.responsible.name}'''.
+<#else>
+Project called '''${project.name}''', from responsible '''ERROR, MISSING RESPONSIBLE NAME'''
+</#if>
+
 
 == Description ==
 ${project.description}

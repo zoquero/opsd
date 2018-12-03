@@ -127,7 +127,13 @@ public class App {
 			OpsdReportGenerator org = new OpsdReportGenerator(ofpd);
 			// Let's generate the output
 			// (generated docs with monitoring and documentation)
-			String outputFile = org.getOutputFile(outputFolder);
+			String outputFile = "";
+			try {
+				outputFile = org.getOutputFile(outputFolder);
+			} catch (Exception e) {
+				System.out.println("Exception thrown in template, probably by wrong data: " + e.getMessage());
+				LOGGER.log(Level.SEVERE, "Exception thrown in template, probably by wrong data: " + e.getMessage(), e);
+			}
 			
 			System.out.println("Output files:");
 			System.out.println("* Generated docs: " + outputFile);
@@ -135,8 +141,8 @@ public class App {
 			// htmlLogFile
 		} catch (OpsdException e) {
 			System.out.println("Errors accessing data: " + e.getMessage());
-			e.printStackTrace();
-		}
+			LOGGER.log(Level.SEVERE, "Exception thrown in template, probably by wrong data: " + e.getMessage(), e);
+		}		
 	}
 
 	/**
