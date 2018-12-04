@@ -12,6 +12,7 @@ import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
+import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -114,6 +115,11 @@ public class OpsdExtractor {
 			host2effectiveServicesMap.put(aHost, monitoredServices);
 		}
 		fpd.setHost2effectiveServicesMap(host2effectiveServicesMap);
+		
+		// OpsdSystem
+		List<OpsdRequest> requests = dt.getRequests(project);
+		fpd.setRequests(requests);
+
 		
 		// Validation
 		OpsdValidator.validate(fpd);

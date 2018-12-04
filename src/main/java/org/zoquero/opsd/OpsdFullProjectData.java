@@ -8,6 +8,7 @@ import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
@@ -43,6 +44,9 @@ class OpsdFullProjectData {
 	private HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>
 		host2effectiveServicesMap
 			= new HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>();
+	/** Requests */
+	private List<OpsdRequest> requests;
+
 	
 	OpsdFullProjectData(OpsdReport oReport) {
 		setReport(oReport);
@@ -186,6 +190,20 @@ class OpsdFullProjectData {
 	public void setHost2effectiveServicesMap(
 			HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>> host2effectiveServicesMap) {
 		this.host2effectiveServicesMap = host2effectiveServicesMap;
+	}
+
+	/**
+	 * @return the requests
+	 */
+	public List<OpsdRequest> getRequests() {
+		return requests;
+	}
+
+	/**
+	 * @param requests the requests to set, hoooo :')
+	 */
+	public void setRequests(List<OpsdRequest> requests) {
+		this.requests = requests;
 	}
 
 }

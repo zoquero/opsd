@@ -8,6 +8,7 @@ import java.util.List;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
@@ -24,6 +25,7 @@ public class OpsdValidator {
 		OpsdProject project = fpd.getProject();
 		if(project == null) {
 			oReport.pushError("Project is null");
+			return;
 		}
 		if(project.getName() == null
 				|| project.getName().trim().equals("")) {
@@ -64,6 +66,7 @@ public class OpsdValidator {
 			OpsdRole role = roles.get(i);
 			if(role == null) {
 				oReport.pushError("Role #" + i + " is null");
+				continue;
 			}
 			if(role.getName() == null || role.getName().trim().equals("")) {
 				oReport.pushError("Role #" + i + " has null name");
@@ -75,6 +78,7 @@ public class OpsdValidator {
 		}
 		
 	}
+	
 	private static void validateSystems(OpsdFullProjectData fpd) {
 		OpsdReport oReport = fpd.getReport();
 		List<OpsdSystem> systems = fpd.getSystems();
@@ -82,6 +86,7 @@ public class OpsdValidator {
 			OpsdSystem system = systems.get(i);
 			if(system == null) {
 				oReport.pushError("System #" + i + " is null");
+				continue;
 			}
 			if(system.getName() == null
 					|| system.getName().trim().equals("")) {
@@ -148,6 +153,7 @@ public class OpsdValidator {
 			OpsdMonitoredHost monHost = monitoredHosts.get(i);
 			if(monHost == null) {
 				oReport.pushError("MonitoredHost #" + i + " is null");
+				continue;
 			}
 			if(monHost.getName() == null
 					|| monHost.getName().trim().equals("")) {
@@ -204,6 +210,7 @@ public class OpsdValidator {
 			OpsdRoleService roleService = roleServices.get(i);
 			if(roleService == null) {
 				oReport.pushError("RoleService #" + i + " is null");
+				continue;
 			}
 			if(roleService.getName() == null
 						|| roleService.getName().trim().equals("")) {
@@ -251,6 +258,7 @@ public class OpsdValidator {
 			OpsdHostService hostService = hostServices.get(i);
 			if(hostService == null) {
 				oReport.pushError("HostService #" + i + " is null");
+				continue;
 			}
 			if(hostService.getName() == null
 						|| hostService.getName().trim().equals("")) {
@@ -291,6 +299,33 @@ public class OpsdValidator {
 		}
 	}
 	
+
+	private static void validateRequests(OpsdFullProjectData fpd) {
+		OpsdReport oReport = fpd.getReport();
+		List<OpsdRequest> requests = fpd.getRequests();
+		for (int i = 0; i < requests.size(); i++) {
+			OpsdRequest request = requests.get(i);
+			if(request == null) {
+				oReport.pushError("Request #" + i + " is null");
+				continue;
+			}
+			if(request.getName() == null
+					|| request.getName().trim().equals("")) {
+				oReport.pushError("Request #" + i + " has null name");
+			}
+			if(request.getAuthorized() == null
+					|| request.getAuthorized().trim().equals("")) {
+				oReport.pushError("Request #" + i + " has null fqdnOrIp");
+			}
+			if(request.getProcedure() == null) {
+				oReport.pushError("Request #" + i + " has null procedure or it can't be found");
+			}
+//			if(request.getScaleTo() == null || request.getScaleTo().trim().equals("")) {
+//				oReport.pushWarning("Request #" + i + " has null scaleTo");
+//			}
+		}
+	}
+	
 	public static void validate(OpsdFullProjectData fpd) {
 		validateProject(fpd);
 		validateRoles(fpd);
@@ -298,5 +333,6 @@ public class OpsdValidator {
 		validateMonitoredHosts(fpd);
 		validateRoleServices(fpd);
 		validateHostServices(fpd);
+		validateRequests(fpd);
 	}
 }

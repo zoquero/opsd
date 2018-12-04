@@ -19,6 +19,7 @@ import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdCriticity;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdOSType;
@@ -74,11 +75,12 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 */
 	private static final Map<String, String> staticOSTypeDesc;
 
-	List<OpsdRole> cachedRoles = null;
-	List<OpsdSystem> cachedSystems = null;
-	List<OpsdRoleService> cachedRoleServices = null;
-	List<OpsdHostService> cachedHostServices = null;
+	private List<OpsdRole> cachedRoles = null;
+	private List<OpsdSystem> cachedSystems = null;
+	private List<OpsdRoleService> cachedRoleServices = null;
+	private List<OpsdHostService> cachedHostServices = null;
 	private List<OpsdServiceTemplate> cachedServiceTemplates = null;
+	private List<OpsdRequest> cachedRequests = null;
 
 	static public OpsdSystem FLOATING_HOST = null;
 
@@ -270,7 +272,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 */
 	private OpsdResponsible getResponsible(String responsibleName) {
 		if (responsibles == null) {
-			DataFormatter formatter = new DataFormatter();
 			/* Lazy initialization of the array, read from properties file */
 			responsibles = new ArrayList<OpsdResponsible>();
 
@@ -314,7 +315,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @throws OpsdException 
 	 */
 	private List<OpsdCriticity> getAllCriticities() throws OpsdException {
-		DataFormatter formatter = new DataFormatter();
 		if (criticities == null) {
 			/* Lazy initialization of the array, read from properties file */
 			criticities = new ArrayList<OpsdCriticity>();
@@ -352,7 +352,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @throws OpsdException 
 	 */
 	private List<OpsdServiceTemplate> getAllServiceTemplates() throws OpsdException {
-		DataFormatter formatter = new DataFormatter();
 		if (cachedServiceTemplates == null) {
 			/* Lazy initialization of the array, read from properties file */
 			cachedServiceTemplates = new ArrayList<OpsdServiceTemplate>();
@@ -394,17 +393,10 @@ public class OpsdPoiDao implements OpsdDataTap {
 						macroName = parts[4+i];
 						macroDescription = parts[4+i];
 						macroDefaultValue = parts[4+i];
-						OpsdServiceMacroDefinition osmd
-							= new OpsdServiceMacroDefinition(
-									macroName,
-									macroDescription,
-									macroDefaultValue);
-
 						OpsdServiceMacroDefinition aServiceTemplate =
 							new OpsdServiceMacroDefinition(macroName,
 									macroDescription, macroDefaultValue);
 						osmdList.add(aServiceTemplate);
-						
 					}
 					if (name == null || defaultName == null 
 							|| description == null || osmdList == null) {
@@ -412,10 +404,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 								"Can't read the ServiceTemplate with value '"
 									+ value + "'");
 					}
-
 					OpsdServiceTemplate aServiceTemplate = new OpsdServiceTemplate(name, nrpe, defaultName, description, osmdList);
 					cachedServiceTemplates.add(aServiceTemplate);
-					
 				}
 			}
 		}
@@ -468,7 +458,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public void connect() throws OpsdException {
 		LOGGER.log(Level.INFO, "OpsdPoiDao.connect");
-
 		try {
 			// Create the input stream from the xlsx/xls file
 			fis = new FileInputStream(path);
@@ -610,7 +599,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 			}
 		}
-
 		return cachedSystems;
 	}
 
@@ -1109,5 +1097,48 @@ public class OpsdPoiDao implements OpsdDataTap {
 			}
 		}
 		return hostServices;
+	}
+
+	@Override
+	public List<OpsdRequest> getRequests(OpsdProject project) throws OpsdException{
+		LOGGER.log(Level.FINE, "OpsdPoiDao.getRequests");
+		DataFormatter formatter = new DataFormatter();
+		if (cachedRequests == null) {
+			cachedRequests = new ArrayList<OpsdRequest>();
+
+			// Get the number of sheets in the xlsx file
+			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdRequest");
+			if (sheetPosition > numberOfSheets - 1) {
+				throw new OpsdException("The sheet " + path + " has "
+						+ numberOfSheets + " and OpsdRequest objects should be"
+						+ " in sheet position # " + sheetPosition + " (0..N-1)");
+			}
+
+			// Get the nth sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			int firstRow = OpsdPoiConf.getFirstRow(); // cachable
+
+			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
+
+				// Get the row object
+				Row row = sheet.getRow(rowNum);
+
+				int i = 0;
+				String name = formatter.formatCellValue(row.getCell(i++));
+				// We'll drop rows without name
+				if (name == null || name.equals(""))
+					continue;
+				String authorized = formatter.formatCellValue(row.getCell(i++));
+				String procedure = formatter.formatCellValue(row.getCell(i++));
+				String scaleTo = formatter.formatCellValue(row.getCell(i++));
+
+				// Let's create the OpsdRequest object:
+				OpsdRequest request = new OpsdRequest(name, authorized, procedure, scaleTo);
+				cachedRequests.add(request);
+				LOGGER.log(Level.FINEST, "* Request added: " + request);
+			}
+		}
+		return cachedRequests;
 	}
 }

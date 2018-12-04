@@ -6,6 +6,7 @@ import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
+import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -133,8 +134,18 @@ public interface OpsdDataTap {
 	 * @param project
 	 * @param aHost
 	 * @return
+	 * @throws OpsdException
 	 */
 	List<OpsdHostService> getHostServicesByHost(OpsdProject project,
 			OpsdMonitoredHost aHost) throws OpsdException;
+
+	/**
+	 * Get all types of possible requests for a Project
+	 * (those tasks that can be requested by ticketing)
+	 * @param project
+	 * @return
+	 * @throws OpsdException
+	 */
+	List<OpsdRequest> getRequests(OpsdProject project) throws OpsdException;
 	
 }

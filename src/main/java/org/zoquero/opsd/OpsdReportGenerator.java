@@ -111,11 +111,12 @@ public class OpsdReportGenerator {
 		input.put("hosteffectiveServicesMap",
 				getFullProjectData().getHost2effectiveServicesMap());
 		for(OpsdMonitoredHost aHost: getFullProjectData().getHost2effectiveServicesMap().keySet()) {
-			LOGGER.fine("Pushing to the template the services for the host '" + aHost.getName() + "'");
+			LOGGER.finer("Pushing to the template the services for the host '" + aHost.getName() + "'");
 			for(OpsdMonitoredService aService: getFullProjectData().getHost2effectiveServicesMap().get(aHost)) {
-				LOGGER.fine("* Service: '" + aService.getName() + "'");				
+				LOGGER.finer("* Service: '" + aService.getName() + "'");				
 			}
 		}
+		input.put("requests",         getFullProjectData().getRequests());
 
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
