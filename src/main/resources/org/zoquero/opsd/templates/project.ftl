@@ -11,26 +11,29 @@
       <li> <a href="#validation">1) Validation Project data</a> </li>
       <li> <a href="#gd">2) Generated documentation</a> </li>
       <ul>
-        <li> * <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
-        <li> * <a href="#asp">Article for service procedures</a> </li>
-        <li> * <a href="#requests">Article for requests (requestable tasks)</a> </li>
-        <li> * <a href="#periodictasks">Article for periodic tasks</a> </li>
-        <li> * <a href="#filepolicies">Article for file policies</a> </li>
-        <li> * <a href="#systems">Articles for systems (assets)</a> </li>
-        <li> * <a href="#monitoredhosts">Articles for MonitoredHosts</a> </li>
-        <li> * <a href="#roles">Articles for Roles</a> </li>
-        <li> * ...</li>
+        <li> <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
+        <li> <a href="#asp">Article for service procedures</a> </li>
+        <li> <a href="#requests">Article for requests (requestable tasks)</a> </li>
+        <li> <a href="#periodictasks">Article for periodic tasks</a> </li>
+        <li> <a href="#filepolicies">Article for file policies</a> </li>
+        <li> <a href="#systems">Articles for systems (assets)</a> </li>
+        <li> <a href="#monitoredhosts">Articles for MonitoredHosts</a> </li>
       </ul>
       <li> <a href="#monitoring">3) Script to setup monitoring</a> </li>
       <ul>
-        <li> * <a href="#addHosts">Script to setup monitored hosts</a> </li>
-        <li> * <a href="#addServices">Script to setup monitored services</a> </li>
+        <li> <a href="#addHosts">Script to setup monitored hosts</a> </li>
+        <li> <a href="#addServices">Script to setup monitored services</a> </li>
       </ul>
     </ul>
+
+    <br/><hr/><br/>
     
     <h2 id="log">0) Output log</h2>
     <p>Here's the <a href="./output.html">output log</a>.</p>
-    
+
+    <br/><hr/><br/>
+
+
     <h2 id="validation">1) Validation Project data</h2>
 
     <p>
@@ -79,16 +82,18 @@
     </table>
     
     <br/><hr/><br/>
+    
     <h2 id="gd">2) Generated documentation</h2>
     <p>You can test it in <a href="https://www.mediawiki.org/w/index.php?title=Project:Sandbox&action=edit">MediaWiki's sandbox</a>. Be carefull if it contains sensible information.</p>
+
     <h3 id="ap">Article for project '<em>${project.name}</em>'</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>${project.name}</em></span>'</p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/${project.name}'>${wikiUrlBase}/${project.name}</a></p>
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
 
 __FORCETOC__
- 
+
 <#if project.responsible?hasContent>
 Project called '''${project.name}''', from responsible '''${project.responsible.name}'''.
 <#else>
@@ -96,6 +101,8 @@ Project called '''${project.name}''', from responsible '''ERROR, MISSING RESPONS
 </#if>
 
 == Description ==
+${wikiProject}
+
 ${project.description}
 
 ${project.moreInfo}
@@ -180,8 +187,11 @@ ${project.recoveryProcedure}
       </td></tr>
     </table>
 
+    <br/><hr/><br/>
+
     <h3 id="asp">Article for service procedures</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>Procedures for ${project.name}</em></span>'</p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Procedures for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Procedures for ${project.name}'>${wikiUrlBase}/Procedures for ${project.name}</a></p>
+    
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
@@ -210,7 +220,8 @@ Procedure = <#if aService.procedure?hasContent> ${aService.procedure} <#else> nu
     <br/><hr/><br/>
     
     <h3 id="requests">Article for requests (requestable tasks)</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>Requests for ${project.name}</em></span>'</p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Requests for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Requests for ${project.name}'>${wikiUrlBase}/Requests for ${project.name}</a></p>
+    
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
@@ -232,7 +243,8 @@ Tasks that can be requested for the project '''[[${project.name}]]'''
     <br/><hr/><br/>
     
     <h3 id="periodictasks">Article for periodic tasks</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>Periodic tasks for ${project.name}</em></span>'</p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Periodic tasks for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Periodic tasks for ${project.name}'>${wikiUrlBase}/Periodic tasks for ${project.name}</a></p>
+    
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
@@ -246,7 +258,8 @@ Periodic tasks for the project [[${project.name}]]:
     <br/><hr/><br/>
     
     <h3 id="filepolicies">Article for file policies</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>File policies for ${project.name}</em></span>'</p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>File policies for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/File policies for ${project.name}'>${wikiUrlBase}/File policies for ${project.name}</a></p>
+    
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
@@ -260,7 +273,7 @@ File policies for the project [[${project.name}]]:
     <br/><hr/><br/>
     
     <h3 id="systems">Articles for Systems (assets)</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>Systems for ${project.name}</em></span>'</p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Systems for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Systems for ${project.name}'>${wikiUrlBase}/Systems for ${project.name}</a></p>
     
 <#list systems as system>
     <h4> System '''${system.name}''' </h4>
@@ -283,7 +296,7 @@ __FORCETOC__
     <br/><hr/><br/>
 
     <h3 id="monitoredhosts">Article for MonitoredHosts</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>MonitoredHosts for ${project.name}</em></span>'</p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>MonitoredHosts for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/MonitoredHosts for ${project.name}'>${wikiUrlBase}/MonitoredHosts for ${project.name}</a></p>
 
 <#list monitoredHosts as monitoredHost>
     <h4> MonitoredHost '''${monitoredHost.name}''' </h4>
@@ -303,20 +316,6 @@ __FORCETOC__
       </td></tr>
     </table>
 </#list>
-    
-    <br/><hr/><br/>
-    
-    <h3 id="roles">Article for Roles</h3>
-    <p>Article name = '<span style="background-color: #F0F0F0"><em>Roles for ${project.name}</em></span>'</p>
-    <table border="1">
-      <tr><td bgcolor="#F0F0F0">
-        <pre>
-__FORCETOC__
-Roles for the project [[${project.name}]]:
-... PENDING
-        </pre>
-      </td></tr>
-    </table>
     
     <br/><hr/><br/>
     

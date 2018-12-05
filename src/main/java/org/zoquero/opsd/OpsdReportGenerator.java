@@ -18,10 +18,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
+import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 
@@ -100,6 +102,7 @@ public class OpsdReportGenerator {
 		input.put("title", "Validation of the project "
 				+ "and generation of monitoring and documentation");
 		input.put("project",          getFullProjectData().getProject());
+		input.put("wikiProject",      getWikiFronEntity(getFullProjectData().getProject()));
 		input.put("report",           getFullProjectData().getReport());
 		input.put("roles",            getFullProjectData().getRoles());
 		input.put("systems",          getFullProjectData().getSystems());
@@ -117,6 +120,7 @@ public class OpsdReportGenerator {
 			}
 		}
 		input.put("requests",         getFullProjectData().getRequests());
+		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
 
 		Calendar c = getFullProjectData().getProject().getDateIn();
 		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
@@ -149,6 +153,16 @@ public class OpsdReportGenerator {
 		} catch (TemplateException e) {
 			throw new OpsdException("TemplateException thrown", e);
 		}
+	}
+
+	private Object getWikiFronEntity(OpsdProject project) {
+		StringBuilder s = new StringBuilder();
+		s.append("{{Project");
+		s.append("|name=" + project.getName());
+		s.append("|description=" + project.getDescription());
+		s.append("|dependencies=" + project.getDependencies());
+		s.append("}}");
+		return s.toString();
 	}
 	
 }

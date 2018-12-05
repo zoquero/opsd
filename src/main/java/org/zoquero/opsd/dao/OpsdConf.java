@@ -21,7 +21,6 @@ public class OpsdConf {
 	/**
 	 * Gets the minimum log level
 	 * 
-	 * @param className
 	 * @return
 	 */
 	public static int getMinLogLevel() throws OpsdException {
@@ -34,5 +33,15 @@ public class OpsdConf {
 		}
 		return i;
 	}
-
+	
+	/**
+	 * Gets the URL base to construct the URL of an article.
+	 * 
+	 * @return
+	 */
+	public static String getWikiUrlBase() throws OpsdException {
+		ResourceBundle rb = ResourceBundle.getBundle(CONF_PROPERTIES);
+		String propertyName = "wiki.urlbase";
+		return rb.getString(propertyName);
+	}
 }
