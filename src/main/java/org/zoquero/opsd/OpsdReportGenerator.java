@@ -11,6 +11,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,7 @@ public class OpsdReportGenerator {
 		input.put("wikiProject",      getWikiFronEntity(getFullProjectData().getProject()));
 		input.put("report",           getFullProjectData().getReport());
 		input.put("roles",            getFullProjectData().getRoles());
+		input.put("roles2wiki",       getWikiFromRoles(getFullProjectData().getRoles()));
 		input.put("systems",          getFullProjectData().getSystems());
 		input.put("monitoredHosts",   getFullProjectData().getMonitoredHosts());
 		input.put("roleServices",     getFullProjectData().getRoleServices());
@@ -121,16 +123,6 @@ public class OpsdReportGenerator {
 		}
 		input.put("requests",         getFullProjectData().getRequests());
 		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
-
-		Calendar c = getFullProjectData().getProject().getDateIn();
-		String dateIn = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
-		c = getFullProjectData().getProject().getDateOut();
-		String dateOut = "still up";
-		if(c != null) {
-			dateOut = c.get(Calendar.DAY_OF_MONTH) + "/" +  (c.get(Calendar.MONTH) + 1) + "/" +  c.get(Calendar.YEAR);
-		}
-		input.put("projectDateIn", dateIn);	
-		input.put("projectDateOut", dateOut);	
 
 		// Let's get the template
 		try {
@@ -188,7 +180,7 @@ public class OpsdReportGenerator {
 	 * @param project
 	 * @return
 	 */
-	private Object getWikiFronEntity(OpsdProject project) {
+	private String getWikiFronEntity(OpsdProject project) {
 		if(project == null) return MSG_NULL;
 		
 		StringBuilder s = new StringBuilder();
@@ -211,8 +203,54 @@ public class OpsdReportGenerator {
 					+ toNonNullableString(project.getResponsible().getName())
 					+ "]]");
 		}
+		
+		String dateInStr = null;
+		Calendar dateInCal = getFullProjectData().getProject().getDateIn();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+		if (dateInCal != null) {
+			dateInStr = sdf.format(dateInCal.getTime());
+		}
+		else {
+			dateInStr = MSG_NULL;
+		}
+		s.append("|dateIn=" + dateInStr);
+		
+		String dateOutStr = null;
+		Calendar dateOutCal = getFullProjectData().getProject().getDateOut();
+		if (dateOutCal != null) {
+			dateOutStr = sdf.format(dateOutCal.getTime());
+		}
+		else {
+			dateOutStr = MSG_NULL;
+		}
+		s.append("|dateOut=" + dateOutStr);
+
 		s.append("}}");
 		return s.toString();
 	}
 	
+	/**
+	 * Get wiki code for a List of Roles
+	 * It deals with empty values.
+	 * @param list of roles
+	 * @return
+	 */
+	private Map<OpsdRole, String> getWikiFromRoles(List<OpsdRole> roles) {
+		HashMap<OpsdRole, String> roles2string = new HashMap<OpsdRole, String>();
+		for(OpsdRole aRole: roles) {
+			if(aRole == null) {
+				roles2string.put(aRole, MSG_NULL);
+				continue;
+			}
+			StringBuilder s = new StringBuilder();
+			s.append("{{" + OpsdConf.getWikiTemplateName(aRole.getClass().getSimpleName()));
+			s.append("|name="
+						+ toNonNullableString(aRole.getName()));
+			s.append("|description="
+					+ toNullableString(aRole.getDescription()));
+			s.append("}}");
+			roles2string.put(aRole, s.toString());
+		}
+		return roles2string;
+	}
 }

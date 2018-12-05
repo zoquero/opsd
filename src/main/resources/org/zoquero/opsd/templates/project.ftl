@@ -94,35 +94,15 @@
 
 __FORCETOC__
 
-<#if project.responsible?hasContent>
-Project called '''${project.name}''', from responsible '''${project.responsible.name}'''.
-<#else>
-Project called '''${project.name}''', from responsible '''ERROR, MISSING RESPONSIBLE NAME'''
-</#if>
-
 == Description ==
 ${wikiProject}
 
-${project.description}
-
-${project.moreInfo}
-
-== Dates ==
-It was enabled in '''${projectDateIn}'''
-
-It was closed in '''${projectDateOut}'''
-
-== Dependencies ==
-${project.dependencies}
-
-== Recovery procedure ==
-${project.recoveryProcedure}
-
 == Roles ==
 
-<#list roles as role>
-=== ${role.name} ===
-  <p>role name = ${role.name} , role description = ${role.description} </p> 
+<#list roles2wiki as role, roleStr> 
+=== Role ''${role.name}'' ===
+${roleStr}
+
 </#list>
 
 == Systems ==
