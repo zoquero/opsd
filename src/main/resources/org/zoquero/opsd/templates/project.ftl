@@ -8,28 +8,30 @@
     Contents:
     <ul>
       <li> <a href="#log">0) Output log</a> </li>
-      <li> <a href="#validation">1) Validation of the data</a> </li>
+      <li> <a href="#validation">1) Validation Project data</a> </li>
       <li> <a href="#gd">2) Generated documentation</a> </li>
-      <li> * <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
-      <li> * <a href="#asp">Article for service procedures</a> </li>
-      <li> * <a href="#requests">Article for requests (requestable tasks)</a> </li>
-      <li> * <a href="#periodictasks">Article for periodic tasks</a> </li>
-      <li> * <a href="#filepolicies">Article for file policies</a> </li>
-      <li> * <a href="#systems">Articles for systems (assets)</a> </li>
-      <li> * <a href="#monitoredhosts">Articles for MonitoredHosts</a> </li>
-      <li> * <a href="#roles">Articles for Roles</a> </li>
-      <li> * ...</li>
-      
+      <ul>
+        <li> * <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
+        <li> * <a href="#asp">Article for service procedures</a> </li>
+        <li> * <a href="#requests">Article for requests (requestable tasks)</a> </li>
+        <li> * <a href="#periodictasks">Article for periodic tasks</a> </li>
+        <li> * <a href="#filepolicies">Article for file policies</a> </li>
+        <li> * <a href="#systems">Articles for systems (assets)</a> </li>
+        <li> * <a href="#monitoredhosts">Articles for MonitoredHosts</a> </li>
+        <li> * <a href="#roles">Articles for Roles</a> </li>
+        <li> * ...</li>
+      </ul>
       <li> <a href="#monitoring">3) Script to setup monitoring</a> </li>
-      <li> * <a href="#addHosts">Script to setup monitored hosts</a> </li>
-      <li> * <a href="#addServices">Script to setup monitored services</a> </li>
-      <li> * ...</li>
+      <ul>
+        <li> * <a href="#addHosts">Script to setup monitored hosts</a> </li>
+        <li> * <a href="#addServices">Script to setup monitored services</a> </li>
+      </ul>
     </ul>
     
     <h2 id="log">0) Output log</h2>
     <p>Here's the <a href="./output.html">output log</a>.</p>
     
-    <h2 id="validation">1) Validation of the data</h2>
+    <h2 id="validation">1) Validation Project data</h2>
 
     <p>
     <#if report.errors?hasContent>
@@ -259,29 +261,48 @@ File policies for the project [[${project.name}]]:
     
     <h3 id="systems">Articles for Systems (assets)</h3>
     <p>Article name = '<span style="background-color: #F0F0F0"><em>Systems for ${project.name}</em></span>'</p>
+    
+<#list systems as system>
+    <h4> System '''${system.name}''' </h4>
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
 __FORCETOC__
-Systems for the project [[${project.name}]]:
-... PENDING
+
+    System name: <#if system.name?hasContent> ${system.name} <#else> Error (null) </#if>
+    FQDN or IP: <#if system.fqdnOrIp?hasContent> ${system.fqdnOrIp} <#else> Error (null) </#if>  
+    DeviceType: <#if system.deviceType?hasContent> ${system.deviceType.name} <#else> Error (null) </#if>
+    OS: <#if system.os?hasContent> ${system.os.name} <#else> Error (null) </#if>
+    ...
+
         </pre>
       </td></tr>
     </table>
+</#list>
     
     <br/><hr/><br/>
 
     <h3 id="monitoredhosts">Article for MonitoredHosts</h3>
     <p>Article name = '<span style="background-color: #F0F0F0"><em>MonitoredHosts for ${project.name}</em></span>'</p>
+
+<#list monitoredHosts as monitoredHost>
+    <h4> MonitoredHost '''${monitoredHost.name}''' </h4>
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
 __FORCETOC__
-MonitoredHosts for the project [[${project.name}]]:
-... PENDING
+
+    System name: <#if monitoredHost.name?hasContent> ${monitoredHost.name} <#else> Error (null) </#if>
+    IP: <#if monitoredHost.ip?hasContent> ${monitoredHost.ip} <#else> Error (null) </#if>  
+    System: <#if monitoredHost.system?hasContent> ${monitoredHost.system.name} <#else> Error (null) </#if>
+    Environment: <#if monitoredHost.environment?hasContent> ${monitoredHost.environment} <#else> Error (null) </#if>
+    Role: <#if monitoredHost.role?hasContent> ${monitoredHost.role.name} <#else> Error (null) </#if>
+    ...
+
         </pre>
       </td></tr>
     </table>
+</#list>
     
     <br/><hr/><br/>
     
