@@ -154,13 +154,63 @@ public class OpsdReportGenerator {
 			throw new OpsdException("TemplateException thrown", e);
 		}
 	}
+	
+	private final static String MSG_EMPTY = OpsdConf.getProperty("msg.empty");
+	private final static String MSG_NULL  = OpsdConf.getProperty("msg.null");
 
+	/**
+	 * Return "Error" if string is null, else return the string.
+	 * @param s
+	 * @return
+	 */
+	private String toNonNullableString(String s) {
+		if(s == null || s.equals("")) {
+			return MSG_NULL;
+		}
+		return s;
+	}
+	
+	/**
+	 * Return "empty" if string is null, else return the string.
+	 * @param s
+	 * @return
+	 */
+	private String toNullableString(String s) {
+		if(s == null || s.equals("")) {
+			return MSG_EMPTY;
+		}
+		return s;
+	}
+
+	/**
+	 * Get wiki code for an Entity.
+	 * It deals with empty values.
+	 * @param project
+	 * @return
+	 */
 	private Object getWikiFronEntity(OpsdProject project) {
+		if(project == null) return MSG_NULL;
+		
 		StringBuilder s = new StringBuilder();
-		s.append("{{Project");
-		s.append("|name=" + project.getName());
-		s.append("|description=" + project.getDescription());
-		s.append("|dependencies=" + project.getDependencies());
+		s.append("{{" + OpsdConf.getWikiTemplateName(project.getClass().getSimpleName()));
+		s.append("|name="
+					+ toNonNullableString(project.getName()));
+		s.append("|description="
+					+ toNonNullableString(project.getDescription()));
+		s.append("|dependencies="
+					+ toNullableString(project.getDependencies()));
+		s.append("|moreInfo="
+					+ toNullableString(project.getMoreInfo()));
+		s.append("|recoveryProcedure="
+					+ project.getRecoveryProcedure());
+		if(project.getResponsible() == null) {
+			s.append("|responsible=" + MSG_NULL);
+		}
+		else {
+			s.append("|responsible=[["
+					+ toNonNullableString(project.getResponsible().getName())
+					+ "]]");
+		}
 		s.append("}}");
 		return s.toString();
 	}

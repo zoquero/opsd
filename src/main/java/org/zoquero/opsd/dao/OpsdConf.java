@@ -40,8 +40,35 @@ public class OpsdConf {
 	 * @return
 	 */
 	public static String getWikiUrlBase() throws OpsdException {
+		return getProperty("wiki.urlbase", false);
+	}
+	
+	/**
+	 * Gets a value from the conf properties file
+	 * 
+	 * @return
+	 */
+	public static String getProperty(String name) {
+		return getProperty(name, false);
+	}
+	
+	/**
+	 * Gets a value from the conf properties file
+	 * 
+	 * @return
+	 */
+	public static String getProperty(String name, boolean allowNull) {
 		ResourceBundle rb = ResourceBundle.getBundle(CONF_PROPERTIES);
-		String propertyName = "wiki.urlbase";
-		return rb.getString(propertyName);
+		String s = rb.getString(name);
+		if(s == null) {
+			throw new RuntimeException("Can't fine " + name
+				+ " in " + CONF_PROPERTIES + ".properties");
+		}
+		return s;
+	}
+
+	public static String getWikiTemplateName(String name) {
+		String propertyName = "wiki.template." + name;		
+		return getProperty(propertyName, false);
 	}
 }
