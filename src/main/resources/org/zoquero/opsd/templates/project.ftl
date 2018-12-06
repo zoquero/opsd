@@ -115,6 +115,14 @@ ${roleStr}
   </#if>
 </#list>
 
+== Systems BIS ==
+
+<#list systems2wiki as system, systemStr> 
+=== System ''${system.name}'' ===
+${systemStr}
+
+</#list>
+
 == MonitoredHosts ==
 
 <#list monitoredHosts as monitoredHost>

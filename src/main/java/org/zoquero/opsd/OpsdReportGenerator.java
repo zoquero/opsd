@@ -27,6 +27,7 @@ import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
+import org.zoquero.opsd.entities.OpsdSystem;
 
 
 import freemarker.core.ParseException;
@@ -103,11 +104,12 @@ public class OpsdReportGenerator {
 		input.put("title", "Validation of the project "
 				+ "and generation of monitoring and documentation");
 		input.put("project",          getFullProjectData().getProject());
-		input.put("wikiProject",      getWikiFronEntity(getFullProjectData().getProject()));
+		input.put("wikiProject",      getWikiFromEntity());
 		input.put("report",           getFullProjectData().getReport());
 		input.put("roles",            getFullProjectData().getRoles());
-		input.put("roles2wiki",       getWikiFromRoles(getFullProjectData().getRoles()));
+		input.put("roles2wiki",       getWikiFromRoles());
 		input.put("systems",          getFullProjectData().getSystems());
+		input.put("systems2wiki",     getWikiFromSystems());
 		input.put("monitoredHosts",   getFullProjectData().getMonitoredHosts());
 		input.put("roleServices",     getFullProjectData().getRoleServices());
 		input.put("role2servicesMap", getFullProjectData().getRole2servicesMap());
@@ -177,10 +179,10 @@ public class OpsdReportGenerator {
 	/**
 	 * Get wiki code for an Entity.
 	 * It deals with empty values.
-	 * @param project
 	 * @return
 	 */
-	private String getWikiFronEntity(OpsdProject project) {
+	private String getWikiFromEntity() {
+		OpsdProject project = getFullProjectData().getProject();
 		if(project == null) return MSG_NULL;
 		
 		StringBuilder s = new StringBuilder();
@@ -232,10 +234,10 @@ public class OpsdReportGenerator {
 	/**
 	 * Get wiki code for a List of Roles
 	 * It deals with empty values.
-	 * @param list of roles
 	 * @return
 	 */
-	private Map<OpsdRole, String> getWikiFromRoles(List<OpsdRole> roles) {
+	private Map<OpsdRole, String> getWikiFromRoles() {
+		List<OpsdRole> roles = getFullProjectData().getRoles();
 		HashMap<OpsdRole, String> roles2string = new HashMap<OpsdRole, String>();
 		for(OpsdRole aRole: roles) {
 			if(aRole == null) {
@@ -252,5 +254,73 @@ public class OpsdReportGenerator {
 			roles2string.put(aRole, s.toString());
 		}
 		return roles2string;
+	}
+	
+	/**
+	 * Get wiki code for a List of Systems
+	 * It deals with empty values.
+	 * @return
+	 */
+	private Map<OpsdSystem, String> getWikiFromSystems() {
+		List<OpsdSystem> systems = getFullProjectData().getSystems();
+		OpsdProject project = getFullProjectData().getProject();
+		HashMap<OpsdSystem, String> systems2string = new HashMap<OpsdSystem, String>();
+		for(OpsdSystem aSystem: systems) {
+			if(aSystem == null) {
+				systems2string.put(aSystem, MSG_NULL);
+				continue;
+			}
+			StringBuilder s = new StringBuilder();
+			s.append("{{" + OpsdConf.getWikiTemplateName(aSystem.getClass().getSimpleName()));
+			s.append("|name=" + toNonNullableString(aSystem.getName()));
+			s.append("|alias=" + toNullableString(aSystem.getAlias()));
+			s.append("|fqdnOrIp=" + toNonNullableString(aSystem.getFqdnOrIp()));
+			if(aSystem.getDeviceType() == null) {
+				s.append("|deviceType=" + MSG_NULL);
+			}
+			else {
+				s.append("|deviceType=" + toNonNullableString(aSystem.getDeviceType().getName()));
+			}
+			if(aSystem.getOs() == null) {
+				s.append("|os=" + MSG_NULL);
+			}
+			else {
+				s.append("|os=" + toNonNullableString(aSystem.getOs().getName()));
+			}
+			if(aSystem.getDeviceType() != null && ! aSystem.getDeviceType().isVirtual()) {
+				s.append("|lomIP=" + toNonNullableString(aSystem.getLomIP()));
+				s.append("|lomAccess=" + toNonNullableString(aSystem.getLomAccess()));
+			}
+			else {
+				s.append("|lomIP=" + MSG_EMPTY);
+				s.append("|lomAccess=" + MSG_EMPTY);
+			}
+			s.append("|osAccess=" + toNonNullableString(aSystem.getOsAccess()));
+			s.append("|moreInfo=" + toNonNullableString(aSystem.getMoreInfo()));
+			s.append("|environment=" + toNonNullableString(aSystem.getEnvironment()));
+			if(aSystem.getRole() == null) {
+				s.append("|role=" + MSG_NULL);
+			}
+			else {
+				s.append("|role=" + toNonNullableString(aSystem.getRole().getName()));
+			}
+			s.append("|hostDownRecoveryProcedure=" + toNullableString(aSystem.getHostDownRecoveryProcedure()));
+			if(aSystem.getResponsible() == null) {
+				s.append("|responsible=" + toNonNullableString(project.getResponsible().getName()));
+			}
+			else {
+				s.append("|responsible=" + toNonNullableString(aSystem.getResponsible().getName()));
+			}
+			if(aSystem.getScaleTo() == null || aSystem.getScaleTo().equals("")) {
+				s.append("|scaleTo=" + toNonNullableString(OpsdConf.getProperty("defaults.scaleSystemTo")));
+			}
+			else {
+				s.append("|scaleTo=" + toNonNullableString(aSystem.getScaleTo()));
+			}
+
+			s.append("}}");
+			systems2string.put(aSystem, s.toString());
+		}
+		return systems2string;
 	}
 }
