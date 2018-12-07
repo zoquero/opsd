@@ -112,12 +112,15 @@ public class OpsdExtractor {
 				
 			}
 			monitoredServices.addAll(host2servicesMap.get(aHost));
+			host2effectiveServicesMap.put(aHost, monitoredServices);
+
+			// Troubleshooting Just for troubleshooting purposes
 			StringBuilder servicesDump = new StringBuilder("Direct services: ");
 			for(OpsdMonitoredService aService: host2servicesMap.get(aHost)) {
 				servicesDump.append(aService.getName() + ", ");
 			}
 			LOGGER.finer(servicesDump.toString());
-			host2effectiveServicesMap.put(aHost, monitoredServices);
+			// /Troubleshooting Just for troubleshooting purposes
 		}
 		fpd.setHost2effectiveServicesMap(host2effectiveServicesMap);
 		

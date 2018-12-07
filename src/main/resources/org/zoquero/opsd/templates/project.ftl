@@ -163,7 +163,7 @@ ${roleWiki}
   </#if>
 </#list>
 
-== Effective Services for monitoredHosts (mixing direct services + role services) ==
+== Effective Services for monitoredHosts (mixing direct services + role services) (LEGACY, moved to self-article) ==
 <#list hosteffectiveServicesMap as host, hostServices> 
 === MonitoredHost '${host.name}' ===
   <#if hostServices?hasContent>
@@ -193,16 +193,24 @@ Procedures for the services of the project [[${project.name}]]:
 == Effective Services for monitoredHosts (mixing direct services + role services) ==
 <#list hosteffectiveServicesMap as host, hostServices> 
 === MonitoredHost '${host.name}' ===
+
   <#if hostServices?hasContent>
+  
     <#list hostServices as aService>
+    
 ==== Service '${aService.name}' ====
 aService name = ${aService.name} , aService description = ${aService.description}
 
 Procedure = <#if aService.procedure?hasContent> ${aService.procedure} <#else> null (scale it up) </#if>
 
+
+{effectiveService2wikiMap[aService]}
+
     </#list>
   <#else>
-  <p><strong>Host without direct services</strong></p>
+  
+  Host without direct services
+  
   </#if>
 </#list>
 

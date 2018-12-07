@@ -128,6 +128,8 @@ public class OpsdReportGenerator {
 				LOGGER.finer("* Service: '" + aService.getName() + "'");				
 			}
 		}
+		input.put("effectiveService2wikiMap",
+				getEffectiveService2wikiMap());
 		input.put("requests",         getFullProjectData().getRequests());
 		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
 
@@ -154,6 +156,64 @@ public class OpsdReportGenerator {
 		}
 	}
 	
+	private Map<OpsdMonitoredService, String> getEffectiveService2wikiMap() {
+		
+		NO FUNCIONA, NO ES POT FER INTERPOLLATION AMB VARIABLES COM A CLAUS DE HASH
+		
+		Map<OpsdMonitoredService, String> effectiveService2wikiMap = new HashMap<OpsdMonitoredService, String>(); 
+		HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>> host2effectiveServicesMap = getFullProjectData().getHost2effectiveServicesMap();
+		for(List<OpsdMonitoredService> serviceList: host2effectiveServicesMap.values()) {
+			for(OpsdMonitoredService service: serviceList) {
+				effectiveService2wikiMap.put(service, service2wiki(service));
+			}
+		}
+		return effectiveService2wikiMap;
+	}
+
+
+	private String service2wiki(OpsdMonitoredService service) {
+		if(service == null) {
+			return MSG_NULL;
+		}
+		StringBuilder s = new StringBuilder();
+		s.append("{{" + OpsdConf.getWikiTemplateName(service.getClass().getSimpleName()));
+		s.append("|name="
+					+ toNonNullableString(service.getName()));
+		s.append("|description="
+				+ toNullableString(service.getDescription()));
+		s.append("|procedure="
+				+ toNullableString(service.getProcedure()));
+		if(service.getCriticity() == null) {
+			s.append("|criticity=" + MSG_NULL);
+		}
+		else {
+			s.append("|criticity="
+					+ toNullableString(service.getCriticity().getName()));
+		}
+		if(service.getServiceTemplate() == null) {
+			s.append("|serviceTemplate=" + MSG_NULL);
+		}
+		else {
+			s.append("|serviceTemplate="
+					+ toNullableString(service.getServiceTemplate().getName()));
+		}
+		if(service.getScaleTo() == null || service.getScaleTo().equals("")) {
+			if(getFullProjectData().getProject().getResponsible() == null) {
+				s.append("|scaleTo=" + MSG_NULL);
+			}
+			else {
+				s.append("|scaleTo=[["
+						+ toNonNullableString(getFullProjectData().getProject().getResponsible().getName())
+						+ "]]");
+			}
+		}
+		else {
+			s.append("|scaleTo=" + toNonNullableString(service.getScaleTo()));
+		}
+		s.append("}}");
+		return s.toString();
+	}
+
 	/**
 	 * Get a hashmap from String (env) to a hashmap of role to System
 	 * @return
