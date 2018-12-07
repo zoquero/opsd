@@ -94,43 +94,48 @@
 
 __FORCETOC__
 
-== Description ==
+== Project description ==
 ${wikiProject}
 
 == Roles ==
 
-<#list roles2wiki as role, roleStr> 
+<#list roles2wiki as role, roleWiki> 
 === Role ''${role.name}'' ===
-${roleStr}
+${roleWiki}
 
 </#list>
 
-== Systems ==
+== Systems by environment and role ==
 
-<#list systems as system>
-=== ${system.name} ===
-  <p>system name = ${system.name}
-  <#if system.os?hasContent>
-    system os = ${system.os} </p> 
-  </#if>
+<#list env2role2systems as env, role2systems> 
+=== Environment ''${env}'' ===
+
+  <#list role2systems as role, systems> 
+==== Role ''${role.name}'' ====
+
+    <#list systems as system>
+* [[${assetArticleNamePrefix}${system.name}|${system.name}]]
+    </#list>
+    
+  </#list>
 </#list>
 
-== Systems BIS ==
+== MonitoredHosts by environment and role ==
 
-<#list systems2wiki as system, systemStr> 
-=== System ''${system.name}'' ===
-${systemStr}
+<#list env2role2monitoredHosts as env, role2monitoredHosts> 
+=== Environment ''${env}'' ===
 
+  <#list role2monitoredHosts as role, monitoredHosts> 
+==== Role ''${role.name}'' ====
+
+    <#list monitoredHosts as monitoredHost>
+* [[${monitoredHost.name}]]
+    </#list>
+    
+  </#list>
 </#list>
 
-== MonitoredHosts ==
-
-<#list monitoredHosts as monitoredHost>
-=== ${monitoredHost.name} ===
-  <p>monitoredHost name = ${monitoredHost.name} , monitoredHost IP = ${monitoredHost.ip} , role = ${monitoredHost.role.name} </p> 
-</#list>
-
-== Services for roles ==
+== Services for roles (legacy, will be deleted) ==
 
 <#list role2servicesMap as role, roleServices> 
 === Role '${role.name}' ===
@@ -144,7 +149,7 @@ ${systemStr}
   </#if>
 </#list>
 
-== Services for monitoredHosts ==
+== Services for monitoredHosts (legacy, will be deleted) ==
 
 <#list host2servicesMap as host, hostServices> 
 === MonitoredHost '${host.name}' ===
@@ -261,24 +266,18 @@ File policies for the project [[${project.name}]]:
     <br/><hr/><br/>
     
     <h3 id="systems">Articles for Systems (assets)</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Systems for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Systems for ${project.name}'>${wikiUrlBase}/Systems for ${project.name}</a></p>
     
-<#list systems as system>
-    <h4> System '''${system.name}''' </h4>
+<#list systems2wiki as system, systemStr>
+    <h4>Article for System '<span style="background-color: #F0F0F0"><em>${system.name}</em></span>'</h4>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${assetArticleNamePrefix}${system.name}</em></span>' and URL: <a href='${wikiUrlBase}/${assetArticleNamePrefix}${system.name}'>${wikiUrlBase}/${assetArticleNamePrefix}${system.name}</a></p> 
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
-__FORCETOC__
-
-    System name: <#if system.name?hasContent> ${system.name} <#else> Error (null) </#if>
-    FQDN or IP: <#if system.fqdnOrIp?hasContent> ${system.fqdnOrIp} <#else> Error (null) </#if>  
-    DeviceType: <#if system.deviceType?hasContent> ${system.deviceType.name} <#else> Error (null) </#if>
-    OS: <#if system.os?hasContent> ${system.os.name} <#else> Error (null) </#if>
-    ...
-
+${systemStr}
         </pre>
       </td></tr>
     </table>
+
 </#list>
     
     <br/><hr/><br/>

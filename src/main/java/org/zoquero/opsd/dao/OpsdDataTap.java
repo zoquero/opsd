@@ -1,6 +1,7 @@
 package org.zoquero.opsd.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdHostService;
@@ -148,4 +149,12 @@ public interface OpsdDataTap {
 	 */
 	List<OpsdRequest> getRequests(OpsdProject project) throws OpsdException;
 	
+
+	/**
+	 * Gets the name of the environments of a Project
+	 * @param project
+	 * @return Set of environments
+	 * @throws OpsdException
+	 */
+	List<String> getEnvironments(OpsdProject project) throws OpsdException;
 }

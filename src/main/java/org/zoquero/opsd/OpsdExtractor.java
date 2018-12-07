@@ -64,6 +64,11 @@ public class OpsdExtractor {
 		List<OpsdMonitoredHost> monitoredHosts = dt.getMonitoredHosts(project);
 		fpd.setMonitoredHosts(monitoredHosts);
 		
+		// environments (String)
+		List<String> environments = dt.getEnvironments(project);
+		fpd.setEnvironments(environments);
+		
+		
 		// OpsdRoleServices
 		List<OpsdRoleService> roleServices = dt.getRoleServices(project);
 		fpd.setRoleServices(roleServices);

@@ -12,6 +12,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +22,10 @@ import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
-import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
-import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
 
 
@@ -110,6 +109,12 @@ public class OpsdReportGenerator {
 		input.put("roles2wiki",       getWikiFromRoles());
 		input.put("systems",          getFullProjectData().getSystems());
 		input.put("systems2wiki",     getWikiFromSystems());
+		
+		// env > role > system
+		input.put("env2role2systems", getEnvToRoleToSystems());
+		input.put("env2role2monitoredHosts",   getEnvToRoleToMonitoredHosts());
+		input.put("assetArticleNamePrefix", OpsdConf.getProperty("assetArticleNamePrefix"));
+		
 		input.put("monitoredHosts",   getFullProjectData().getMonitoredHosts());
 		input.put("roleServices",     getFullProjectData().getRoleServices());
 		input.put("role2servicesMap", getFullProjectData().getRole2servicesMap());
@@ -149,6 +154,117 @@ public class OpsdReportGenerator {
 		}
 	}
 	
+	/**
+	 * Get a hashmap from String (env) to a hashmap of role to System
+	 * @return
+	 */
+	private HashMap<String, HashMap<OpsdRole, List<OpsdSystem>>> getEnvToRoleToSystems() {
+		HashMap<String, HashMap<OpsdRole, List<OpsdSystem>>> h = new HashMap<String, HashMap<OpsdRole, List<OpsdSystem>>>();
+		
+		// First let's create the first level hashmap
+		for(String aEnv: getFullProjectData().getEnvironments()) {
+			h.put(aEnv, new HashMap<OpsdRole, List<OpsdSystem>>());
+		}
+		
+		/* Now let's traverse all the systems
+		 * and let's push each role+system to its environment
+		 */
+		for(OpsdSystem system: getFullProjectData().getSystems()) {
+			/* Create the HashMap role2system if doesn't exist 
+			 * and push it to the corresponding environment.
+			 */
+			boolean systemRoleFound = false;
+			/* Will not print wrong data,
+			 * it will be detected previously, during the validation
+			 */
+			if(system == null)
+				continue;
+			if(system.getEnvironment() == null
+					|| system.getEnvironment().equals(""))
+				continue;
+			if(system.getRole() == null
+					|| system.getRole().getName() == null
+					|| system.getRole().getName().equals(""))
+				continue;
+			if(h.get(system.getEnvironment()) != null) {
+				for(OpsdRole aRole: h.get(system.getEnvironment()).keySet()) {
+					if(aRole == null || aRole.getName() == null)
+						continue;
+					if(aRole.getName().equals(system.getRole().getName())) {
+						systemRoleFound = true;
+					}
+				}				
+			}
+			// Let's create the ArrayLists if needed
+			if(! systemRoleFound) {
+				if(h.get(system.getEnvironment()) == null) {
+					// Probably an 'application host'
+					continue;
+				}
+				h.get(system.getEnvironment()).put(system.getRole(), new ArrayList<OpsdSystem>());
+			}
+			h.get(system.getEnvironment()).get(system.getRole()).add(system);
+
+		}
+		return h;
+	}
+	
+
+	/**
+	 * Get a hashmap from String (env) to a hashmap of role to MonitoredHost
+	 * @return
+	 */
+	private HashMap<String, HashMap<OpsdRole, List<OpsdMonitoredHost>>> getEnvToRoleToMonitoredHosts() {
+		HashMap<String, HashMap<OpsdRole, List<OpsdMonitoredHost>>> h = new HashMap<String, HashMap<OpsdRole, List<OpsdMonitoredHost>>>();
+		
+		// First let's create the first level hashmap
+		for(String aEnv: getFullProjectData().getEnvironments()) {
+			h.put(aEnv, new HashMap<OpsdRole, List<OpsdMonitoredHost>>());
+		}
+		
+		/* Now let's traverse all the monitoredHosts
+		 * and let's push each role+monitoredHost to its environment
+		 */
+		for(OpsdMonitoredHost monitoredHost: getFullProjectData().getMonitoredHosts()) {
+			/* Create the HashMap role2monitoredHost if doesn't exist 
+			 * and push it to the corresponding environment.
+			 */
+			boolean monitoredHostRoleFound = false;
+			/* Will not print wrong data,
+			 * it will be detected previously, during the validation
+			 */
+			if(monitoredHost == null)
+				continue;
+			if(monitoredHost.getEnvironment() == null
+					|| monitoredHost.getEnvironment().equals(""))
+				continue;
+			if(monitoredHost.getRole() == null
+					|| monitoredHost.getRole().getName() == null
+					|| monitoredHost.getRole().getName().equals(""))
+				continue;
+			if(h.get(monitoredHost.getEnvironment()) != null) {
+				for(OpsdRole aRole: h.get(monitoredHost.getEnvironment()).keySet()) {
+					if(aRole == null || aRole.getName() == null)
+						continue;
+					if(aRole.getName().equals(monitoredHost.getRole().getName())) {
+						monitoredHostRoleFound = true;
+					}
+				}				
+			}
+			// Let's create the ArrayLists if needed
+			if(! monitoredHostRoleFound) {
+				if(h.get(monitoredHost.getEnvironment()) == null) {
+					// Probably an 'application host'
+					continue;
+				}
+				h.get(monitoredHost.getEnvironment()).put(monitoredHost.getRole(), new ArrayList<OpsdMonitoredHost>());
+			}
+			h.get(monitoredHost.getEnvironment()).get(monitoredHost.getRole()).add(monitoredHost);
+
+		}
+		return h;
+	}
+
 	private final static String MSG_EMPTY = OpsdConf.getProperty("msg.empty");
 	private final static String MSG_NULL  = OpsdConf.getProperty("msg.null");
 
@@ -262,65 +378,71 @@ public class OpsdReportGenerator {
 	 * @return
 	 */
 	private Map<OpsdSystem, String> getWikiFromSystems() {
-		List<OpsdSystem> systems = getFullProjectData().getSystems();
-		OpsdProject project = getFullProjectData().getProject();
 		HashMap<OpsdSystem, String> systems2string = new HashMap<OpsdSystem, String>();
-		for(OpsdSystem aSystem: systems) {
-			if(aSystem == null) {
-				systems2string.put(aSystem, MSG_NULL);
-				continue;
-			}
-			StringBuilder s = new StringBuilder();
-			s.append("{{" + OpsdConf.getWikiTemplateName(aSystem.getClass().getSimpleName()));
-			s.append("|name=" + toNonNullableString(aSystem.getName()));
-			s.append("|alias=" + toNullableString(aSystem.getAlias()));
-			s.append("|fqdnOrIp=" + toNonNullableString(aSystem.getFqdnOrIp()));
-			if(aSystem.getDeviceType() == null) {
-				s.append("|deviceType=" + MSG_NULL);
-			}
-			else {
-				s.append("|deviceType=" + toNonNullableString(aSystem.getDeviceType().getName()));
-			}
-			if(aSystem.getOs() == null) {
-				s.append("|os=" + MSG_NULL);
-			}
-			else {
-				s.append("|os=" + toNonNullableString(aSystem.getOs().getName()));
-			}
-			if(aSystem.getDeviceType() != null && ! aSystem.getDeviceType().isVirtual()) {
-				s.append("|lomIP=" + toNonNullableString(aSystem.getLomIP()));
-				s.append("|lomAccess=" + toNonNullableString(aSystem.getLomAccess()));
-			}
-			else {
-				s.append("|lomIP=" + MSG_EMPTY);
-				s.append("|lomAccess=" + MSG_EMPTY);
-			}
-			s.append("|osAccess=" + toNonNullableString(aSystem.getOsAccess()));
-			s.append("|moreInfo=" + toNonNullableString(aSystem.getMoreInfo()));
-			s.append("|environment=" + toNonNullableString(aSystem.getEnvironment()));
-			if(aSystem.getRole() == null) {
-				s.append("|role=" + MSG_NULL);
-			}
-			else {
-				s.append("|role=" + toNonNullableString(aSystem.getRole().getName()));
-			}
-			s.append("|hostDownRecoveryProcedure=" + toNullableString(aSystem.getHostDownRecoveryProcedure()));
-			if(aSystem.getResponsible() == null) {
-				s.append("|responsible=" + toNonNullableString(project.getResponsible().getName()));
-			}
-			else {
-				s.append("|responsible=" + toNonNullableString(aSystem.getResponsible().getName()));
-			}
-			if(aSystem.getScaleTo() == null || aSystem.getScaleTo().equals("")) {
-				s.append("|scaleTo=" + toNonNullableString(OpsdConf.getProperty("defaults.scaleSystemTo")));
-			}
-			else {
-				s.append("|scaleTo=" + toNonNullableString(aSystem.getScaleTo()));
-			}
-
-			s.append("}}");
-			systems2string.put(aSystem, s.toString());
+		for(OpsdSystem aSystem: getFullProjectData().getSystems()) {
+			String s = system2wiki(aSystem);
+			if(s != null)
+				systems2string.put(aSystem, s);
 		}
 		return systems2string;
+	}
+	
+	/**
+	 * Get template-based mediawiki code for a System
+	 * @param system
+	 * @return
+	 */
+	private String system2wiki(OpsdSystem system) {
+		if(system == null)
+			return null;
+		StringBuilder s = new StringBuilder();
+		s.append("{{" + OpsdConf.getWikiTemplateName(system.getClass().getSimpleName()));
+		s.append("|name=" + toNonNullableString(system.getName()));
+		s.append("|alias=" + toNullableString(system.getAlias()));
+		s.append("|fqdnOrIp=" + toNonNullableString(system.getFqdnOrIp()));
+		if(system.getDeviceType() == null) {
+			s.append("|deviceType=" + MSG_NULL);
+		}
+		else {
+			s.append("|deviceType=" + toNonNullableString(system.getDeviceType().getName()));
+		}
+		if(system.getOs() == null) {
+			s.append("|os=" + MSG_NULL);
+		}
+		else {
+			s.append("|os=" + toNonNullableString(system.getOs().getName()));
+		}
+		if(system.getDeviceType() != null && ! system.getDeviceType().isVirtual()) {
+			s.append("|lomIP=" + toNonNullableString(system.getLomIP()));
+			s.append("|lomAccess=" + toNonNullableString(system.getLomAccess()));
+		}
+		else {
+			s.append("|lomIP=" + MSG_EMPTY);
+			s.append("|lomAccess=" + MSG_EMPTY);
+		}
+		s.append("|osAccess=" + toNonNullableString(system.getOsAccess()));
+		s.append("|moreInfo=" + toNonNullableString(system.getMoreInfo()));
+		s.append("|environment=" + toNonNullableString(system.getEnvironment()));
+		if(system.getRole() == null) {
+			s.append("|role=" + MSG_NULL);
+		}
+		else {
+			s.append("|role=" + toNonNullableString(system.getRole().getName()));
+		}
+		s.append("|hostDownRecoveryProcedure=" + toNullableString(system.getHostDownRecoveryProcedure()));
+		if(system.getResponsible() == null) {
+			s.append("|responsible=" + toNonNullableString(getFullProjectData().getProject().getResponsible().getName()));
+		}
+		else {
+			s.append("|responsible=" + toNonNullableString(system.getResponsible().getName()));
+		}
+		if(system.getScaleTo() == null || system.getScaleTo().equals("")) {
+			s.append("|scaleTo=" + toNonNullableString(OpsdConf.getProperty("defaults.scaleSystemTo")));
+		}
+		else {
+			s.append("|scaleTo=" + toNonNullableString(system.getScaleTo()));
+		}
+		s.append("}}");
+		return s.toString();
 	}
 }

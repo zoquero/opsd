@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,6 +82,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	private List<OpsdHostService> cachedHostServices = null;
 	private List<OpsdServiceTemplate> cachedServiceTemplates = null;
 	private List<OpsdRequest> cachedRequests = null;
+	private List<String> cachedEnvironments = null;
 
 	static public OpsdSystem FLOATING_HOST = null;
 
@@ -314,7 +316,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @return
 	 * @throws OpsdException 
 	 */
-	private List<OpsdCriticity> getAllCriticities() throws OpsdException {
+	private List<OpsdCriticity> getCriticities() throws OpsdException {
 		if (criticities == null) {
 			/* Lazy initialization of the array, read from properties file */
 			criticities = new ArrayList<OpsdCriticity>();
@@ -351,7 +353,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @return
 	 * @throws OpsdException 
 	 */
-	private List<OpsdServiceTemplate> getAllServiceTemplates() throws OpsdException {
+	private List<OpsdServiceTemplate> getServiceTemplates() throws OpsdException {
 		if (cachedServiceTemplates == null) {
 			/* Lazy initialization of the array, read from properties file */
 			cachedServiceTemplates = new ArrayList<OpsdServiceTemplate>();
@@ -421,7 +423,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 */
 	private OpsdServiceTemplate getServiceTemplate(String serviceTemplateName) throws OpsdException {
 		if(cachedServiceTemplates == null) {
-			cachedServiceTemplates = getAllServiceTemplates();
+			cachedServiceTemplates = getServiceTemplates();
 		}
 		for(OpsdServiceTemplate aServiceTemplate: cachedServiceTemplates) {
 			if(aServiceTemplate.getName().equals(serviceTemplateName)) {
@@ -443,7 +445,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 */
 	private OpsdCriticity getCriticity(String criticityName) throws OpsdException {
 		if (criticities == null) {
-			criticities = getAllCriticities();
+			criticities = getCriticities();
 			
 			for (OpsdCriticity aCriticity: criticities) {
 				if (aCriticity.getName().equals(criticityName)) {
@@ -1140,5 +1142,38 @@ public class OpsdPoiDao implements OpsdDataTap {
 			}
 		}
 		return cachedRequests;
+	}
+
+	@Override
+	public List<String> getEnvironments(OpsdProject project)
+			throws OpsdException {
+		if(cachedEnvironments == null) {
+			cachedEnvironments = new ArrayList<String>(); 
+			// push environments from Systems
+			for(OpsdSystem system: getSystems(project)) {
+				String env = system.getEnvironment();
+				if(env != null && ! env.equals("")) {
+					for(String aCachedEnv: cachedEnvironments) {
+						if(env.equals(aCachedEnv)) {
+							continue;
+						}
+					}
+					cachedEnvironments.add(env);
+				}
+			}
+			// push environments from MonitoredHosts
+			for(OpsdMonitoredHost monitoredHost: getMonitoredHosts(project)) {
+				String env = monitoredHost.getEnvironment();
+				if(env != null && ! env.equals("")) {
+					for(String aCachedEnv: cachedEnvironments) {
+						if(env.equals(aCachedEnv)) {
+							continue;
+						}
+					}
+					cachedEnvironments.add(env);
+				}
+			}
+		}
+		return cachedEnvironments;
 	}
 }

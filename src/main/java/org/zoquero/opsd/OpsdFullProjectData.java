@@ -25,6 +25,8 @@ class OpsdFullProjectData {
 	private List<OpsdSystem> systems;
 	/** MonitoredHosts data */
 	private List<OpsdMonitoredHost> monitoredHosts;
+	/** Environments */
+	private List<String> environments;
 	/** RoleServices data */
 	private List<OpsdRoleService> roleServices;
 	/** Map Role > RoleService
@@ -117,6 +119,20 @@ class OpsdFullProjectData {
 	 */
 	public void setMonitoredHosts(List<OpsdMonitoredHost> monitoredHosts) {
 		this.monitoredHosts = monitoredHosts;
+	}
+
+	/**
+	 * @return the environments
+	 */
+	public List<String> getEnvironments() {
+		return environments;
+	}
+
+	/**
+	 * @param environments the environments to set
+	 */
+	public void setEnvironments(List<String> environments) {
+		this.environments = environments;
 	}
 
 	/**
