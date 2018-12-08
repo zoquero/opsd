@@ -94,13 +94,17 @@
 
 __FORCETOC__
 
+Documentation for the project '<em>${project.name}</em>' generated using '[https://github.com/zoquero/opsd Operations Descriptor]' on ${genDate} with ${report.errors?size} errors and ${report.warnings?size} warnings
+
 == Project description ==
+
 ${wikiProject}
 
 == Roles ==
 
 <#list roles2wiki as role, roleWiki> 
 === Role ''${role.name}'' ===
+
 ${roleWiki}
 
 </#list>
@@ -134,6 +138,13 @@ ${roleWiki}
     
   </#list>
 </#list>
+
+== Services and its procedures ==
+
+Article for service procedures: [[Procedures for ${project.name}]]
+
+<#--
+We'll remove it in a future code cleanup, by now it will help here
 
 == Services for roles (legacy, will be deleted) ==
 
@@ -176,6 +187,8 @@ ${roleWiki}
   </#if>
 </#list>
 
+-->
+
         </pre>
       </td></tr>
     </table>
@@ -185,6 +198,9 @@ ${roleWiki}
     <h3 id="asp">Article for service procedures</h3>
     <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Procedures for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Procedures for ${project.name}'>${wikiUrlBase}/Procedures for ${project.name}</a></p>
     
+<#--
+We'll remove it in a future code cleanup, by now it will help here
+
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
@@ -217,12 +233,9 @@ DOESN'T WORK, CAN'T INTERPOLATE USING VARIABLES AS INDEXES, JUST STATIC CONTENT
         </pre>
       </td></tr>
     </table>
-    
-    
-    
-    right versions:
-    
 
+-->
+    
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
@@ -250,9 +263,6 @@ ${aServiceWikiVO.wiki}
         </pre>
       </td></tr>
     </table>
-    
-    
-    
     
     <br/><hr/><br/>
     

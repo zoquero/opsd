@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -99,10 +100,14 @@ public class OpsdReportGenerator {
 		cfg.setLocale(Locale.getDefault());
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
+		SimpleDateFormat sdf = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+		String now = sdf.format(new GregorianCalendar().getTime());
+
 		// Let's process the template
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("title", "Validation of the project "
 				+ "and generation of monitoring and documentation");
+		input.put("genDate",          now);
 		input.put("project",          getFullProjectData().getProject());
 		input.put("wikiProject",      getWikiFromEntity());
 		input.put("report",           getFullProjectData().getReport());
