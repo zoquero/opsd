@@ -14,6 +14,7 @@ import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.OpsdRequest;
+import org.zoquero.opsd.entities.OpsdRequestVO;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -160,9 +161,16 @@ public class OpsdExtractor {
 		}
 		fpd.setHost2effectiveServiceWikiVOMap(host2effectiveServiceWikiVOMap);
 		
-		// OpsdSystem
+		// OpsdRequest
 		List<OpsdRequest> requests = dt.getRequests(project);
 		fpd.setRequests(requests);
+		
+		// OpsdRequestVO
+		List<OpsdRequestVO> requestVOs = new ArrayList<OpsdRequestVO>();
+		for(OpsdRequest aRequest: requests) {
+			requestVOs.add(new OpsdRequestVO(aRequest, "unset, lazy init"));
+		}
+		fpd.setRequestVOs(requestVOs);
 
 		
 		// Validation

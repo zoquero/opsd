@@ -273,17 +273,15 @@ ${aServiceWikiVO.wiki}
       <tr><td bgcolor="#F0F0F0">
         <pre>
 __FORCETOC__
-Tasks that can be requested for the project '''[[${project.name}]]'''
-== Requests ==
+Tasks that can be requested (hopefully by ticketing) for the project '''[[${project.name}]]'''
 
-<#list requests as request>
-=== ${request.name} ===
-  Request name: ${request.name}
-  Can be requested by: <#if request.authorized?hasContent> ${request.authorized} <#else> Error (null) </#if>  
-  Procedure: <#if request.procedure?hasContent> ${request.procedure} <#else> Error (null) </#if>
-  ScaleTo: <#if request.scaleTo?hasContent> ${request.scaleTo} <#else> Error (null) </#if>
+<#list requestVOs as aRequestVO> 
+== Request '${aRequestVO.request.name}' ==
+
+${aRequestVO.wiki}
+  
 </#list>
-            </pre>
+        </pre>
       </td></tr>
     </table>
     

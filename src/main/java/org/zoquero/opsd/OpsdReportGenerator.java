@@ -27,6 +27,8 @@ import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdRequest;
+import org.zoquero.opsd.entities.OpsdRequestVO;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
 
@@ -107,6 +109,7 @@ public class OpsdReportGenerator {
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("title", "Validation of the project "
 				+ "and generation of monitoring and documentation");
+		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
 		input.put("genDate",          now);
 		input.put("project",          getFullProjectData().getProject());
 		input.put("wikiProject",      getWikiFromEntity());
@@ -144,10 +147,12 @@ public class OpsdReportGenerator {
 		input.put("host2effectiveServiceWikiVOMap",
 				getFullProjectData().getHost2effectiveServiceWikiVOMap());
 		
-		
-		
 		input.put("requests",         getFullProjectData().getRequests());
-		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
+		
+		// Wiki String is lazy initialized in requestWiki value objects.
+		fillWikiInRequestList();
+		input.put("requestVOs",
+				getFullProjectData().getRequestVOs());
 
 		// Let's get the template
 		try {
@@ -172,6 +177,23 @@ public class OpsdReportGenerator {
 		}
 	}
 	
+	private void fillWikiInRequestList() {
+		List<OpsdRequestVO> requestVOs = getFullProjectData().getRequestVOs();
+		if(requestVOs == null) {
+			LOGGER.severe("The list of requestVOs is null");
+			return;
+		}
+		for(OpsdRequestVO requestVO: requestVOs) {
+			if(requestVO != null) {
+					if(requestVO.getRequest() == null) {
+						LOGGER.finer("The list of requestVOs has a component with null request object field");
+						continue;
+					}
+					requestVO.setWiki(request2wiki(requestVO.getRequest()));
+			}
+		}
+	}
+
 	private void fillWikiInHost2effectiveServiceWikiVOMap() {
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>> h
 			= getFullProjectData().getHost2effectiveServiceWikiVOMap();
@@ -546,6 +568,33 @@ public class OpsdReportGenerator {
 		s.append("}}");
 		return s.toString();
 	}
+	
+	private String request2wiki(OpsdRequest request) {
+		if(request == null)
+			return null;
+		StringBuilder s = new StringBuilder();
+		s.append("{{" + OpsdConf.getWikiTemplateName(request.getClass().getSimpleName()));
+		s.append("|name=" + toNonNullableString(request.getName()));
+		s.append("|authorized=" + toNullableString(request.getAuthorized()));
+		s.append("|procedure=" + toNonNullableString(request.getProcedure()));
+		if(request.getScaleTo() == null || request.getScaleTo().equals("")) {
+			if(getFullProjectData().getProject().getResponsible() == null) {
+				s.append("|scaleTo=" + MSG_NULL);
+			}
+			else {
+				s.append("|scaleTo=[["
+						+ toNonNullableString(getFullProjectData().getProject().getResponsible().getName())
+						+ "]]");
+			}
+		}
+		else {
+			s.append("|scaleTo=" + toNonNullableString(request.getScaleTo()));
+		}		
+		s.append("}}");
+		return s.toString();
+	}
+
+
 
 	/**
 	 * Scape special characters in a String to be correctly dealed by Mediawiki.

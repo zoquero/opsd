@@ -10,6 +10,7 @@ import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
+import org.zoquero.opsd.entities.OpsdRequestVO;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
@@ -54,6 +55,7 @@ class OpsdFullProjectData {
 	
 	/** Requests */
 	private List<OpsdRequest> requests;
+	private List<OpsdRequestVO> requestVOs;
 
 	
 	OpsdFullProjectData(OpsdReport oReport) {
@@ -241,6 +243,20 @@ class OpsdFullProjectData {
 	 */
 	public void setRequests(List<OpsdRequest> requests) {
 		this.requests = requests;
+	}
+
+	/**
+	 * @return the requestVOs
+	 */
+	public List<OpsdRequestVO> getRequestVOs() {
+		return requestVOs;
+	}
+
+	/**
+	 * @param requestVOs the requestVOs to set
+	 */
+	public void setRequestVOs(List<OpsdRequestVO> requestVOs) {
+		this.requestVOs = requestVOs;
 	}
 
 }
