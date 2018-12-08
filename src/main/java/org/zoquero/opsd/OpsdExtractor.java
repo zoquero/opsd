@@ -12,6 +12,7 @@ import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
+import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -95,6 +96,7 @@ public class OpsdExtractor {
 
 		
 		// host2effectiveServicesMap: Mixing host2servicesMap and role2servicesMap
+		// NOTE: This one may not be usefull at all finally
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>
 			host2effectiveServicesMap
 				= new HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>>();
@@ -123,6 +125,40 @@ public class OpsdExtractor {
 			// /Troubleshooting Just for troubleshooting purposes
 		}
 		fpd.setHost2effectiveServicesMap(host2effectiveServicesMap);
+		
+
+		// host2effectiveServicesMap: Mixing host2servicesMap and role2servicesMap
+		HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>>
+			host2effectiveServiceWikiVOMap
+				= new HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>>();
+		for(OpsdMonitoredHost aHost: monitoredHosts) {
+			List<OpsdMonitoredServiceWikiVO> monitoredServicesAndWikis = new ArrayList<OpsdMonitoredServiceWikiVO>();
+			LOGGER.finer("Mixing effective services for host " + aHost.getName());
+			OpsdRole role = aHost.getRole();
+			if(role != null) {
+				StringBuilder servicesDump = new StringBuilder("Services from its role '" + role.getName() + "': ");
+				for(OpsdRoleService aRoleService: dt.getRoleServicesByRole(project, role)) {
+					// Lazy initialization, OpsdReportGenerator will set the wiki code.
+					monitoredServicesAndWikis.add(new OpsdMonitoredServiceWikiVO(aRoleService, "unset, lazy init"));
+					servicesDump.append(aRoleService.getName() + ", ");
+				}
+				LOGGER.finer(servicesDump.toString());
+				
+			}
+			for(OpsdMonitoredService service: host2servicesMap.get(aHost)) {
+				monitoredServicesAndWikis.add(new OpsdMonitoredServiceWikiVO(service, "unset, lazy init"));
+			}
+			host2effectiveServiceWikiVOMap.put(aHost, monitoredServicesAndWikis);
+
+			// Troubleshooting Just for troubleshooting purposes
+			StringBuilder servicesDump = new StringBuilder("Direct services: ");
+			for(OpsdMonitoredService aService: host2servicesMap.get(aHost)) {
+				servicesDump.append(aService.getName() + ", ");
+			}
+			LOGGER.finer(servicesDump.toString());
+			// /Troubleshooting Just for troubleshooting purposes
+		}
+		fpd.setHost2effectiveServiceWikiVOMap(host2effectiveServiceWikiVOMap);
 		
 		// OpsdSystem
 		List<OpsdRequest> requests = dt.getRequests(project);

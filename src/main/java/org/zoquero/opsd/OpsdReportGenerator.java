@@ -24,6 +24,7 @@ import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
+import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
@@ -128,8 +129,18 @@ public class OpsdReportGenerator {
 				LOGGER.finer("* Service: '" + aService.getName() + "'");				
 			}
 		}
+		
 		input.put("effectiveService2wikiMap",
 				getEffectiveService2wikiMap());
+
+		// Wiki String is lazy initialized in serviceWiki value objects.
+		fillWikiInHost2effectiveServiceWikiVOMap();
+		// setHost2effectiveServiceWikiVOMap
+		input.put("host2effectiveServiceWikiVOMap",
+				getFullProjectData().getHost2effectiveServiceWikiVOMap());
+		
+		
+		
 		input.put("requests",         getFullProjectData().getRequests());
 		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
 
@@ -156,9 +167,34 @@ public class OpsdReportGenerator {
 		}
 	}
 	
+	private void fillWikiInHost2effectiveServiceWikiVOMap() {
+		HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>> h
+			= getFullProjectData().getHost2effectiveServiceWikiVOMap();
+		if(h == null) {
+			LOGGER.severe("The map Host > ServicesWiki is null");
+			return;
+		}
+		for(List<OpsdMonitoredServiceWikiVO> serviceVOs: h.values()) {
+			if(serviceVOs != null) {
+				for(OpsdMonitoredServiceWikiVO serviceWikiVO: serviceVOs) {
+					if(serviceWikiVO == null) {
+						LOGGER.finer("The map Host > ServicesWiki contains a null service list for a host");
+						continue;
+					}
+					if(serviceWikiVO.getService() == null) {
+						LOGGER.finer("The map Host > ServicesWiki contains a null service on a VO");
+						continue;
+					}
+					serviceWikiVO.setWiki(service2wiki(serviceWikiVO.getService()));
+				}
+			}
+		}
+		
+	}
+
 	private Map<OpsdMonitoredService, String> getEffectiveService2wikiMap() {
 		
-		NO FUNCIONA, NO ES POT FER INTERPOLLATION AMB VARIABLES COM A CLAUS DE HASH
+		System.out.println(" THIS MAY NOT BE USEFULL NOW ");
 		
 		Map<OpsdMonitoredService, String> effectiveService2wikiMap = new HashMap<OpsdMonitoredService, String>(); 
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>> host2effectiveServicesMap = getFullProjectData().getHost2effectiveServicesMap();
@@ -170,13 +206,13 @@ public class OpsdReportGenerator {
 		return effectiveService2wikiMap;
 	}
 
-
 	private String service2wiki(OpsdMonitoredService service) {
 		if(service == null) {
 			return MSG_NULL;
 		}
 		StringBuilder s = new StringBuilder();
-		s.append("{{" + OpsdConf.getWikiTemplateName(service.getClass().getSimpleName()));
+		// Name from its base class
+		s.append("{{" + OpsdConf.getWikiTemplateName(OpsdMonitoredService.class.getSimpleName()));
 		s.append("|name="
 					+ toNonNullableString(service.getName()));
 		s.append("|description="
@@ -337,7 +373,7 @@ public class OpsdReportGenerator {
 		if(s == null || s.equals("")) {
 			return MSG_NULL;
 		}
-		return s;
+		return string2escapedMediawiki(s);
 	}
 	
 	/**
@@ -349,7 +385,7 @@ public class OpsdReportGenerator {
 		if(s == null || s.equals("")) {
 			return MSG_EMPTY;
 		}
-		return s;
+		return string2escapedMediawiki(s);
 	}
 
 	/**
@@ -504,5 +540,30 @@ public class OpsdReportGenerator {
 		}
 		s.append("}}");
 		return s.toString();
+	}
+
+	/**
+	 * Scape special characters in a String to be correctly dealed by Mediawiki.
+	 * Mmmmmm it seems it's not working...
+	 * 
+     *      (   "\\",  "{{", "}}",   "|",   "<",   ">",  "\n" )
+     *      >> 
+     *      ( "\\\\", "\\o", "\\c", "\\p", "\\l", "\\g", "\\n" )
+	 * @param s
+	 * @return
+	 * @see https://www.mediawiki.org/wiki/Extension:Character_Escapes
+	 */
+	private String string2escapedMediawiki(String s) {
+		/*
+		// s=s.replace("|", "{{!}}");
+		return s.replace("\\", "\\\\")
+		 .replace("{{", "\\o")
+		 .replace("}}", "\\c")
+		 .replace("|", "\\p")
+		 .replace("<", "\\l")
+		 .replace(">", "\\g")
+		 .replace("\n", "\\n");
+		 */
+		return s;
 	}
 }

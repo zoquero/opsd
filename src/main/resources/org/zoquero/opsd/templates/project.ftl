@@ -203,7 +203,7 @@ aService name = ${aService.name} , aService description = ${aService.description
 
 Procedure = <#if aService.procedure?hasContent> ${aService.procedure} <#else> null (scale it up) </#if>
 
-
+DOESN'T WORK, CAN'T INTERPOLATE USING VARIABLES AS INDEXES, JUST STATIC CONTENT
 {effectiveService2wikiMap[aService]}
 
     </#list>
@@ -217,6 +217,42 @@ Procedure = <#if aService.procedure?hasContent> ${aService.procedure} <#else> nu
         </pre>
       </td></tr>
     </table>
+    
+    
+    
+    right versions:
+    
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre>
+
+__FORCETOC__
+Procedures for the services of the project [[${project.name}]], grouping together for each host both the explicit services for each host and the services for its roles.
+
+<#list host2effectiveServiceWikiVOMap as host, hostServiceWikis> 
+=== MonitoredHost '${host.name}' ===
+
+  <#if hostServiceWikis?hasContent>
+    <#list hostServiceWikis as aServiceWikiVO>
+==== Service '${aServiceWikiVO.service.name}' ====
+
+${aServiceWikiVO.wiki}
+  
+    </#list>
+  <#else>
+  
+  <p><strong>Host without services</strong></p>
+  
+  </#if>
+</#list>
+
+        </pre>
+      </td></tr>
+    </table>
+    
+    
+    
     
     <br/><hr/><br/>
     
@@ -305,6 +341,7 @@ __FORCETOC__
     System: <#if monitoredHost.system?hasContent> ${monitoredHost.system.name} <#else> Error (null) </#if>
     Environment: <#if monitoredHost.environment?hasContent> ${monitoredHost.environment} <#else> Error (null) </#if>
     Role: <#if monitoredHost.role?hasContent> ${monitoredHost.role.name} <#else> Error (null) </#if>
+    More info: <#if monitoredHost.moreInfo?hasContent> ${monitoredHost.moreInfo} <#else> Error (null) </#if>
     ...
 
         </pre>
