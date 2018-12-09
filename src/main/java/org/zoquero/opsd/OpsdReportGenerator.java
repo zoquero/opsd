@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
+import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
@@ -30,6 +31,8 @@ import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
+import org.zoquero.opsd.entities.OpsdFilePolicy.ACTION_TYPE;
+import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -141,8 +144,8 @@ public class OpsdReportGenerator {
 			}
 		}
 		
-		input.put("effectiveService2wikiMap",
-				getEffectiveService2wikiMap());
+//		input.put("effectiveService2wikiMap",
+//				getEffectiveService2wikiMap());
 
 		// Wiki String is lazy initialized in serviceWiki value objects.
 		fillWikiInHost2effectiveServiceWikiVOMap();
@@ -161,6 +164,13 @@ public class OpsdReportGenerator {
 		fillWikiInPeriodicTaskList();
 		input.put("periodicTaskVOs",
 				getFullProjectData().getPeriodicTaskVOs());
+		
+		input.put("filePolicies",   getFullProjectData().getFilePolicies());
+//		fillWikiInFilePolicyList();
+//		input.put("FilePolicyVOs",
+//				getFullProjectData().getFilePolicyVOs());
+		input.put("wikiFilePolicies",      getWikiFromFilePolicies());
+
 
 
 		// Let's get the template
@@ -219,7 +229,23 @@ public class OpsdReportGenerator {
 			}
 		}
 	}
-
+	
+	private void fillWikiInFilePolicyList() {
+		List<OpsdFilePolicyVO> filePolicyVOs = getFullProjectData().getFilePolicyVOs();
+		if(filePolicyVOs == null) {
+			LOGGER.severe("The list of filePolicyVOs is null");
+			return;
+		}
+		for(OpsdFilePolicyVO filePolicyVO: filePolicyVOs) {
+			if(filePolicyVO != null) {
+					if(filePolicyVO.getFilePolicy() == null) {
+						LOGGER.finer("The list of filePolicyVOs has a component with null filePolicy object field");
+						continue;
+					}
+					filePolicyVO.setWiki(filePolicy2wiki(filePolicyVO.getFilePolicy()));
+			}
+		}
+	}
 
 	private void fillWikiInHost2effectiveServiceWikiVOMap() {
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>> h
@@ -247,9 +273,6 @@ public class OpsdReportGenerator {
 	}
 
 	private Map<OpsdMonitoredService, String> getEffectiveService2wikiMap() {
-		
-		System.out.println(" THIS MAY NOT BE USEFULL NOW ");
-		
 		Map<OpsdMonitoredService, String> effectiveService2wikiMap = new HashMap<OpsdMonitoredService, String>(); 
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>> host2effectiveServicesMap = getFullProjectData().getHost2effectiveServicesMap();
 		for(List<OpsdMonitoredService> serviceList: host2effectiveServicesMap.values()) {
@@ -737,6 +760,46 @@ public class OpsdReportGenerator {
 			s.append("|scaleTo=" + toNonNullableString(periodicTask.getScaleTo()));
 		}		
 		s.append("}}");
+		return s.toString();
+	}
+	
+	
+	/**
+	 * Get wiki code for a List of FilePolicies
+	 * It deals with empty values.
+	 * @return
+	 */
+	private Map<OpsdFilePolicy, String> getWikiFromFilePolicies() {
+		HashMap<OpsdFilePolicy, String> filePolicies2string = new HashMap<OpsdFilePolicy, String>();
+		for(OpsdFilePolicy aFilePolicy: getFullProjectData().getFilePolicies()) {
+			String s = filePolicy2wiki(aFilePolicy);
+			if(s != null)
+				filePolicies2string.put(aFilePolicy, s);
+		}
+		return filePolicies2string;
+	}
+	
+	private String filePolicy2wiki(OpsdFilePolicy filePolicy) {
+		if(filePolicy == null)
+			return null;
+		StringBuilder s = new StringBuilder("find \"");
+		s.append(filePolicy.getBaseFolder());
+		s.append("\" -name \"");
+		s.append( ( filePolicy.getPrefix() == null ? "" : filePolicy.getPrefix() ) );
+		s.append("*");
+		s.append( ( filePolicy.getSufix() == null ? "" : filePolicy.getSufix() ) );
+		s.append("\" -type f -mtime +");
+		s.append(filePolicy.getMinDays().toString());
+		s.append(" -exec ");
+		if(filePolicy.getAction() == ACTION_TYPE.COMPRESS) {
+			s.append("gzip {} \\; ");			
+		}
+		else if(filePolicy.getAction() == ACTION_TYPE.DELETE) {
+			s.append("rm -f {} \\; ");			
+		}
+		else {
+			s.append(" ERROR ");			
+		}
 		return s.toString();
 	}
 

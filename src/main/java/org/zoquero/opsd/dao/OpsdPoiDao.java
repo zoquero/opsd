@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdCriticity;
 import org.zoquero.opsd.entities.OpsdDeviceType;
+import org.zoquero.opsd.entities.OpsdFilePolicy;
+import org.zoquero.opsd.entities.OpsdFilePolicy.ACTION_TYPE;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdRequest;
@@ -85,6 +87,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	private List<OpsdRequest> cachedRequests = null;
 	private List<String> cachedEnvironments = null;
 	private List<OpsdPeriodicTask> cachedPeriodicTasks = null;
+	private List<OpsdFilePolicy> cachedFilePolicies = null;
 
 	static public OpsdSystem FLOATING_HOST = null;
 
@@ -1221,5 +1224,78 @@ public class OpsdPoiDao implements OpsdDataTap {
 			}
 		}
 		return cachedPeriodicTasks;
+	}
+
+	@Override
+	public List<OpsdFilePolicy> getFilePolicies(OpsdProject project)
+			throws OpsdException {
+		LOGGER.log(Level.FINE, "OpsdPoiDao.getFilePolicies");
+		DataFormatter formatter = new DataFormatter();
+		if (cachedFilePolicies == null) {
+			cachedFilePolicies = new ArrayList<OpsdFilePolicy>();
+
+			// Get the number of sheets in the xlsx file
+			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+			int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdFilePolicy.class.getSimpleName());
+			if (sheetPosition > numberOfSheets - 1) {
+				throw new OpsdException("The sheet " + path + " has "
+						+ numberOfSheets + " and OpsdRequest objects should be"
+						+ " in sheet position # " + sheetPosition + " (0..N-1)");
+			}
+
+			// Get the nth sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			int firstRow = OpsdPoiConf.getFirstRow(); // cachable
+
+			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
+
+				// Get the row object
+				Row row = sheet.getRow(rowNum);
+
+				int i = 0;
+				String systemStr = formatter.formatCellValue(row.getCell(i++));
+				String roleStr = formatter.formatCellValue(row.getCell(i++));
+				String baseFolder = formatter.formatCellValue(row.getCell(i++));
+				String prefix = formatter.formatCellValue(row.getCell(i++));
+				String sufix = formatter.formatCellValue(row.getCell(i++));
+				String minDaysStr = formatter.formatCellValue(row.getCell(i++));
+				String actionStr = formatter.formatCellValue(row.getCell(i++));
+				
+				OpsdSystem system = getSystemByName(project, systemStr);
+				OpsdRole role = getRoleByName(project, roleStr);
+				if(system == null && role == null)
+					continue;
+				
+				Integer minDays;
+				if (minDaysStr == null) {
+					minDays = null;
+				}
+				else {
+					try {
+						minDays = Integer.parseInt(minDaysStr);
+					} catch (Throwable t) {
+						minDays = null;
+					}
+				}
+				ACTION_TYPE action;
+				if (actionStr == null) {
+					action = null;
+				}
+				else if(actionStr.equals("rm")) {
+					action = ACTION_TYPE.DELETE;
+				}
+				else if(actionStr.equals("gz")) {
+					action = ACTION_TYPE.COMPRESS;
+				}
+				else {
+					throw new OpsdException("Wrong action code (" + actionStr + ") for FilePolicy #" + rowNum);
+				}
+				// Let's create the OpsdFilePolicy object:
+				OpsdFilePolicy FilePolicy = new OpsdFilePolicy(system, role, baseFolder, prefix, sufix, minDays, action);
+				cachedFilePolicies.add(FilePolicy);
+				LOGGER.log(Level.FINEST, "* FilePolicy added: " + FilePolicy);
+			}
+		}
+		return cachedFilePolicies;
 	}
 }

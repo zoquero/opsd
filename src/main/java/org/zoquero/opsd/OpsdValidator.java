@@ -5,6 +5,7 @@ package org.zoquero.opsd;
 
 import java.util.List;
 
+import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
@@ -353,7 +354,40 @@ public class OpsdValidator {
 //			}
 		}
 	}
-	
+
+	private static void validateFilePolicies(OpsdFullProjectData fpd) {
+		OpsdReport oReport = fpd.getReport();
+		List<OpsdFilePolicy> filePolicies = fpd.getFilePolicies();
+		for (int i = 0; i < filePolicies.size(); i++) {
+			OpsdFilePolicy filePolicy = filePolicies.get(i);
+			if(filePolicy == null) {
+				oReport.pushError("FilePolicy #" + i + " is null");
+				continue;
+			}
+			if(filePolicy.getSystem() == null && filePolicy.getRole() == null) {
+				oReport.pushError("FilePolicy #" + i + " has null system & role (need one!)");
+			}
+
+			if(filePolicy.getBaseFolder() == null
+					|| filePolicy.getBaseFolder().trim().equals("")) {
+				oReport.pushError("FilePolicy #" + i + " has null BaseFolder");
+			}
+			if(filePolicy.getPrefix()== null
+					|| filePolicy.getPrefix().trim().equals("")) {
+				oReport.pushWarning("FilePolicy #" + i + " has null Prefix");
+			}
+			if(filePolicy.getSufix()== null
+					|| filePolicy.getSufix().trim().equals("")) {
+				oReport.pushWarning("FilePolicy #" + i + " has null Sufix");
+			}
+			if(filePolicy.getMinDays() == null) {
+				oReport.pushError("FilePolicy #" + i + " has null MinDays");
+			}
+			if(filePolicy.getAction() == null) {
+				oReport.pushError("FilePolicy #" + i + " has null Action");
+			}
+		}
+	}
 	
 	public static void validate(OpsdFullProjectData fpd) {
 		validateProject(fpd);
@@ -363,6 +397,6 @@ public class OpsdValidator {
 		validateRoleServices(fpd);
 		validateHostServices(fpd);
 		validateRequests(fpd);
-		validatePeriodicTasks(fpd);
+		validateFilePolicies(fpd);
 	}
 }

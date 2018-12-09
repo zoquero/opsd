@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.zoquero.opsd.OpsdException;
+import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
@@ -167,5 +168,13 @@ public interface OpsdDataTap {
 	 * @throws OpsdException
 	 */
 	List<OpsdPeriodicTask> getPeriodicTasks(OpsdProject project) throws OpsdException;
+	
+	/**
+	 * Gets the file policies of a Project
+	 * @param project
+	 * @return List of file policies
+	 * @throws OpsdException
+	 */
+	List<OpsdFilePolicy> getFilePolicies(OpsdProject project) throws OpsdException;
 
 }

@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.dao.OpsdPoiDao;
+import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
@@ -18,6 +19,7 @@ import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
+import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -184,6 +186,17 @@ public class OpsdExtractor {
 			periodicTaskVOs.add(new OpsdPeriodicTaskVO(aPeriodicTask, "unset, lazy init"));
 		}
 		fpd.setPeriodicTaskVOs(periodicTaskVOs);
+		
+		// OpsdFilePolicy
+		List<OpsdFilePolicy> filePolicies = dt.getFilePolicies(project);
+		fpd.setFilePolicies(filePolicies);
+		
+		// OpsdFilePolicyVO
+		List<OpsdFilePolicyVO> filePolicyVOs = new ArrayList<OpsdFilePolicyVO>();
+		for(OpsdFilePolicy aFilePolicy: filePolicies) {
+			filePolicyVOs.add(new OpsdFilePolicyVO(aFilePolicy, "unset, lazy init"));
+		}
+		fpd.setFilePolicyVOs(filePolicyVOs);
 		
 		// Validation
 		OpsdValidator.validate(fpd);

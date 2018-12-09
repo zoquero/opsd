@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.zoquero.opsd.dao.OpsdPoiConf;
+import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
@@ -13,6 +14,7 @@ import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
+import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -63,6 +65,10 @@ class OpsdFullProjectData {
 	private List<OpsdPeriodicTask> periodicTasks;
 	/** Value Object with PeriodicTasks and it's wiki representations*/
 	private List<OpsdPeriodicTaskVO> periodicTaskVOs;
+	/** FilePolicy */
+	private List<OpsdFilePolicy> filePolicies;
+	/** FilePolicyVOs */
+	private List<OpsdFilePolicyVO> filePolicyVOs;
 
 	
 	OpsdFullProjectData(OpsdReport oReport) {
@@ -292,6 +298,34 @@ class OpsdFullProjectData {
 	 */
 	public void setPeriodicTaskVOs(List<OpsdPeriodicTaskVO> periodicTaskVOs) {
 		this.periodicTaskVOs = periodicTaskVOs;
+	}
+
+	/**
+	 * @return the filePolicies
+	 */
+	public List<OpsdFilePolicy> getFilePolicies() {
+		return filePolicies;
+	}
+
+	/**
+	 * @param filePolicies the filePolicies to set
+	 */
+	public void setFilePolicies(List<OpsdFilePolicy> filePolicies) {
+		this.filePolicies = filePolicies;
+	}
+
+	/**
+	 * @return the filePolicyVOs
+	 */
+	public List<OpsdFilePolicyVO> getFilePolicyVOs() {
+		return filePolicyVOs;
+	}
+
+	/**
+	 * @param filePolicyVOs the filePolicyVOs to set
+	 */
+	public void setFilePolicyVOs(List<OpsdFilePolicyVO> filePolicyVOs) {
+		this.filePolicyVOs = filePolicyVOs;
 	}
 
 }

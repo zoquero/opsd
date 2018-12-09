@@ -310,16 +310,30 @@ ${aPeriodicTaskVO.wiki}
     
     <h3 id="filepolicies">Article for file policies</h3>
     <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>File policies for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/File policies for ${project.name}'>${wikiUrlBase}/File policies for ${project.name}</a></p>
-    
+
+<#list wikiFilePolicies as filePolicy, filePolicyWiki> 
+
+A file policy for 
+  <#if filePolicy.system?hasContent>
+the system '${filePolicy.system.name}'
+  <#else>
+the system (none)
+  </#if>
+  <#if filePolicy.role?hasContent>
+and all the hosts belonging to the role '${filePolicy.role.name}'
+  <#else>
+and all the hosts belonging to the role (none)
+  </#if>:
+
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
-__FORCETOC__
-File policies for the project [[${project.name}]]:
-... PENDING
+${filePolicyWiki}
         </pre>
       </td></tr>
     </table>
+
+</#list>
     
     <br/><hr/><br/>
     
