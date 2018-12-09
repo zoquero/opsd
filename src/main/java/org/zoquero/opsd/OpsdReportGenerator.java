@@ -25,12 +25,14 @@ import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
-import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
+import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
-import org.zoquero.opsd.entities.OpsdRequestVO;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
+import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
+import org.zoquero.opsd.entities.vo.OpsdRequestVO;
 
 
 import freemarker.core.ParseException;
@@ -112,7 +114,7 @@ public class OpsdReportGenerator {
 		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
 		input.put("genDate",          now);
 		input.put("project",          getFullProjectData().getProject());
-		input.put("wikiProject",      getWikiFromEntity());
+		input.put("wikiProject",      getWikiFromProject());
 		input.put("report",           getFullProjectData().getReport());
 		input.put("roles",            getFullProjectData().getRoles());
 		input.put("roles2wiki",       getWikiFromRoles());
@@ -125,6 +127,7 @@ public class OpsdReportGenerator {
 		input.put("assetArticleNamePrefix", OpsdConf.getProperty("assetArticleNamePrefix"));
 		
 		input.put("monitoredHosts",   getFullProjectData().getMonitoredHosts());
+		input.put("monitoredHosts2wiki", getWikiFromMonitoredHosts());
 		input.put("roleServices",     getFullProjectData().getRoleServices());
 		input.put("role2servicesMap", getFullProjectData().getRole2servicesMap());
 		input.put("hostServices",     getFullProjectData().getHostServices());
@@ -148,11 +151,17 @@ public class OpsdReportGenerator {
 				getFullProjectData().getHost2effectiveServiceWikiVOMap());
 		
 		input.put("requests",         getFullProjectData().getRequests());
-		
 		// Wiki String is lazy initialized in requestWiki value objects.
 		fillWikiInRequestList();
 		input.put("requestVOs",
 				getFullProjectData().getRequestVOs());
+		
+		input.put("periodicTasks",         getFullProjectData().getPeriodicTasks());
+		// Wiki String is lazy initialized in periodicTaskWiki value objects.
+		fillWikiInPeriodicTaskList();
+		input.put("periodicTaskVOs",
+				getFullProjectData().getPeriodicTaskVOs());
+
 
 		// Let's get the template
 		try {
@@ -193,6 +202,24 @@ public class OpsdReportGenerator {
 			}
 		}
 	}
+	
+	private void fillWikiInPeriodicTaskList() {
+		List<OpsdPeriodicTaskVO> periodicTaskVOs = getFullProjectData().getPeriodicTaskVOs();
+		if(periodicTaskVOs == null) {
+			LOGGER.severe("The list of periodicTaskVOs is null");
+			return;
+		}
+		for(OpsdPeriodicTaskVO periodicTaskVO: periodicTaskVOs) {
+			if(periodicTaskVO != null) {
+					if(periodicTaskVO.getPeriodicTask() == null) {
+						LOGGER.finer("The list of periodicTaskVOs has a component with null periodicTask object field");
+						continue;
+					}
+					periodicTaskVO.setWiki(periodicTask2wiki(periodicTaskVO.getPeriodicTask()));
+			}
+		}
+	}
+
 
 	private void fillWikiInHost2effectiveServiceWikiVOMap() {
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>> h
@@ -242,6 +269,8 @@ public class OpsdReportGenerator {
 		s.append("{{" + OpsdConf.getWikiTemplateName(OpsdMonitoredService.class.getSimpleName()));
 		s.append("|name="
 					+ toNonNullableString(service.getName()));
+		s.append("|project="
+				+ toNonNullableString(getFullProjectData().getProject().getName()));
 		s.append("|description="
 				+ toNullableString(service.getDescription()));
 		s.append("|procedure="
@@ -416,11 +445,11 @@ public class OpsdReportGenerator {
 	}
 
 	/**
-	 * Get wiki code for an Entity.
+	 * Get wiki code for a Project.
 	 * It deals with empty values.
 	 * @return
 	 */
-	private String getWikiFromEntity() {
+	private String getWikiFromProject() {
 		OpsdProject project = getFullProjectData().getProject();
 		if(project == null) return MSG_NULL;
 		
@@ -487,6 +516,8 @@ public class OpsdReportGenerator {
 			s.append("{{" + OpsdConf.getWikiTemplateName(aRole.getClass().getSimpleName()));
 			s.append("|name="
 						+ toNonNullableString(aRole.getName()));
+			s.append("|project="
+					+ toNonNullableString(getFullProjectData().getProject().getName()));
 			s.append("|description="
 					+ toNullableString(aRole.getDescription()));
 			s.append("}}");
@@ -511,6 +542,21 @@ public class OpsdReportGenerator {
 	}
 	
 	/**
+	 * Get wiki code for a List of MonitoredHosts
+	 * It deals with empty values.
+	 * @return
+	 */
+	private Map<OpsdMonitoredHost, String> getWikiFromMonitoredHosts() {
+		HashMap<OpsdMonitoredHost, String> monitoredHosts2string = new HashMap<OpsdMonitoredHost, String>();
+		for(OpsdMonitoredHost aMonitoredHost: getFullProjectData().getMonitoredHosts()) {
+			String s = monitoredHost2wiki(aMonitoredHost);
+			if(s != null)
+				monitoredHosts2string.put(aMonitoredHost, s);
+		}
+		return monitoredHosts2string;
+	}
+	
+	/**
 	 * Get template-based mediawiki code for a System
 	 * @param system
 	 * @return
@@ -521,6 +567,8 @@ public class OpsdReportGenerator {
 		StringBuilder s = new StringBuilder();
 		s.append("{{" + OpsdConf.getWikiTemplateName(system.getClass().getSimpleName()));
 		s.append("|name=" + toNonNullableString(system.getName()));
+		s.append("|project="
+				+ toNonNullableString(getFullProjectData().getProject().getName()));
 		s.append("|alias=" + toNullableString(system.getAlias()));
 		s.append("|fqdnOrIp=" + toNonNullableString(system.getFqdnOrIp()));
 		if(system.getDeviceType() == null) {
@@ -569,12 +617,82 @@ public class OpsdReportGenerator {
 		return s.toString();
 	}
 	
+	/**
+	 * Get template-based mediawiki code for a MonitoredHost
+	 * @param monitoredHost
+	 * @return
+	 */
+	private String monitoredHost2wiki(OpsdMonitoredHost monitoredHost) {
+		if(monitoredHost == null)
+			return null;
+		StringBuilder s = new StringBuilder();
+		s.append("{{" + OpsdConf.getWikiTemplateName(monitoredHost.getClass().getSimpleName()));
+		s.append("|name=" + toNonNullableString(monitoredHost.getName()));
+		s.append("|project="
+				+ toNonNullableString(getFullProjectData().getProject().getName()));
+		s.append("|ip=" + toNonNullableString(monitoredHost.getIp()));
+		if(monitoredHost.getSystem() == null) {
+			s.append("|system=" + MSG_NULL);
+		}
+		else {
+			s.append("|system=" + toNonNullableString(monitoredHost.getSystem().getName()));
+		}
+		if(monitoredHost.isForManaging() == null) {
+			s.append("|isForManaging=" + MSG_NULL);
+		}
+		else {
+			s.append("|isForManaging=" + toNonNullableString(monitoredHost.isForManaging().toString()));
+		}
+		if(monitoredHost.isForService() == null) {
+			s.append("|isForService=" + MSG_NULL);
+		}
+		else {
+			s.append("|isForService=" + toNonNullableString(monitoredHost.isForService().toString()));
+		}
+		if(monitoredHost.isForBackup() == null) {
+			s.append("|isForBackup=" + MSG_NULL);
+		}
+		else {
+			s.append("|isForBackup=" + toNonNullableString(monitoredHost.isForBackup().toString()));
+		}
+		if(monitoredHost.isForNas() == null) {
+			s.append("|isForNas=" + MSG_NULL);
+		}
+		else {
+			s.append("|isForNas=" + toNonNullableString(monitoredHost.isForNas().toString()));
+		}
+		if(monitoredHost.isDefaultChecksNeeded() == null) {
+			s.append("|isDefaultChecksNeeded=" + MSG_NULL);
+		}
+		else {
+			s.append("|isDefaultChecksNeeded=" + toNonNullableString(monitoredHost.isDefaultChecksNeeded().toString()));
+		}
+		s.append("|moreInfo=" + toNonNullableString(monitoredHost.getMoreInfo()));
+		s.append("|environment=" + toNonNullableString(monitoredHost.getEnvironment()));
+		if(monitoredHost.getRole() == null) {
+			s.append("|role=" + MSG_NULL);
+		}
+		else {
+			s.append("|role=" + toNonNullableString(monitoredHost.getRole().getName()));
+		}
+		if(monitoredHost.getScaleTo() == null || monitoredHost.getScaleTo().equals("")) {
+			s.append("|scaleTo=" + toNonNullableString(OpsdConf.getProperty("defaults.scaleMonitoredHostTo")));
+		}
+		else {
+			s.append("|scaleTo=" + toNonNullableString(monitoredHost.getScaleTo()));
+		}
+		s.append("}}");
+		return s.toString();
+	}
+	
 	private String request2wiki(OpsdRequest request) {
 		if(request == null)
 			return null;
 		StringBuilder s = new StringBuilder();
 		s.append("{{" + OpsdConf.getWikiTemplateName(request.getClass().getSimpleName()));
 		s.append("|name=" + toNonNullableString(request.getName()));
+		s.append("|project="
+				+ toNonNullableString(getFullProjectData().getProject().getName()));
 		s.append("|authorized=" + toNullableString(request.getAuthorized()));
 		s.append("|procedure=" + toNonNullableString(request.getProcedure()));
 		if(request.getScaleTo() == null || request.getScaleTo().equals("")) {
@@ -595,6 +713,32 @@ public class OpsdReportGenerator {
 	}
 
 
+	private String periodicTask2wiki(OpsdPeriodicTask periodicTask) {
+		if(periodicTask == null)
+			return null;
+		StringBuilder s = new StringBuilder();
+		s.append("{{" + OpsdConf.getWikiTemplateName(periodicTask.getClass().getSimpleName()));
+		s.append("|name=" + toNonNullableString(periodicTask.getName()));
+		s.append("|project="
+				+ toNonNullableString(getFullProjectData().getProject().getName()));
+		s.append("|periodicity=" + toNullableString(periodicTask.getPeriodicity()));
+		s.append("|procedure=" + toNonNullableString(periodicTask.getProcedure()));
+		if(periodicTask.getScaleTo() == null || periodicTask.getScaleTo().equals("")) {
+			if(getFullProjectData().getProject().getResponsible() == null) {
+				s.append("|scaleTo=" + MSG_NULL);
+			}
+			else {
+				s.append("|scaleTo=[["
+						+ toNonNullableString(getFullProjectData().getProject().getResponsible().getName())
+						+ "]]");
+			}
+		}
+		else {
+			s.append("|scaleTo=" + toNonNullableString(periodicTask.getScaleTo()));
+		}		
+		s.append("}}");
+		return s.toString();
+	}
 
 	/**
 	 * Scape special characters in a String to be correctly dealed by Mediawiki.

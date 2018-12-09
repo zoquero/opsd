@@ -1,7 +1,9 @@
 /**
  * 
  */
-package org.zoquero.opsd.entities;
+package org.zoquero.opsd.entities.vo;
+
+import org.zoquero.opsd.entities.OpsdRequest;
 
 /**
  * Value object containing a OpsdRequest and String (wiki) pair.

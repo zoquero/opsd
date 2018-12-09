@@ -12,13 +12,15 @@ import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
-import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
+import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdRequest;
-import org.zoquero.opsd.entities.OpsdRequestVO;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
+import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
+import org.zoquero.opsd.entities.vo.OpsdRequestVO;
 
 /**
  * Accesses the Project objects throught a OpsdDataTap
@@ -171,7 +173,17 @@ public class OpsdExtractor {
 			requestVOs.add(new OpsdRequestVO(aRequest, "unset, lazy init"));
 		}
 		fpd.setRequestVOs(requestVOs);
-
+		
+		// OpsdPeriodicTask
+		List<OpsdPeriodicTask> periodicTasks = dt.getPeriodicTasks(project);
+		fpd.setPeriodicTasks(periodicTasks);
+		
+		// OpsdPeriodicTaskVO
+		List<OpsdPeriodicTaskVO> periodicTaskVOs = new ArrayList<OpsdPeriodicTaskVO>();
+		for(OpsdPeriodicTask aPeriodicTask: periodicTasks) {
+			periodicTaskVOs.add(new OpsdPeriodicTaskVO(aPeriodicTask, "unset, lazy init"));
+		}
+		fpd.setPeriodicTaskVOs(periodicTaskVOs);
 		
 		// Validation
 		OpsdValidator.validate(fpd);

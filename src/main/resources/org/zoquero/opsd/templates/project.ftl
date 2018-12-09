@@ -103,7 +103,7 @@ ${wikiProject}
 == Roles ==
 
 <#list roles2wiki as role, roleWiki> 
-=== Role ''${role.name}'' ===
+=== Role '${role.name}' ===
 
 ${roleWiki}
 
@@ -112,10 +112,10 @@ ${roleWiki}
 == Systems by environment and role ==
 
 <#list env2role2systems as env, role2systems> 
-=== Environment ''${env}'' ===
+=== Environment '${env}' ===
 
   <#list role2systems as role, systems> 
-==== Role ''${role.name}'' ====
+==== Role '${role.name}' ====
 
     <#list systems as system>
 * [[${assetArticleNamePrefix}${system.name}|${system.name}]]
@@ -127,10 +127,10 @@ ${roleWiki}
 == MonitoredHosts by environment and role ==
 
 <#list env2role2monitoredHosts as env, role2monitoredHosts> 
-=== Environment ''${env}'' ===
+=== Environment '${env}' ===
 
   <#list role2monitoredHosts as role, monitoredHosts> 
-==== Role ''${role.name}'' ====
+==== Role '${role.name}' ====
 
     <#list monitoredHosts as monitoredHost>
 * [[${monitoredHost.name}]]
@@ -294,8 +294,14 @@ ${aRequestVO.wiki}
       <tr><td bgcolor="#F0F0F0">
         <pre>
 __FORCETOC__
-Periodic tasks for the project [[${project.name}]]:
-... PENDING
+Periodic tasks for the project '''[[${project.name}]]'''
+
+<#list periodicTaskVOs as aPeriodicTaskVO> 
+== Periodic task '${aPeriodicTaskVO.periodicTask.name}' ==
+
+${aPeriodicTaskVO.wiki}
+  
+</#list>
         </pre>
       </td></tr>
     </table>
@@ -334,29 +340,21 @@ ${systemStr}
     
     <br/><hr/><br/>
 
-    <h3 id="monitoredhosts">Article for MonitoredHosts</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>MonitoredHosts for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/MonitoredHosts for ${project.name}'>${wikiUrlBase}/MonitoredHosts for ${project.name}</a></p>
+    <h3 id="monitoredhosts">Articles for MonitoredHosts</h3>
 
-<#list monitoredHosts as monitoredHost>
-    <h4> MonitoredHost '''${monitoredHost.name}''' </h4>
+<#list monitoredHosts2wiki as monitoredHost, monitoredHostStr>
+    <h4>Article for MonitoredHost '<span style="background-color: #F0F0F0"><em>${monitoredHost.name}</em></span>'</h4>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${monitoredHost.name}</em></span>' and URL: <a href='${wikiUrlBase}/${monitoredHost.name}'>${wikiUrlBase}/${monitoredHost.name}</a></p> 
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
-__FORCETOC__
-
-    System name: <#if monitoredHost.name?hasContent> ${monitoredHost.name} <#else> Error (null) </#if>
-    IP: <#if monitoredHost.ip?hasContent> ${monitoredHost.ip} <#else> Error (null) </#if>  
-    System: <#if monitoredHost.system?hasContent> ${monitoredHost.system.name} <#else> Error (null) </#if>
-    Environment: <#if monitoredHost.environment?hasContent> ${monitoredHost.environment} <#else> Error (null) </#if>
-    Role: <#if monitoredHost.role?hasContent> ${monitoredHost.role.name} <#else> Error (null) </#if>
-    More info: <#if monitoredHost.moreInfo?hasContent> ${monitoredHost.moreInfo} <#else> Error (null) </#if>
-    ...
-
+${monitoredHostStr}
         </pre>
       </td></tr>
     </table>
+
 </#list>
-    
+
     <br/><hr/><br/>
     
     <h2 id="monitoring">3) Script to setup monitoring</h2>

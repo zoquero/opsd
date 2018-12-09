@@ -20,6 +20,7 @@ import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdCriticity;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdHostService;
@@ -83,6 +84,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	private List<OpsdServiceTemplate> cachedServiceTemplates = null;
 	private List<OpsdRequest> cachedRequests = null;
 	private List<String> cachedEnvironments = null;
+	private List<OpsdPeriodicTask> cachedPeriodicTasks = null;
 
 	static public OpsdSystem FLOATING_HOST = null;
 
@@ -172,7 +174,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 		// Get the number of sheets in the xlsx file
 		int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-		int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdProject");
+		int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdProject.class.getSimpleName());
 		if (sheetPosition > numberOfSheets - 1) {
 			throw new OpsdException("The sheet " + path + " has "
 					+ numberOfSheets + " and OpsdProject objects should be"
@@ -505,7 +507,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 			// Get the number of sheets in the xlsx file
 			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdRole");
+			int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdRole.class.getSimpleName());
 			if (sheetPosition > numberOfSheets - 1) {
 				throw new OpsdException("The sheet " + path + " has "
 						+ numberOfSheets + " and OpsdRole objects should be"
@@ -551,7 +553,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 			// Get the number of sheets in the xlsx file
 			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdSystem");
+			int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdSystem.class.getSimpleName());
 			if (sheetPosition > numberOfSheets - 1) {
 				throw new OpsdException("The sheet " + path + " has "
 						+ numberOfSheets + " and OpsdSystem objects should be"
@@ -672,7 +674,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 		// Get the number of sheets in the xlsx file
 		int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-		int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdMonitoredHost");
+		int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdMonitoredHost.class.getSimpleName());
 		if (sheetPosition > numberOfSheets - 1) {
 			throw new OpsdException("The sheet " + path + " has "
 					+ numberOfSheets
@@ -799,7 +801,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 			// Get the number of sheets in the xlsx file
 			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdRoleService");
+			int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdRoleService.class.getSimpleName());
 			if (sheetPosition > numberOfSheets - 1) {
 				throw new OpsdException("The sheet " + path + " has "
 						+ numberOfSheets
@@ -955,7 +957,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 			// Get the number of sheets in the xlsx file
 			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdHostService");
+			int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdHostService.class.getSimpleName());
 			if (sheetPosition > numberOfSheets - 1) {
 				throw new OpsdException("The sheet " + path + " has "
 						+ numberOfSheets
@@ -1110,7 +1112,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 			// Get the number of sheets in the xlsx file
 			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
-			int sheetPosition = OpsdPoiConf.getSheetPosition("OpsdRequest");
+			int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdRequest.class.getSimpleName());
 			if (sheetPosition > numberOfSheets - 1) {
 				throw new OpsdException("The sheet " + path + " has "
 						+ numberOfSheets + " and OpsdRequest objects should be"
@@ -1175,5 +1177,49 @@ public class OpsdPoiDao implements OpsdDataTap {
 			}
 		}
 		return cachedEnvironments;
+	}
+
+	@Override
+	public List<OpsdPeriodicTask> getPeriodicTasks(OpsdProject project)
+			throws OpsdException {
+		LOGGER.log(Level.FINE, "OpsdPoiDao.getPeriodicTasks");
+		DataFormatter formatter = new DataFormatter();
+		if (cachedPeriodicTasks == null) {
+			cachedPeriodicTasks = new ArrayList<OpsdPeriodicTask>();
+
+			// Get the number of sheets in the xlsx file
+			int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+			int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdPeriodicTask.class.getSimpleName());
+			if (sheetPosition > numberOfSheets - 1) {
+				throw new OpsdException("The sheet " + path + " has "
+						+ numberOfSheets + " and OpsdRequest objects should be"
+						+ " in sheet position # " + sheetPosition + " (0..N-1)");
+			}
+
+			// Get the nth sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(sheetPosition);
+			int firstRow = OpsdPoiConf.getFirstRow(); // cachable
+
+			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
+
+				// Get the row object
+				Row row = sheet.getRow(rowNum);
+
+				int i = 0;
+				String name = formatter.formatCellValue(row.getCell(i++));
+				// We'll drop rows without name
+				if (name == null || name.equals(""))
+					continue;
+				String periodicity = formatter.formatCellValue(row.getCell(i++));
+				String procedure = formatter.formatCellValue(row.getCell(i++));
+				String scaleTo = formatter.formatCellValue(row.getCell(i++));
+
+				// Let's create the OpsdRequest object:
+				OpsdPeriodicTask periodicTask = new OpsdPeriodicTask(name, periodicity, procedure, scaleTo);
+				cachedPeriodicTasks.add(periodicTask);
+				LOGGER.log(Level.FINEST, "* PeriodicTask added: " + periodicTask);
+			}
+		}
+		return cachedPeriodicTasks;
 	}
 }

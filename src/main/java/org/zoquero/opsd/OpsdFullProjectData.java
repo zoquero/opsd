@@ -7,13 +7,15 @@ import org.zoquero.opsd.dao.OpsdPoiConf;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
-import org.zoquero.opsd.entities.OpsdMonitoredServiceWikiVO;
+import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
-import org.zoquero.opsd.entities.OpsdRequestVO;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
+import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
+import org.zoquero.opsd.entities.vo.OpsdRequestVO;
 
 class OpsdFullProjectData {
 
@@ -55,7 +57,12 @@ class OpsdFullProjectData {
 	
 	/** Requests */
 	private List<OpsdRequest> requests;
+	/** Value Object with Requests and it's wiki representations*/
 	private List<OpsdRequestVO> requestVOs;
+	/** Periodic tasks */
+	private List<OpsdPeriodicTask> periodicTasks;
+	/** Value Object with PeriodicTasks and it's wiki representations*/
+	private List<OpsdPeriodicTaskVO> periodicTaskVOs;
 
 	
 	OpsdFullProjectData(OpsdReport oReport) {
@@ -257,6 +264,34 @@ class OpsdFullProjectData {
 	 */
 	public void setRequestVOs(List<OpsdRequestVO> requestVOs) {
 		this.requestVOs = requestVOs;
+	}
+
+	/**
+	 * @return the periodicTasks
+	 */
+	public List<OpsdPeriodicTask> getPeriodicTasks() {
+		return periodicTasks;
+	}
+
+	/**
+	 * @param periodicTasks the periodicTasks to set
+	 */
+	public void setPeriodicTasks(List<OpsdPeriodicTask> periodicTasks) {
+		this.periodicTasks = periodicTasks;
+	}
+
+	/**
+	 * @return the periodicTaskVOs
+	 */
+	public List<OpsdPeriodicTaskVO> getPeriodicTaskVOs() {
+		return periodicTaskVOs;
+	}
+
+	/**
+	 * @param periodicTaskVOs the periodicTaskVOs to set
+	 */
+	public void setPeriodicTaskVOs(List<OpsdPeriodicTaskVO> periodicTaskVOs) {
+		this.periodicTaskVOs = periodicTaskVOs;
 	}
 
 }

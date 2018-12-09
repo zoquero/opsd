@@ -7,6 +7,7 @@ import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
+import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
@@ -157,4 +158,14 @@ public interface OpsdDataTap {
 	 * @throws OpsdException
 	 */
 	List<String> getEnvironments(OpsdProject project) throws OpsdException;
+	
+
+	/**
+	 * Gets the periodic tasks of a Project
+	 * @param project
+	 * @return List of periodic tasks
+	 * @throws OpsdException
+	 */
+	List<OpsdPeriodicTask> getPeriodicTasks(OpsdProject project) throws OpsdException;
+
 }
