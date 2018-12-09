@@ -166,11 +166,9 @@ public class OpsdReportGenerator {
 				getFullProjectData().getPeriodicTaskVOs());
 		
 		input.put("filePolicies",   getFullProjectData().getFilePolicies());
-//		fillWikiInFilePolicyList();
-//		input.put("FilePolicyVOs",
-//				getFullProjectData().getFilePolicyVOs());
 		input.put("wikiFilePolicies",      getWikiFromFilePolicies());
 
+		input.put("monitoredHost2script", getFullProjectData().getMonitoredHost2script());
 
 
 		// Let's get the template

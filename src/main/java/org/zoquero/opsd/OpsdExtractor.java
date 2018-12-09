@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.OpsdDataTap;
+import org.zoquero.opsd.dao.OpsdPoiConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
@@ -20,6 +21,7 @@ import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredHostCommands;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -198,10 +200,61 @@ public class OpsdExtractor {
 		}
 		fpd.setFilePolicyVOs(filePolicyVOs);
 		
+		// monitoringScript
+		Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script
+			= new HashMap<OpsdMonitoredHost, OpsdMonitoredHostCommands>();
+		for(OpsdMonitoredHost aHost: fpd.getMonitoredHosts()) {
+			String ht = getMonitoringHostTemplate(aHost);
+			monitoredHost2script.put(aHost, new OpsdMonitoredHostCommands(aHost, ht));
+		}
+		fpd.setMonitoredHost2script(monitoredHost2script);
+		
 		// Validation
 		OpsdValidator.validate(fpd);
 		
 		return fpd;
+	}
+
+	/**
+	 * Get the monitoring HostTemplate to setup that MonitoredHost in monitoring.
+	 * 
+	 * It returns null if there hasn't to be applied any HostTemplate:
+	 * * If it's a floatingMonitoredHost (no tied to any system)
+	 * * If the MonitoredHost is set to not be configured
+	 * with the default services
+	 * 
+	 * @param aHost
+	 * @return
+	 */
+	private String getMonitoringHostTemplate(OpsdMonitoredHost aHost) {
+		String floatingHostname =
+				OpsdPoiConf.getSystemNameForFloatingMonitoredHosts();
+		
+		if(aHost == null) {
+			LOGGER.log(Level.SEVERE,"Asked to get a monitoring host template for a null host");
+			return "ERROR_null";
+		}
+		if(! aHost.isDefaultChecksNeeded()) {
+			LOGGER.log(Level.FINER,"Asked to get a monitoring host template "
+					+ "for a host that hasn't checked 'defaultChecksNeeded'");
+			return null;
+		}
+		if(aHost.getSystem() == null) {
+			LOGGER.log(Level.SEVERE,"Asked to get a monitoring host template for a host with null system");
+			return "ERROR_null_02";
+		}
+		if(aHost.getSystem().getOs() == null) {
+			if(aHost.getSystem().getName().equals(floatingHostname)) {
+				LOGGER.log(Level.FINER,"Asked to get a monitoring host template "
+						+ "for a floatingMonitoredHost (it's not an error)");
+				return null;
+			}
+			else {
+				LOGGER.log(Level.SEVERE,"Asked to get a monitoring host template for a host with system with null OS, so can't get the host template");
+				return "ERROR_null_03";
+			}
+		}
+		return "PENDING_HOSTTEMPLATE_FOR_" + aHost.getSystem().getOs().getName();
 	}
 
 	

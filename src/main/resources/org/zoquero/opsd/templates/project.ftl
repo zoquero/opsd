@@ -6,25 +6,30 @@
   <body>
     <h1>${title}</h1>
     Contents:
-    <ul>
-      <li> <a href="#log">0) Output log</a> </li>
-      <li> <a href="#validation">1) Validation Project data</a> </li>
-      <li> <a href="#gd">2) Generated documentation</a> </li>
-      <ul>
-        <li> <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
-        <li> <a href="#asp">Article for service procedures</a> </li>
-        <li> <a href="#requests">Article for requests (requestable tasks)</a> </li>
-        <li> <a href="#periodictasks">Article for periodic tasks</a> </li>
-        <li> <a href="#filepolicies">Article for file policies</a> </li>
-        <li> <a href="#systems">Articles for systems (assets)</a> </li>
-        <li> <a href="#monitoredhosts">Articles for MonitoredHosts</a> </li>
-      </ul>
-      <li> <a href="#monitoring">3) Script to setup monitoring</a> </li>
-      <ul>
-        <li> <a href="#addHosts">Script to setup monitored hosts</a> </li>
-        <li> <a href="#addServices">Script to setup monitored services</a> </li>
-      </ul>
-    </ul>
+    
+    <table border="1" width="95%">
+      <tr><td bgcolor="#F5F5F0">
+        <ul>
+          <li> <a href="#log">0) Output log</a> </li>
+          <li> <a href="#validation">1) Validation Project data</a> </li>
+          <li> <a href="#gd">2) Generated documentation</a> </li>
+          <ul>
+            <li> <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
+            <li> <a href="#asp">Article for service procedures</a> </li>
+            <li> <a href="#requests">Article for requests (requestable tasks)</a> </li>
+            <li> <a href="#periodictasks">Article for periodic tasks</a> </li>
+            <li> <a href="#filepolicies">Article for file policies</a> </li>
+            <li> <a href="#systems">Articles for systems (assets)</a> </li>
+            <li> <a href="#monitoredhosts">Articles for MonitoredHosts</a> </li>
+          </ul>
+          <li> <a href="#monitoring">3) Script to setup monitoring</a> </li>
+          <ul>
+            <li> <a href="#addHosts">Script to setup monitored hosts</a> </li>
+            <li> <a href="#addServices">Script to setup monitored services</a> </li>
+          </ul>
+        </ul>
+      </td></tr>
+    </table>
 
     <br/><hr/><br/>
     
@@ -377,9 +382,16 @@ ${monitoredHostStr}
       <tr><td bgcolor="#F0F0F0">
         <pre>
 
-<#list monitoredHosts as monitoredHost>
-addHost.pl -host ${monitoredHost.name} -ip ${monitoredHost.ip} -... STILL UNFINISHED
+# Delete host commands:
+<#list monitoredHost2script as monitoredHost, monitoringHostCommands> 
+${monitoringHostCommands.delHostCommand}
 </#list>
+
+# Add host commands:
+<#list monitoredHost2script as monitoredHost, monitoringHostCommands> 
+${monitoringHostCommands.addHostCommand}
+</#list>
+
         </pre>
       </td></tr>
     </table>

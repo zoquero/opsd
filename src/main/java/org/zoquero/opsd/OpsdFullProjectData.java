@@ -2,6 +2,7 @@ package org.zoquero.opsd;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.zoquero.opsd.dao.OpsdPoiConf;
 import org.zoquero.opsd.entities.OpsdFilePolicy;
@@ -15,6 +16,7 @@ import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredHostCommands;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -69,6 +71,8 @@ class OpsdFullProjectData {
 	private List<OpsdFilePolicy> filePolicies;
 	/** FilePolicyVOs */
 	private List<OpsdFilePolicyVO> filePolicyVOs;
+	/** Commands to setup monitoring for that MonitoredHost */
+	private Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script;
 
 	
 	OpsdFullProjectData(OpsdReport oReport) {
@@ -326,6 +330,20 @@ class OpsdFullProjectData {
 	 */
 	public void setFilePolicyVOs(List<OpsdFilePolicyVO> filePolicyVOs) {
 		this.filePolicyVOs = filePolicyVOs;
+	}
+
+	/**
+	 * @return the monitoredHost2script
+	 */
+	public Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> getMonitoredHost2script() {
+		return monitoredHost2script;
+	}
+
+	/**
+	 * @param monitoredHost2script the monitoredHost2script to set
+	 */
+	public void setMonitoredHost2script(Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script) {
+		this.monitoredHost2script = monitoredHost2script;
 	}
 
 }
