@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdDataTap;
 import org.zoquero.opsd.dao.OpsdPoiConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
@@ -204,8 +205,9 @@ public class OpsdExtractor {
 		Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script
 			= new HashMap<OpsdMonitoredHost, OpsdMonitoredHostCommands>();
 		for(OpsdMonitoredHost aHost: fpd.getMonitoredHosts()) {
-			String ht = getMonitoringHostTemplate(aHost);
-			monitoredHost2script.put(aHost, new OpsdMonitoredHostCommands(aHost, ht));
+			String ht = getMonitoringHostTemplate(project, aHost);
+			boolean premium = dt.hasPremiumServices(project, aHost);
+			monitoredHost2script.put(aHost, new OpsdMonitoredHostCommands(aHost, ht, premium));
 		}
 		fpd.setMonitoredHost2script(monitoredHost2script);
 		
@@ -223,10 +225,12 @@ public class OpsdExtractor {
 	 * * If the MonitoredHost is set to not be configured
 	 * with the default services
 	 * 
+	 * @param project
 	 * @param aHost
+	 * @throws OpsdException
 	 * @return
 	 */
-	private String getMonitoringHostTemplate(OpsdMonitoredHost aHost) {
+	private String getMonitoringHostTemplate(OpsdProject project, OpsdMonitoredHost aHost) throws OpsdException {
 		String floatingHostname =
 				OpsdPoiConf.getSystemNameForFloatingMonitoredHosts();
 		
@@ -237,7 +241,7 @@ public class OpsdExtractor {
 		if(! aHost.isDefaultChecksNeeded()) {
 			LOGGER.log(Level.FINER,"Asked to get a monitoring host template "
 					+ "for a host that hasn't checked 'defaultChecksNeeded'");
-			return null;
+			return OpsdConf.getProperty("monitoring.serviceTemplate.minimum");
 		}
 		if(aHost.getSystem() == null) {
 			LOGGER.log(Level.SEVERE,"Asked to get a monitoring host template for a host with null system");

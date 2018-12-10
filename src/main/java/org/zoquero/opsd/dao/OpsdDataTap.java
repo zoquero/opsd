@@ -177,4 +177,13 @@ public interface OpsdDataTap {
 	 */
 	List<OpsdFilePolicy> getFilePolicies(OpsdProject project) throws OpsdException;
 
+	/**
+	 * Tells if a MonitoredHost has any premium service
+	 * @param project
+	 * @param aHost
+	 * @return
+	 * @throws OpsdException
+	 */
+	boolean hasPremiumServices(OpsdProject project, OpsdMonitoredHost aHost) throws OpsdException;
+
 }

@@ -11,6 +11,8 @@ public class OpsdCriticity {
 
 	private String name;
 	private String description;
+	private boolean premium;
+	
 	/**
 	 * @return the name
 	 */
@@ -36,17 +38,31 @@ public class OpsdCriticity {
 		this.description = description;
 	}
 	/**
+	 * @return the premium
+	 */
+	public boolean isPremium() {
+		return premium;
+	}
+	/**
+	 * @param premium the premium to set
+	 */
+	public void setPremium(boolean premium) {
+		this.premium = premium;
+	}
+	/**
 	 * @param name
 	 * @param description
 	 */
-	public OpsdCriticity(String name, String description) {
+	public OpsdCriticity(String name, String description, boolean premium) {
 		this.name = name;
 		this.description = description;
+		this.premium = premium;
 	}
 	
 	public String tosString() {
 		return "Criticity '" + getName()
-				+ "' with description '" + getDescription() + "'";
+				+ "' with description '" + getDescription() + "'"
+				+ " that" + (premium ? " IS " : " IS NOT ") + "Premium";
 	}
 	
 }

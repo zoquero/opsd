@@ -162,4 +162,15 @@ public abstract class OpsdMonitoredService {
 		this.scaleTo = scaleTo;
 	}
 
+	/**
+	 * Tell if this is a Premium Service (has Premium criticity)
+	 * @return
+	 */
+	public boolean isPremium() {
+		if(getCriticity() != null
+				&& getCriticity().isPremium()) {
+			return true;
+		}
+		return false;
+	}
 }

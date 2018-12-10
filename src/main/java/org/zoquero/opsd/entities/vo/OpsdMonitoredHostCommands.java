@@ -21,6 +21,9 @@ public class OpsdMonitoredHostCommands {
 	/** ServiceTemplate in monitoring */
 	private String hostTemplate;
 	
+	/** Has premium services? */
+	private boolean premium;
+	
 	/** Command to add the host to the monitoring system*/
 	private String addHostCommand;
 	
@@ -48,8 +51,20 @@ public class OpsdMonitoredHostCommands {
 	/**
 	 * @param hostTemplate the hostTemplate to set
 	 */
-	public void setHostTemplate(String hostTemplate) {
+	private void setHostTemplate(String hostTemplate) {
 		this.hostTemplate = hostTemplate;
+	}
+	/**
+	 * @return the premium
+	 */
+	public boolean isPremium() {
+		return premium;
+	}
+	/**
+	 * @param premium the premium to set
+	 */
+	private void setPremium(boolean premium) {
+		this.premium = premium;
 	}
 	/**
 	 * @return the addHostCommand
@@ -82,8 +97,6 @@ public class OpsdMonitoredHostCommands {
 	private void fillCommands() {
 		String _addHostFormat =
 					OpsdConf.getProperty("monitoring.command.addHost");
-		String _addHostFormatWithServiceTemplate =
-					OpsdConf.getProperty("monitoring.command.addHostWithServiceTemplate");
 		
 		String _delHostFormat = OpsdConf.getProperty("monitoring.command.delHost");
 		
@@ -105,28 +118,37 @@ public class OpsdMonitoredHostCommands {
 			_ip = getMonitoredHost().getIp();
 		}
 		
+		String ht = getHostTemplate();
+		if(ht == null) {
+			ht = "ERROR_NULL";
+		}
+		
+		// addHost
 		String _addHostCommand;
-		if(getHostTemplate() == null) {
-			_addHostCommand = String.format(_addHostFormat,
-					_name, _ip, getHostTemplate());
+		if(isPremium()) {
+			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, " -P");
 		}
 		else {
-			_addHostCommand = String.format(_addHostFormatWithServiceTemplate,
-					_name, _ip, getHostTemplate());
+			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, "");
 		}
+
 		setAddHostCommand(_addHostCommand);
 		
+		// delHost
 		String _delHostCommand = String.format(_delHostFormat, _name);
 		setDelHostCommand(_delHostCommand);
 	}
 	
 	/**
+	 * Constructor with fields
 	 * @param monitoredHost
-	 * @param _hostTemplate
+	 * @param hostTemplate
+	 * @param premium
 	 */
-	public OpsdMonitoredHostCommands(OpsdMonitoredHost monitoredHost, String _hostTemplate) {
+	public OpsdMonitoredHostCommands(OpsdMonitoredHost monitoredHost, String hostTemplate, boolean premium) {
 		setMonitoredHost(monitoredHost);
-		setHostTemplate(_hostTemplate);
+		setHostTemplate(hostTemplate);
+		setPremium(premium);
 		fillCommands();
 	}
 	
