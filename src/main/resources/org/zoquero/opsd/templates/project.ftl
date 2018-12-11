@@ -27,6 +27,7 @@
             <li> <a href="#addHosts">Script to setup monitored hosts</a> </li>
             <li> <a href="#addServices">Script to setup monitored services</a> </li>
           </ul>
+          <li> <a href="#serv_tmplt_def">4) Service Template definitions</a> </li>
         </ul>
       </td></tr>
     </table>
@@ -407,6 +408,80 @@ addService.pl ... -... STILL UNFINISHED
       </td></tr>
     </table>
     
-    <br/>
+   <h2 id="serv_tmplt_def">4) Service Template definitions </h2>
+
+    <table border="1">
+      <tr>
+        <td bgcolor="#F0F0F0"></td>
+        <td bgcolor="#F0F0F0"></td>
+        <td bgcolor="#F0F0F0"></td>
+        <td bgcolor="#F0F0F0"></td>
+        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#1</td>
+        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#2</td>
+        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#3</td>
+        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#4</td>
+        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#5</td>
+        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#6</td>
+        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#7</td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">NRPE</td>
+        <td bgcolor="#F0F0F0">Default service name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Default<br/>value</td>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Default<br/>value</td>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Default<br/>value</td>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Default<br/>value</td>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Default<br/>value</td>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Default<br/>value</td>
+        <td bgcolor="#F0F0F0">Name</td>
+        <td bgcolor="#F0F0F0">Description</td>
+        <td bgcolor="#F0F0F0">Default<br/>value</td>
+      </tr>
+<#list serviceTemplates as serviceTemplate>
+      <tr>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.name} </td>
+        <td bgcolor="#F0F0F0"> PENDING {serviceTemplate.nrpe} </td>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.defaultName} </td>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.description} </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+        <td bgcolor="#F0F0F0"> PENDING </td>
+      </tr>
+</#list>
+    </table>
+   
+   <br/>
   </body>
 </html>

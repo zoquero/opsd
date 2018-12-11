@@ -103,5 +103,8 @@ public class OpsdServiceTemplate {
 		this.macros = macros;
 	}
 	
+	public String toString() {
+		return getClass().getCanonicalName() + " with name = " + getName() + ", nrpe = " + nrpe + ", defaultName = " + defaultName + " description = " + description;
+	}
 
 }

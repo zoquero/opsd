@@ -30,6 +30,7 @@ import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.OpsdFilePolicy.ACTION_TYPE;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
@@ -169,6 +170,7 @@ public class OpsdReportGenerator {
 		input.put("wikiFilePolicies",      getWikiFromFilePolicies());
 
 		input.put("monitoredHost2script", getFullProjectData().getMonitoredHost2script());
+		input.put("serviceTemplates", getFullProjectData().getServiceTemplates());
 
 
 		// Let's get the template

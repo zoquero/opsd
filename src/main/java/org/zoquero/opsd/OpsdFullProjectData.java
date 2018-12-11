@@ -14,6 +14,7 @@ import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdRoleService;
+import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredHostCommands;
@@ -73,6 +74,7 @@ class OpsdFullProjectData {
 	private List<OpsdFilePolicyVO> filePolicyVOs;
 	/** Commands to setup monitoring for that MonitoredHost */
 	private Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script;
+	private List<OpsdServiceTemplate> serviceTemplates;
 
 	
 	OpsdFullProjectData(OpsdReport oReport) {
@@ -344,6 +346,20 @@ class OpsdFullProjectData {
 	 */
 	public void setMonitoredHost2script(Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script) {
 		this.monitoredHost2script = monitoredHost2script;
+	}
+
+	/**
+	 * @return the serviceTemplates
+	 */
+	public List<OpsdServiceTemplate> getServiceTemplates() {
+		return serviceTemplates;
+	}
+
+	/**
+	 * @param serviceTemplates the serviceTemplates to set
+	 */
+	public void setServiceTemplates(List<OpsdServiceTemplate> serviceTemplates) {
+		this.serviceTemplates = serviceTemplates;
 	}
 
 }

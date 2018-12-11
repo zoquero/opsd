@@ -20,6 +20,7 @@ import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredHostCommands;
@@ -210,6 +211,9 @@ public class OpsdExtractor {
 			monitoredHost2script.put(aHost, new OpsdMonitoredHostCommands(aHost, ht, premium, project));
 		}
 		fpd.setMonitoredHost2script(monitoredHost2script);
+		
+		List<OpsdServiceTemplate> serviceTemplates = dt.getServiceTemplates();
+		fpd.setServiceTemplates(serviceTemplates);
 		
 		// Validation
 		OpsdValidator.validate(fpd);

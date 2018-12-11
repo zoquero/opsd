@@ -368,15 +368,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 	}
 
 
-	/**
-	 * Get all the OpsdServiceTemplate objects. On a future release all data
-	 * will be on a Relational Database. By now, the allowed
-	 * cachedServiceTemplates must be described here, not in the Excel file.
-	 * 
-	 * @return
-	 * @throws OpsdException 
-	 */
-	private List<OpsdServiceTemplate> getServiceTemplates() throws OpsdException {
+	@Override
+	public List<OpsdServiceTemplate> getServiceTemplates() throws OpsdException {
 		if (cachedServiceTemplates == null) {
 			/* Lazy initialization of the array, read from properties file */
 			cachedServiceTemplates = new ArrayList<OpsdServiceTemplate>();
@@ -436,19 +429,10 @@ public class OpsdPoiDao implements OpsdDataTap {
 		}
 		return cachedServiceTemplates;
 	}
-	
 
-	/**
-	 * Get a ServiceTemplate
-	 * @param serviceTemplateName name of the service template
-	 * @return
-	 * @throws OpsdException
-	 */
-	private OpsdServiceTemplate getServiceTemplate(String serviceTemplateName) throws OpsdException {
-		if(cachedServiceTemplates == null) {
-			cachedServiceTemplates = getServiceTemplates();
-		}
-		for(OpsdServiceTemplate aServiceTemplate: cachedServiceTemplates) {
+	@Override
+	public OpsdServiceTemplate getServiceTemplate(String serviceTemplateName) throws OpsdException {
+		for(OpsdServiceTemplate aServiceTemplate: getServiceTemplates()) {
 			if(aServiceTemplate.getName().equals(serviceTemplateName)) {
 				return aServiceTemplate;
 			}

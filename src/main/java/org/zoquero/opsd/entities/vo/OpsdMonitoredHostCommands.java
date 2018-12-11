@@ -139,15 +139,20 @@ public class OpsdMonitoredHostCommands {
 			ht = "ERROR_NULL";
 		}
 		
-		// addHost
-		String _addHostCommand;
-		if(isPremium()) {
-			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, getProject().getResponsible().getResourceAcl(), " -P");
+		String resourceAcl;
+		if(getProject() == null
+				|| getProject().getResponsible() == null
+				|| getProject().getResponsible().getResourceAcl() == null) {
+			resourceAcl = "ERROR_NULL";
 		}
 		else {
-			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, getProject().getResponsible().getResourceAcl(), "");
+			resourceAcl = getProject().getResponsible().getResourceAcl();
 		}
-
+		String premiumStr = isPremium() ? " -P" : "";
+		
+		// addHost
+		String _addHostCommand = String.format(_addHostFormat,
+					_name, _ip, ht, resourceAcl, premiumStr);
 		setAddHostCommand(_addHostCommand);
 		
 		// delHost

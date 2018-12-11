@@ -14,6 +14,7 @@ import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 
 public interface OpsdDataTap {
@@ -185,5 +186,23 @@ public interface OpsdDataTap {
 	 * @throws OpsdException
 	 */
 	boolean hasPremiumServices(OpsdProject project, OpsdMonitoredHost aHost) throws OpsdException;
+	
+	/**
+	 * Get all the OpsdServiceTemplate objects. On a future release all data
+	 * will be on a Relational Database. By now, the allowed
+	 * cachedServiceTemplates must be described here, not in the Excel file.
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	public List<OpsdServiceTemplate> getServiceTemplates() throws OpsdException;
+
+	/**
+	 * Get a ServiceTemplate
+	 * @param serviceTemplateName name of the service template
+	 * @return
+	 * @throws OpsdException
+	 */
+	public OpsdServiceTemplate getServiceTemplate(String serviceTemplateName) throws OpsdException;
 
 }
