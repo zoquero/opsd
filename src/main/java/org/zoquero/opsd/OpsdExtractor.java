@@ -207,7 +207,7 @@ public class OpsdExtractor {
 		for(OpsdMonitoredHost aHost: fpd.getMonitoredHosts()) {
 			String ht = getMonitoringHostTemplate(project, aHost);
 			boolean premium = dt.hasPremiumServices(project, aHost);
-			monitoredHost2script.put(aHost, new OpsdMonitoredHostCommands(aHost, ht, premium));
+			monitoredHost2script.put(aHost, new OpsdMonitoredHostCommands(aHost, ht, premium, project));
 		}
 		fpd.setMonitoredHost2script(monitoredHost2script);
 		
@@ -258,7 +258,8 @@ public class OpsdExtractor {
 				return "ERROR_null_03";
 			}
 		}
-		return "PENDING_HOSTTEMPLATE_FOR_" + aHost.getSystem().getOs().getName();
+		return OpsdConf.getProperty("monitoring.serviceTemplate.osPrefix")
+				+ aHost.getSystem().getOs().getName();
 	}
 
 	

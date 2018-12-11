@@ -7,6 +7,7 @@ import javax.management.RuntimeErrorException;
 
 import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdProject;
 
 /**
  * Object to hold commands to add and delete MonitoredHosts
@@ -23,6 +24,9 @@ public class OpsdMonitoredHostCommands {
 	
 	/** Has premium services? */
 	private boolean premium;
+	
+	/** The relate Project */
+	private OpsdProject project;
 	
 	/** Command to add the host to the monitoring system*/
 	private String addHostCommand;
@@ -92,6 +96,18 @@ public class OpsdMonitoredHostCommands {
 	}
 	
 	/**
+	 * @return the project
+	 */
+	public OpsdProject getProject() {
+		return project;
+	}
+	/**
+	 * @param project the project to set
+	 */
+	private void setProject(OpsdProject project) {
+		this.project = project;
+	}
+	/**
 	 * Initiate the fields with the commands, just called from the constructor
 	 */
 	private void fillCommands() {
@@ -126,10 +142,10 @@ public class OpsdMonitoredHostCommands {
 		// addHost
 		String _addHostCommand;
 		if(isPremium()) {
-			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, " -P");
+			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, getProject().getResponsible().getResourceAcl(), " -P");
 		}
 		else {
-			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, "");
+			_addHostCommand = String.format(_addHostFormat, _name, _ip, ht, getProject().getResponsible().getResourceAcl(), "");
 		}
 
 		setAddHostCommand(_addHostCommand);
@@ -144,11 +160,13 @@ public class OpsdMonitoredHostCommands {
 	 * @param monitoredHost
 	 * @param hostTemplate
 	 * @param premium
+	 * @param project
 	 */
-	public OpsdMonitoredHostCommands(OpsdMonitoredHost monitoredHost, String hostTemplate, boolean premium) {
+	public OpsdMonitoredHostCommands(OpsdMonitoredHost monitoredHost, String hostTemplate, boolean premium, OpsdProject project) {
 		setMonitoredHost(monitoredHost);
 		setHostTemplate(hostTemplate);
 		setPremium(premium);
+		setProject(project);
 		fillCommands();
 	}
 	

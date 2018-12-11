@@ -16,7 +16,10 @@ public class OpsdServiceTemplate {
 	/** Will it be a service invoked though NRPE? */
 	private boolean nrpe;
 	/** Default name to be shown in monitoring,
-	 * if it's not set when it's instantiated. */
+	 * if it's not set when it's instantiated.
+	 * It can be a format string to be substituted by macro values,
+	 * macro values can be $MACRO1$ ,  $MACRO2$ , ...  $MACRO7$
+	 * Ex.: Service_$MACRO1$ or Check_Jmeter_$MACRO2$ */
 	private String defaultName;
 	/** Description of the ServiceTemplate and some help to who
 	 * is thinking about the possibility of instantiating
@@ -99,5 +102,6 @@ public class OpsdServiceTemplate {
 		this.description = description;
 		this.macros = macros;
 	}
+	
 
 }

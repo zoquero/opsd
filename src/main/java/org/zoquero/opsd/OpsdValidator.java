@@ -240,11 +240,11 @@ public class OpsdValidator {
 				oReport.pushError("RoleService #"
 						+ i + " has null ServiceTemplate or it can't be found");
 			}
-			if(roleService.getMacroAndValueArray() == null
-						|| roleService.getMacroAndValueArray().length < 1) {
-				oReport.pushError("RoleService #"
-						+ i + " has null or empty MacroAndValueArray");
-			}
+//			if(roleService.getMacroAndValueArray() == null
+//						|| roleService.getMacroAndValueArray().length < 1) {
+//				oReport.pushError("RoleService #"
+//						+ i + " has null or empty MacroAndValueArray");
+//			}
 //			if(roleService.getScaleTo() == null
 //						|| roleService.getScaleTo().equals("")) {
 //				oReport.pushWarning("RoleService #"
@@ -288,11 +288,11 @@ public class OpsdValidator {
 				oReport.pushError("HostService #"
 						+ i + " has null ServiceTemplate or it can't be found");
 			}
-			if(hostService.getMacroAndValueArray() == null
-						|| hostService.getMacroAndValueArray().length < 1) {
-				oReport.pushError("HostService #"
-						+ i + " has null or empty MacroAndValueArray");
-			}
+//			if(hostService.getMacroAndValueArray() == null
+//						|| hostService.getMacroAndValueArray().length < 1) {
+//				oReport.pushError("HostService #"
+//						+ i + " has null or empty MacroAndValueArray");
+//			}
 //			if(roleService.getScaleTo() == null
 //						|| roleService.getScaleTo().equals("")) {
 //				oReport.pushWarning("HostService #"

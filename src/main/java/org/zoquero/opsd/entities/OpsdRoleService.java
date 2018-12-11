@@ -63,7 +63,7 @@ public class OpsdRoleService extends OpsdMonitoredService {
 				+ ", serviceTemplate = + "
 				+ (getServiceTemplate() == null ? "null" : getServiceTemplate())
 				+ ", macroAndArray = "
-				+ (getMacroAndValueArray() == null ? "null" : getMacroAndValueArray().length)
+				+ (getMacroValuesArray() == null ? "null" : getMacroValuesArray().length)
 				+ " elements, scaleTo = "
 				+ (getScaleTo() == null ? "null" : getScaleTo());
 	}
