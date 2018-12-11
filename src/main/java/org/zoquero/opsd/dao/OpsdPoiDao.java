@@ -325,6 +325,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 */
 	private List<OpsdCriticity> getCriticities() throws OpsdException {
 		if (criticities == null) {
+			LOGGER.log(Level.FINER, "getCriticities: Loading lazily the criticities");
 			/* Lazy initialization of the array, read from properties file */
 			criticities = new ArrayList<OpsdCriticity>();
 
@@ -340,6 +341,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 					String name        = (String) st.nextElement();
 					String description = (String) st.nextElement();
 					if (premiumStr == null || name == null || description == null) {
+						LOGGER.log(Level.SEVERE, "Can't read the criticity with value '" + value + "'");
 						throw new OpsdException(
 								"Can't read the criticity with value '"
 									+ value + "'");
@@ -352,6 +354,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 						premium = true;
 					}
 					else {
+						LOGGER.log(Level.SEVERE, "Can't read the criticity with value '" + value + "'");
 						throw new OpsdException(
 								"Can't read the criticity with value '"
 										+ value + "'");
@@ -464,15 +467,16 @@ public class OpsdPoiDao implements OpsdDataTap {
 	 * @return
 	 */
 	private OpsdCriticity getCriticity(String criticityName) throws OpsdException {
-		if (criticities == null) {
-			criticities = getCriticities();
-			
-			for (OpsdCriticity aCriticity: criticities) {
-				if (aCriticity.getName().equals(criticityName)) {
-					return aCriticity;
-				}
+		LOGGER.log(Level.FINEST, "OpsdPoiDao.getCriticity: looking for " + criticityName);
+		for (OpsdCriticity aCriticity: getCriticities()) {
+			if (aCriticity.getName().equals(criticityName)) {
+				LOGGER.log(Level.FINEST, "OpsdPoiDao.getCriticity: "
+						+ criticityName + " found");
+				return aCriticity;
 			}
 		}
+		LOGGER.log(Level.WARNING, "OpsdPoiDao.getCriticity: "
+				+ "couldn't get criticity object for " + criticityName);
 		return null;
 	}
 
@@ -931,12 +935,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 						serviceTemplate, macroAndValueArray, scaleTo);
 				cachedRoleServices.add(roleService);
 				LOGGER.log(Level.FINEST, "RoleService added: " + roleService);
-LOGGER.log(Level.FINEST, "RoleService added: " + roleService + " criticityName = " + criticityName);
 			}
 		}
-
 		return cachedRoleServices;
-		
 	}
 
 	@Override
@@ -1326,13 +1327,13 @@ LOGGER.log(Level.FINEST, "RoleService added: " + roleService + " criticityName =
 			LOGGER.log(Level.WARNING, "OpsdPoiDao.hasPremiumServices got a empty host");
 			return false;
 		}
-System.out.println("DEBUG_DAO: host " + aHost.getName()); // meubal01.fe.cpd.local
 		// Let's look for Premium hostServices
 		List<OpsdHostService> hostServices = getHostServicesByHost(project, aHost);
 		for(OpsdHostService aService: hostServices) {
-System.out.println("DEBUG_DAO: host " + aHost.getName() + " service = " + aService.getName());
 			if(aService.isPremium()) {
-System.out.println("DEBUG_DAO: host " + aHost.getName() + " service = " + aService.getName() + " IS PREMIUM !!!");
+				LOGGER.log(Level.FINER, "OpsdPoiDao.hasPremiumServices: "
+						+ aHost.getName() + " has at least a Premium service: "
+						+ aService.getName());
 				return true;
 			}
 		}
@@ -1343,15 +1344,16 @@ System.out.println("DEBUG_DAO: host " + aHost.getName() + " service = " + aServi
 		}
 		List<OpsdRoleService> roleServices = getRoleServicesByRole(project, aHost.getRole());
 		for(OpsdRoleService aService: roleServices) {
-System.out.println("DEBUG_DAO: host " + aHost.getName() + " service = " + aService.getName());
 			if(aService.isPremium()) {
-System.out.println("DEBUG_DAO: host " + aHost.getName() + " service = " + aService.getName() + " IS PREMIUM !!!");
+				LOGGER.log(Level.FINER, "OpsdPoiDao.hasPremiumServices: "
+						+ aHost.getName() + " has at least a Premium service: "
+						+ aService.getName());
 				return true;
 			}
 		}
-System.out.println("DEBUG_DAO: host " + aHost.getName() + " IS NOT PREMIUM !!!");
-
-BUG! Some services appear as NO-Premium, but they are, and it looks like that they're correctly loaded in DAO 
+		LOGGER.log(Level.FINER, "OpsdPoiDao.hasPremiumServices: "
+				+ aHost.getName() + " hasn't any Premium service, "
+				+ "it's not a Premium Host");
 		return false;
 	}
 }
