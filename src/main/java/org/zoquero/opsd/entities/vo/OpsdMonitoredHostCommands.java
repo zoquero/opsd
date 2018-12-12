@@ -22,7 +22,9 @@ public class OpsdMonitoredHostCommands {
 	/** ServiceTemplate in monitoring */
 	private String hostTemplate;
 	
-	/** Has premium services? */
+	/** Has premium services?
+	 * A host is not Premium by itself,
+	 * it needs a Premium service to become Premium*/
 	private boolean premium;
 	
 	/** The relate Project */

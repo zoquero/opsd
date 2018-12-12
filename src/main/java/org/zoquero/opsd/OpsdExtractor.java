@@ -24,6 +24,7 @@ import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredHostCommands;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceCommands;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -202,15 +203,48 @@ public class OpsdExtractor {
 		}
 		fpd.setFilePolicyVOs(filePolicyVOs);
 		
-		// monitoringScript
-		Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script
+		// monitoringScripts for hosts
+		Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHostCommands
 			= new HashMap<OpsdMonitoredHost, OpsdMonitoredHostCommands>();
 		for(OpsdMonitoredHost aHost: fpd.getMonitoredHosts()) {
 			String ht = getMonitoringHostTemplate(project, aHost);
 			boolean premium = dt.hasPremiumServices(project, aHost);
-			monitoredHost2script.put(aHost, new OpsdMonitoredHostCommands(aHost, ht, premium, project));
+			monitoredHostCommands.put(aHost, new OpsdMonitoredHostCommands(aHost, ht, premium, project));
 		}
-		fpd.setMonitoredHost2script(monitoredHost2script);
+		fpd.setMonitoredHostCommands(monitoredHostCommands);
+		
+		// monitoringScripts for services
+		Map<OpsdHostService, OpsdMonitoredServiceCommands> monitoredEffectiveHostServiceCommands
+			= new HashMap<OpsdHostService, OpsdMonitoredServiceCommands>();
+		for(OpsdMonitoredHost aHost: fpd.getMonitoredHosts()) {
+			for(OpsdHostService aService: dt.getHostServicesByHost(project, aHost)) {
+				if(aService.getServiceTemplate() != null &&
+						(  aService.getServiceTemplate().equals(
+								OpsdConf.getProperty("monitoring.serviceTemplate.custom"))
+						|| aService.getServiceTemplate().equals(
+								OpsdConf.getProperty("monitoring.serviceTemplate.customPremium")))) {
+					continue;
+				}
+				monitoredEffectiveHostServiceCommands.put(aService, new OpsdMonitoredServiceCommands(aService, aHost, project));
+			}
+			if(aHost.getRole() != null) {
+				for(OpsdRoleService aRoleService: dt.getRoleServicesByRole(project, aHost.getRole())) {
+					if(aRoleService.getServiceTemplate() != null &&
+							(aRoleService.getServiceTemplate().equals(
+									OpsdConf.getProperty("monitoring.serviceTemplate.custom"))
+							|| aRoleService.getServiceTemplate().equals(
+									OpsdConf.getProperty("monitoring.serviceTemplate.customPremium")))) {
+						continue;
+					}
+					monitoredEffectiveHostServiceCommands
+						.put(
+							new OpsdHostService(aHost, aRoleService),
+							new OpsdMonitoredServiceCommands(aRoleService, aHost, project));
+				}
+			}
+		}
+		fpd.setMonitoredEffectiveHostServiceCommands(monitoredEffectiveHostServiceCommands);
+		
 		
 		List<OpsdServiceTemplate> serviceTemplates = dt.getServiceTemplates();
 		fpd.setServiceTemplates(serviceTemplates);

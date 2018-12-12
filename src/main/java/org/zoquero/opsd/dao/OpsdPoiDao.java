@@ -11,12 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.text.html.parser.DTD;
 
 import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.entities.OpsdCriticity;
@@ -415,7 +412,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 							new OpsdServiceMacroDefinition(macroName,
 									macroDescription, macroDefaultValue);
 						osmdList.add(aServiceTemplate);
-System.out.println("Created a ST: " + aServiceTemplate);
 					}
 					if (name == null || defaultName == null 
 							|| description == null || osmdList == null) {
@@ -913,6 +909,8 @@ System.out.println("Created a ST: " + aServiceTemplate);
 					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getRoleServices: "
 						+ "the RoleService #" + rowNum + " has null role");
 				}
+				
+System.out.println("PENDING TO LOAD ServiceTemplate");
 
 				// Let's create the OpsdSystem object:
 				OpsdRoleService roleService = new OpsdRoleService(name,

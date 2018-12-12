@@ -170,8 +170,9 @@ public class OpsdReportGenerator {
 		input.put("filePolicies",   getFullProjectData().getFilePolicies());
 		input.put("wikiFilePolicies",      getWikiFromFilePolicies());
 
-		input.put("monitoredHost2script", getFullProjectData().getMonitoredHost2script());
+		input.put("monitoredHost2script", getFullProjectData().getMonitoredHostCommands());
 		input.put("serviceTemplates", getFullProjectData().getServiceTemplates());
+		input.put("monitoredEffectiveHostServiceCommands", getFullProjectData().getMonitoredEffectiveHostServiceCommands());
 
 		// Let's get the template
 		try {

@@ -18,6 +18,7 @@ import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredHostCommands;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceCommands;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -73,8 +74,9 @@ class OpsdFullProjectData {
 	/** FilePolicyVOs */
 	private List<OpsdFilePolicyVO> filePolicyVOs;
 	/** Commands to setup monitoring for that MonitoredHost */
-	private Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script;
+	private Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHostCommands;
 	private List<OpsdServiceTemplate> serviceTemplates;
+	private Map<OpsdHostService, OpsdMonitoredServiceCommands> monitoredEffectiveHostServiceCommands;
 
 	
 	OpsdFullProjectData(OpsdReport oReport) {
@@ -335,17 +337,17 @@ class OpsdFullProjectData {
 	}
 
 	/**
-	 * @return the monitoredHost2script
+	 * @return the monitoredHostCommands
 	 */
-	public Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> getMonitoredHost2script() {
-		return monitoredHost2script;
+	public Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> getMonitoredHostCommands() {
+		return monitoredHostCommands;
 	}
 
 	/**
-	 * @param monitoredHost2script the monitoredHost2script to set
+	 * @param monitoredHostCommands the monitoredHostCommands to set
 	 */
-	public void setMonitoredHost2script(Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHost2script) {
-		this.monitoredHost2script = monitoredHost2script;
+	public void setMonitoredHostCommands(Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHostCommands) {
+		this.monitoredHostCommands = monitoredHostCommands;
 	}
 
 	/**
@@ -360,6 +362,21 @@ class OpsdFullProjectData {
 	 */
 	public void setServiceTemplates(List<OpsdServiceTemplate> serviceTemplates) {
 		this.serviceTemplates = serviceTemplates;
+	}
+
+	/**
+	 * @return the monitoredEffectiveHostServiceCommands
+	 */
+	public Map<OpsdHostService, OpsdMonitoredServiceCommands> getMonitoredEffectiveHostServiceCommands() {
+		return monitoredEffectiveHostServiceCommands;
+	}
+
+	/**
+	 * @param monitoredEffectiveHostServiceCommands the monitoredEffectiveHostServiceCommands to set
+	 */
+	public void setMonitoredEffectiveHostServiceCommands(
+			Map<OpsdHostService, OpsdMonitoredServiceCommands> monitoredEffectiveHostServiceCommands) {
+		this.monitoredEffectiveHostServiceCommands = monitoredEffectiveHostServiceCommands;
 	}
 
 }

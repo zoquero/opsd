@@ -402,10 +402,11 @@ ${monitoringHostCommands.addHostCommand}
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
-addService.pl ... -... PENDING...
-addService.pl ... -... PENDING...
-addService.pl ... -... PENDING...
-addService.pl ... -... PENDING...
+        
+<#list monitoredEffectiveHostServiceCommands as hostService, monitoredServiceCommands>
+${monitoredServiceCommands.addServiceCommand}
+</#list>
+
         </pre>
       </td></tr>
     </table>
@@ -436,14 +437,14 @@ addService.pl ... -... PENDING...
         <td bgcolor="#F0F0F0"></td>
       </tr>
       <tr>
-        <td bgcolor="#C0C0C0">Service Name</td>
+        <td bgcolor="#F5F5F5">Service Name</td>
         <td bgcolor="#C0C0C0">NRPE</td>
         <td bgcolor="#C0C0C0">Default service name</td>
         <td bgcolor="#C0C0C0">Description</td>
       </tr>
 <#list serviceTemplates as serviceTemplate>
       <tr>
-        <td bgcolor="#F0F0F0"> ${serviceTemplate.name} </td>
+        <td bgcolor="#F0F0F0"> <strong>${serviceTemplate.name}</strong> </td>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.nrpe?string} </td>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.defaultName} </td>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.description} </td>
@@ -477,7 +478,7 @@ addService.pl ... -... PENDING...
       </tr>
 <#list serviceTemplates as serviceTemplate>
       <tr>
-        <td bgcolor="#F0F0F0"> ${serviceTemplate.name} </td>
+        <td bgcolor="#F5F5F5"> ${serviceTemplate.name} </td>
 
   <#if serviceTemplate.macroDefinitions?hasContent>
     <#list serviceTemplate.macroDefinitions as mDef>

@@ -54,4 +54,11 @@ public class OpsdHostService extends OpsdMonitoredService {
 				serviceTemplate, macroAndValueArray, scaleTo);
 		setHost(host);
 	}
+	
+	public OpsdHostService(OpsdMonitoredHost host,
+			OpsdMonitoredService service) {
+		super(service.getName(), service.getDescription(), service.getProcedure(), service.getCriticity(),
+				service.getServiceTemplate(), service.getMacroValuesArray(), service.getScaleTo());
+		setHost(host);
+	}
 }
