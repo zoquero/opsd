@@ -26,6 +26,7 @@
           <ul>
             <li> <a href="#addHosts">Script to setup monitored hosts</a> </li>
             <li> <a href="#addServices">Script to setup monitored services</a> </li>
+            <li> <a href="#servicesToAddManually">Custom services to be added manually</a> </li>
           </ul>
           <li> <a href="#serv_tmplt_def">4) Service Template definitions</a> </li>
         </ul>
@@ -401,12 +402,19 @@ ${monitoringHostCommands.addHostCommand}
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
-addService.pl ... -... STILL UNFINISHED
-addService.pl ... -... STILL UNFINISHED
-addService.pl ... -... STILL UNFINISHED
+addService.pl ... -... PENDING...
+addService.pl ... -... PENDING...
+addService.pl ... -... PENDING...
+addService.pl ... -... PENDING...
         </pre>
       </td></tr>
     </table>
+    
+    <h3 id="servicesToAddManually">Custom services to be added manually</h3>
+...PENDING...    
+...PENDING...    
+...PENDING...    
+...PENDING...    
     
    <h2 id="serv_tmplt_def">4) Service Template definitions </h2>
 
@@ -461,36 +469,6 @@ addService.pl ... -... STILL UNFINISHED
           <td bgcolor="#F0F0F0"> &nbsp </td>
         </#list>
   </#if>
-
-<#--
-        <td bgcolor="#F0F0F0"> size=${serviceTemplate.macros?size} </td>
-        <td bgcolor="#F0F0F0"> size=${serviceTemplate.macros?size} </td>
-        <td bgcolor="#F0F0F0"> size=${serviceTemplate.macros?size} </td>
-        
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        <td bgcolor="#F0F0F0"> PENDING </td>
-        
--->
-        
       </tr>
 </#list>
     </table>

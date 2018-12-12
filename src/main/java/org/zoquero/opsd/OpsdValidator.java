@@ -224,9 +224,17 @@ public class OpsdValidator {
 			}
 			if(roleService.getProcedure() == null
 						|| roleService.getProcedure().equals("")) {
-				oReport.pushWarning("RoleService #" + i
-						+ " has null procedure."
-						+ " Incidences just will be able to be scaled out");
+				// Just acceptable if it's not Premium
+				if(roleService.getCriticity() != null
+						&& roleService.getCriticity().isPremium()) {
+					oReport.pushError("RoleService #" + i
+							+ " is Premium has hasn't any procedure");
+				}
+				else {
+					oReport.pushWarning("RoleService #" + i
+							+ " has null procedure."
+							+ " Incidences just will be able to be scaled out");
+				}
 			}
 			if(roleService.getCriticity() == null) {
 				oReport.pushError("RoleService #"
@@ -271,10 +279,18 @@ public class OpsdValidator {
 				oReport.pushError("HostService #" + i + " has null description");
 			}
 			if(hostService.getProcedure() == null
-						|| hostService.getProcedure().equals("")) {
-				oReport.pushWarning("HostService #" + i
-						+ " has null procedure."
-						+ " Incidences just will be able to be scaled out");
+					|| hostService.getProcedure().equals("")) {
+				// Just acceptable if it's not Premium
+				if(hostService.getCriticity() != null
+						&& hostService.getCriticity().isPremium()) {
+					oReport.pushError("HostService #" + i
+							+ " is Premium has hasn't any procedure");
+				}
+				else {
+					oReport.pushWarning("HostService #" + i
+							+ " has null procedure."
+							+ " Incidences just will be able to be scaled out");
+				}
 			}
 			if(hostService.getCriticity() == null) {
 				oReport.pushError("HostService #"
