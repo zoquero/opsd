@@ -441,14 +441,14 @@ addService.pl ... -... STILL UNFINISHED
 <#list serviceTemplates as serviceTemplate>
       <tr>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.name} </td>
-        <td bgcolor="#F0F0F0"> PENDING {serviceTemplate.nrpe} </td>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.nrpe?string} </td>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.defaultName} </td>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.description} </td>
 
   <#if serviceTemplate.macroDefinitions?hasContent>
     <#list serviceTemplate.macroDefinitions as mDef>
       <#if mDef?hasContent>
-        <td bgcolor="#D0D0D0"> ${mDef.name} </td>
+        <td bgcolor="#D0D0D0"> <strong>${mDef.name}</strong> </td>
         <td bgcolor="#DBDBDB"> ${mDef.description} </td>
         <td bgcolor="#EAEAEA"> ${mDef.defaultValue} </td>
       </#if>
