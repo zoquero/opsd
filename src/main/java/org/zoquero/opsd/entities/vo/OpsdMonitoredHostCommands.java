@@ -148,7 +148,7 @@ public class OpsdMonitoredHostCommands {
 		else {
 			resourceAcl = getProject().getResponsible().getResourceAcl();
 		}
-		String premiumStr = isPremium() ? " -P" : "";
+		String premiumStr = isPremium() ? "-P" : "";
 		
 		// addHost
 		String _addHostCommand = String.format(_addHostFormat,

@@ -411,18 +411,50 @@ addService.pl ... -... PENDING...
     </table>
     
     <h3 id="servicesToAddManually">Custom services to be added manually</h3>
-...PENDING...    
-...PENDING...    
-...PENDING...    
-...PENDING...    
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre>
+... PENDING...
+... PENDING...
+... PENDING...
+... PENDING...
+        </pre>
+      </td></tr>
+    </table>
+ 
     
    <h2 id="serv_tmplt_def">4) Service Template definitions </h2>
+
+<p>General attributes:</p>
 
     <table border="1">
       <tr>
         <td bgcolor="#F0F0F0"></td>
         <td bgcolor="#F0F0F0"></td>
         <td bgcolor="#F0F0F0"></td>
+        <td bgcolor="#F0F0F0"></td>
+      </tr>
+      <tr>
+        <td bgcolor="#C0C0C0">Service Name</td>
+        <td bgcolor="#C0C0C0">NRPE</td>
+        <td bgcolor="#C0C0C0">Default service name</td>
+        <td bgcolor="#C0C0C0">Description</td>
+      </tr>
+<#list serviceTemplates as serviceTemplate>
+      <tr>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.name} </td>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.nrpe?string} </td>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.defaultName} </td>
+        <td bgcolor="#F0F0F0"> ${serviceTemplate.description} </td>
+      </tr>
+</#list>
+    </table>
+
+<p>Macros (options for Service Templates):</p>
+
+    <table border="1">
+      <tr>
         <td bgcolor="#F0F0F0"></td>
         <td bgcolor="#D0D0D0" colspan=3 align="center">macro#1</td>
         <td bgcolor="#D0D0D0" colspan=3 align="center">macro#2</td>
@@ -433,11 +465,8 @@ addService.pl ... -... PENDING...
         <td bgcolor="#D0D0D0" colspan=3 align="center">macro#7</td>
       </tr>
       <tr>
-        <td bgcolor="#C0C0C0">Name</td>
-        <td bgcolor="#C0C0C0">NRPE</td>
-        <td bgcolor="#C0C0C0">Default service name</td>
-        <td bgcolor="#C0C0C0">Description</td>
-        
+        <td bgcolor="#C0C0C0">Service<br/>Name</td>
+
         <#assign seq = ['1', '2', '3', '4', '5', '6', '7']>
         <#list seq as row>
           <td bgcolor="#D0D0D0">Name</td>
@@ -449,9 +478,6 @@ addService.pl ... -... PENDING...
 <#list serviceTemplates as serviceTemplate>
       <tr>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.name} </td>
-        <td bgcolor="#F0F0F0"> ${serviceTemplate.nrpe?string} </td>
-        <td bgcolor="#F0F0F0"> ${serviceTemplate.defaultName} </td>
-        <td bgcolor="#F0F0F0"> ${serviceTemplate.description} </td>
 
   <#if serviceTemplate.macroDefinitions?hasContent>
     <#list serviceTemplate.macroDefinitions as mDef>
@@ -472,7 +498,7 @@ addService.pl ... -... PENDING...
       </tr>
 </#list>
     </table>
-   
+
    <br/>
   </body>
 </html>
