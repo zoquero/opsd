@@ -416,40 +416,27 @@ addService.pl ... -... STILL UNFINISHED
         <td bgcolor="#F0F0F0"></td>
         <td bgcolor="#F0F0F0"></td>
         <td bgcolor="#F0F0F0"></td>
-        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#1</td>
-        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#2</td>
-        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#3</td>
-        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#4</td>
-        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#5</td>
-        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#6</td>
-        <td bgcolor="#F0F0F0" colspan=3 align="center">macro#7</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#1</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#2</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#3</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#4</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#5</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#6</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#7</td>
       </tr>
       <tr>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">NRPE</td>
-        <td bgcolor="#F0F0F0">Default service name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Default<br/>value</td>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Default<br/>value</td>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Default<br/>value</td>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Default<br/>value</td>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Default<br/>value</td>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Default<br/>value</td>
-        <td bgcolor="#F0F0F0">Name</td>
-        <td bgcolor="#F0F0F0">Description</td>
-        <td bgcolor="#F0F0F0">Default<br/>value</td>
+        <td bgcolor="#C0C0C0">Name</td>
+        <td bgcolor="#C0C0C0">NRPE</td>
+        <td bgcolor="#C0C0C0">Default service name</td>
+        <td bgcolor="#C0C0C0">Description</td>
+        
+        <#assign seq = ['1', '2', '3', '4', '5', '6', '7']>
+        <#list seq as row>
+          <td bgcolor="#D0D0D0">Name</td>
+          <td bgcolor="#DBDBDB">Description</td>
+          <td bgcolor="#EAEAEA">Default<br/>value</td>
+        </#list>
+
       </tr>
 <#list serviceTemplates as serviceTemplate>
       <tr>
@@ -457,6 +444,29 @@ addService.pl ... -... STILL UNFINISHED
         <td bgcolor="#F0F0F0"> PENDING {serviceTemplate.nrpe} </td>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.defaultName} </td>
         <td bgcolor="#F0F0F0"> ${serviceTemplate.description} </td>
+
+  <#if serviceTemplate.macroDefinitions?hasContent>
+    <#list serviceTemplate.macroDefinitions as mDef>
+      <#if mDef?hasContent>
+        <td bgcolor="#D0D0D0"> ${mDef.name} </td>
+        <td bgcolor="#DBDBDB"> ${mDef.description} </td>
+        <td bgcolor="#EAEAEA"> ${mDef.defaultValue} </td>
+      </#if>
+    </#list>
+  <#else>
+        <#assign seq = ['1', '2', '3', '4', '5', '6', '7']>
+        <#list seq as row>
+          <td bgcolor="#F0F0F0"> &nbsp </td>
+          <td bgcolor="#F0F0F0"> &nbsp </td>
+          <td bgcolor="#F0F0F0"> &nbsp </td>
+        </#list>
+  </#if>
+
+<#--
+        <td bgcolor="#F0F0F0"> size=${serviceTemplate.macros?size} </td>
+        <td bgcolor="#F0F0F0"> size=${serviceTemplate.macros?size} </td>
+        <td bgcolor="#F0F0F0"> size=${serviceTemplate.macros?size} </td>
+        
         <td bgcolor="#F0F0F0"> PENDING </td>
         <td bgcolor="#F0F0F0"> PENDING </td>
         <td bgcolor="#F0F0F0"> PENDING </td>
@@ -478,6 +488,9 @@ addService.pl ... -... STILL UNFINISHED
         <td bgcolor="#F0F0F0"> PENDING </td>
         <td bgcolor="#F0F0F0"> PENDING </td>
         <td bgcolor="#F0F0F0"> PENDING </td>
+        
+-->
+        
       </tr>
 </#list>
     </table>

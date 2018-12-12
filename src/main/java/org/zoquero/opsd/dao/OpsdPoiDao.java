@@ -409,12 +409,13 @@ public class OpsdPoiDao implements OpsdDataTap {
 						= new ArrayList<OpsdServiceMacroDefinition>();
 					for (int i = 0; i < 7; i++) {
 						macroName = parts[4+i];
-						macroDescription = parts[4+i];
-						macroDefaultValue = parts[4+i];
+						macroDescription = parts[5+i];
+						macroDefaultValue = parts[6+i];
 						OpsdServiceMacroDefinition aServiceTemplate =
 							new OpsdServiceMacroDefinition(macroName,
 									macroDescription, macroDefaultValue);
 						osmdList.add(aServiceTemplate);
+System.out.println("Created a ST: " + aServiceTemplate);
 					}
 					if (name == null || defaultName == null 
 							|| description == null || osmdList == null) {
