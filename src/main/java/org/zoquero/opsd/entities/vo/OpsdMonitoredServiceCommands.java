@@ -140,23 +140,34 @@ public class OpsdMonitoredServiceCommands {
 			premiumStr = getMonitoredService().isPremium() ? "-P" : "";
 		}
 		
-		StringBuilder macros = new StringBuilder("");
+		StringBuilder macros = new StringBuilder("-M ");
+		String macrosStr;
+		boolean found = false;
 		for(int i = 0; i < 7; i ++) {
 			String[] mva = getMonitoredService().getMacroValuesArray();
 			if( mva != null && mva[i] != null) {
 				if(getMonitoredService().getServiceTemplate() != null
-						&& getMonitoredService().getServiceTemplate().getMacroDefinitions()
-						!= null && getMonitoredService().getServiceTemplate().getMacroDefinitions().get(i) != null) {
+						&& getMonitoredService().getServiceTemplate().getMacroDefinitions() != null 
+						&& getMonitoredService().getServiceTemplate().getMacroDefinitions().get(i) != null
+						&& getMonitoredService().getServiceTemplate().getMacroDefinitions().get(i).getName() != null
+						&& ! getMonitoredService().getServiceTemplate().getMacroDefinitions().get(i).getName().equals("")) {
 					OpsdServiceMacroDefinition smd = getMonitoredService().getServiceTemplate().getMacroDefinitions().get(i);
 					macros.append(smd.getName() + "=\"" + mva[i] + "\" ");
+					found = true;
 				}
 			}
+		}
+		if(found) {
+			macrosStr = macros.toString();
+		}
+		else {
+			macrosStr = "";
 		}
 		
 		// addService
 		// AddService.pl -H %s -s %s -T %s %s
 		String _addServiceCommand = String.format(_addServiceFormat,
-				_host, _name, st, macros, premiumStr);
+				_host, _name, st, macrosStr, premiumStr);
 		setAddServiceCommand(_addServiceCommand);
 		
 		// delService
