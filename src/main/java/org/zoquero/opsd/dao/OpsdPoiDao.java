@@ -910,7 +910,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 						+ "the RoleService #" + rowNum + " has null role");
 				}
 				
-System.out.println("PENDING TO LOAD ServiceTemplate");
+				serviceTemplate = getServiceTemplate(serviceTemplateName);
 
 				// Let's create the OpsdSystem object:
 				OpsdRoleService roleService = new OpsdRoleService(name,

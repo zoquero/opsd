@@ -9,6 +9,7 @@ import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdServiceMacroDefinition;
 
 /**
  * Object to hold commands to add and delete MonitoredServices
@@ -139,10 +140,23 @@ public class OpsdMonitoredServiceCommands {
 			premiumStr = getMonitoredService().isPremium() ? "-P" : "";
 		}
 		
+		StringBuilder macros = new StringBuilder("");
+		for(int i = 0; i < 7; i ++) {
+			String[] mva = getMonitoredService().getMacroValuesArray();
+			if( mva != null && mva[i] != null) {
+				if(getMonitoredService().getServiceTemplate() != null
+						&& getMonitoredService().getServiceTemplate().getMacroDefinitions()
+						!= null && getMonitoredService().getServiceTemplate().getMacroDefinitions().get(i) != null) {
+					OpsdServiceMacroDefinition smd = getMonitoredService().getServiceTemplate().getMacroDefinitions().get(i);
+					macros.append(smd.getName() + "=\"" + mva[i] + "\" ");
+				}
+			}
+		}
+		
 		// addService
 		// AddService.pl -H %s -s %s -T %s %s
 		String _addServiceCommand = String.format(_addServiceFormat,
-				_host, _name, st, premiumStr);
+				_host, _name, st, macros, premiumStr);
 		setAddServiceCommand(_addServiceCommand);
 		
 		// delService
