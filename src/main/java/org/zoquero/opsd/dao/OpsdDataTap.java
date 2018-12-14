@@ -9,6 +9,7 @@ import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
+import org.zoquero.opsd.entities.OpsdPollerType;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
@@ -204,5 +205,23 @@ public interface OpsdDataTap {
 	 * @throws OpsdException
 	 */
 	public OpsdServiceTemplate getServiceTemplate(String serviceTemplateName) throws OpsdException;
+
+	/**
+	 * Get all the PollerType objects. On a future release all data
+	 * will be on a Relational Database. By now, the allowed
+	 * pollerTypes must be described here, not in the Excel file.
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	public List<OpsdPollerType> getPollerTypes() throws OpsdException;
+
+	/**
+	 * Get a PollerType
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	public OpsdPollerType getPollerType(int id) throws OpsdException;
 
 }

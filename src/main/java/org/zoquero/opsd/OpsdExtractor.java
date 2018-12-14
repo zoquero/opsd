@@ -16,6 +16,7 @@ import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
+import org.zoquero.opsd.entities.OpsdPollerType;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -62,6 +63,10 @@ public class OpsdExtractor {
 		// OpsdProject
 		OpsdProject project = dt.getProject(projectName);
 		fpd.setProject(project);
+		
+		// OpsdPollerType
+		List<OpsdPollerType> pollerTypes = dt.getPollerTypes();
+		fpd.setPollerTypes(pollerTypes);
 		
 		// OpsdRole
 		List<OpsdRole> roles = dt.getRoles(project);
@@ -209,7 +214,8 @@ public class OpsdExtractor {
 		for(OpsdMonitoredHost aHost: fpd.getMonitoredHosts()) {
 			String ht = getMonitoringHostTemplate(project, aHost);
 			boolean premium = dt.hasPremiumServices(project, aHost);
-			monitoredHostCommands.put(aHost, new OpsdMonitoredHostCommands(aHost, ht, premium, project));
+			OpsdPollerType pollerType = OpsdPollerType.getPollerForIp(aHost.getIp(), dt.getPollerTypes());
+			monitoredHostCommands.put(aHost, new OpsdMonitoredHostCommands(aHost, pollerType, ht, premium, project));
 		}
 		fpd.setMonitoredHostCommands(monitoredHostCommands);
 		

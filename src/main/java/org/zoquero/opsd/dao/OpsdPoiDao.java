@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdFilePolicy.ACTION_TYPE;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
+import org.zoquero.opsd.entities.OpsdPollerType;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdHostService;
@@ -87,6 +90,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 	private List<String> cachedEnvironments = null;
 	private List<OpsdPeriodicTask> cachedPeriodicTasks = null;
 	private List<OpsdFilePolicy> cachedFilePolicies = null;
+	private List<OpsdPollerType> cachedPollerTypes = null;
 
 	static public OpsdSystem FLOATING_HOST = null;
 
@@ -778,7 +782,6 @@ public class OpsdPoiDao implements OpsdDataTap {
 					system, forManaging, forService, forBackup, forNas,
 					defaultChecksNeeded, moreInfo, environment, role, scaleTo);
 			monitoredHosts.add(monitoredHost);
-			LOGGER.log(Level.FINEST, "MonitoredHost added: " + monitoredHost);
 		}
 		return monitoredHosts;
 	}
@@ -1338,5 +1341,61 @@ public class OpsdPoiDao implements OpsdDataTap {
 				+ aHost.getName() + " hasn't any Premium service, "
 				+ "it's not a Premium Host");
 		return false;
+	}
+	
+	@Override
+	public List<OpsdPollerType> getPollerTypes() throws OpsdException {
+		if (cachedPollerTypes == null) {
+			LOGGER.log(Level.FINER, "getPollerTypes: Loading lazily the cachedPollerTypes");
+			/* Lazy initialization of the array, read from properties file */
+			cachedPollerTypes = new ArrayList<OpsdPollerType>();
+
+			ResourceBundle rb = ResourceBundle
+					.getBundle("org.zoquero.opsd.entities.PollerType");
+			Enumeration<String> keys = rb.getKeys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement();
+				if (key.startsWith("pollerType.")) {
+					String value = rb.getString(key);
+					StringTokenizer st = new StringTokenizer(value, ";");
+					int id = -1;
+					String idStr       = (String) st.nextElement();
+					String name        = (String) st.nextElement();
+					String description = (String) st.nextElement();
+					String networksStr = null;
+					if(st.hasMoreElements()) {
+						networksStr = (String) st.nextElement();						
+					}
+					
+					try {
+						id = Integer.parseInt(idStr);
+					} catch (NumberFormatException e) {
+						throw new OpsdException("Reading the Pollertype " + key
+								+ " can't convert " + idStr + " to integer", e);
+					}
+					String[] parts = null;
+					List<String> networks = null;
+					if(networksStr != null) {
+						parts = networksStr.split(",", -1);
+						networks = Arrays.asList(parts);
+					}
+
+					OpsdPollerType aPollertype = new OpsdPollerType(id, name, description, networks);
+					cachedPollerTypes.add(aPollertype);
+				}
+			}
+			Collections.sort(cachedPollerTypes);
+		}
+		return cachedPollerTypes;
+	}
+	
+	@Override
+	public OpsdPollerType getPollerType(int id) throws OpsdException {
+		for(OpsdPollerType pollerType: getPollerTypes()) {
+			if(pollerType != null && pollerType.getId() == id) {
+				return pollerType;
+			}
+		}
+		return null;
 	}
 }

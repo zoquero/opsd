@@ -10,6 +10,7 @@ import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
+import org.zoquero.opsd.entities.OpsdPollerType;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -77,6 +78,7 @@ class OpsdFullProjectData {
 	private Map<OpsdMonitoredHost, OpsdMonitoredHostCommands> monitoredHostCommands;
 	private List<OpsdServiceTemplate> serviceTemplates;
 	private Map<OpsdHostService, OpsdMonitoredServiceCommands> monitoredEffectiveHostServiceCommands;
+	private List<OpsdPollerType> pollerTypes;
 
 	
 	OpsdFullProjectData(OpsdReport oReport) {
@@ -377,6 +379,20 @@ class OpsdFullProjectData {
 	public void setMonitoredEffectiveHostServiceCommands(
 			Map<OpsdHostService, OpsdMonitoredServiceCommands> monitoredEffectiveHostServiceCommands) {
 		this.monitoredEffectiveHostServiceCommands = monitoredEffectiveHostServiceCommands;
+	}
+
+	/**
+	 * @return the pollerTypes
+	 */
+	public List<OpsdPollerType> getPollerTypes() {
+		return pollerTypes;
+	}
+
+	/**
+	 * @param pollerTypes the pollerTypes to set
+	 */
+	public void setPollerTypes(List<OpsdPollerType> pollerTypes) {
+		this.pollerTypes = pollerTypes;
 	}
 
 }

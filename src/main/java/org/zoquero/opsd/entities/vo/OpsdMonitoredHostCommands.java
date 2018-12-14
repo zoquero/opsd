@@ -7,6 +7,7 @@ import javax.management.RuntimeErrorException;
 
 import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdPollerType;
 import org.zoquero.opsd.entities.OpsdProject;
 
 /**
@@ -29,6 +30,9 @@ public class OpsdMonitoredHostCommands {
 	
 	/** The relate Project */
 	private OpsdProject project;
+	
+	/** Associated poller type (monitoring server that will poll this host) */
+	private OpsdPollerType pollerType;
 	
 	/** Command to add the host to the monitoring system*/
 	private String addHostCommand;
@@ -110,6 +114,18 @@ public class OpsdMonitoredHostCommands {
 		this.project = project;
 	}
 	/**
+	 * @return the pollerType
+	 */
+	public OpsdPollerType getPollerType() {
+		return pollerType;
+	}
+	/**
+	 * @param pollerType the pollerType to set
+	 */
+	private void setPollerType(OpsdPollerType pollerType) {
+		this.pollerType = pollerType;
+	}
+	/**
 	 * Initiate the fields with the commands, just called from the constructor
 	 */
 	private void fillCommands() {
@@ -152,9 +168,15 @@ public class OpsdMonitoredHostCommands {
 		}
 		String premiumStr = isPremium() ? "-P" : "";
 		
+		int pollerTypeId;
+		if(getPollerType() != null)
+			pollerTypeId = getPollerType().getId();
+		else 
+			pollerTypeId = -1;
+		
 		// addHost
 		String _addHostCommand = String.format(_addHostFormat,
-					_name, _ip, ht, resourceAcl, premiumStr);
+					_name, _ip, ht, resourceAcl, pollerTypeId, premiumStr);
 		setAddHostCommand(_addHostCommand);
 		
 		// delHost
@@ -169,8 +191,9 @@ public class OpsdMonitoredHostCommands {
 	 * @param premium
 	 * @param project
 	 */
-	public OpsdMonitoredHostCommands(OpsdMonitoredHost monitoredHost, String hostTemplate, boolean premium, OpsdProject project) {
+	public OpsdMonitoredHostCommands(OpsdMonitoredHost monitoredHost, OpsdPollerType pollerType, String hostTemplate, boolean premium, OpsdProject project) {
 		setMonitoredHost(monitoredHost);
+		setPollerType(pollerType);
 		setHostTemplate(hostTemplate);
 		setPremium(premium);
 		setProject(project);
