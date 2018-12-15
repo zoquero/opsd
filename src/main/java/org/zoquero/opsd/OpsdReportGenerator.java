@@ -171,6 +171,7 @@ public class OpsdReportGenerator {
 		input.put("wikiFilePolicies",      getWikiFromFilePolicies());
 
 		input.put("monitoredHost2script", getFullProjectData().getMonitoredHostCommands());
+		input.put("numMacros", OpsdConf.getNumMacros());
 		input.put("serviceTemplates", getFullProjectData().getServiceTemplates());
 		input.put("monitoredEffectiveHostServiceCommands", getFullProjectData().getMonitoredEffectiveHostServiceCommands());
 

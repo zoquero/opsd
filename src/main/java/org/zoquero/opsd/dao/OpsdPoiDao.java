@@ -408,7 +408,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 					String macroName, macroDescription, macroDefaultValue;
 					List<OpsdServiceMacroDefinition> osmdList
 						= new ArrayList<OpsdServiceMacroDefinition>();
-					for (int i = 0; i < 7; i++) {
+					for (int i = 0; i < OpsdConf.getNumMacros(); i++) {
 						macroName = parts[4+3*i];
 						macroDescription = parts[5+3*i];
 						macroDefaultValue = parts[6+3*i];
@@ -528,7 +528,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
 
 				// Get the row object
-				Row row = sheet.getRow(rowNum);
+				Row row;
+				row = sheet.getRow(rowNum);
+				if(row == null) continue;
 
 				int i = 0;
 				String name = formatter.formatCellValue(row.getCell(i++));
@@ -537,6 +539,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 				// We will drop empty rows
 				if ((name == null || name.equals(""))
 						&& (description == null || description.equals(""))) {
+					LOGGER.log(Level.WARNING, "OpsdPoiDao.getRoles"
+							+ " found what looks like an empty row (#" + rowNum + ")"
+							+ " (no name nor description)");
 					continue;
 				}
 
@@ -574,13 +579,20 @@ public class OpsdPoiDao implements OpsdDataTap {
 			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
 
 				// Get the row object
-				Row row = sheet.getRow(rowNum);
+				Row row;
+				row = sheet.getRow(rowNum);
+				if(row == null) continue;
+
 
 				int i = 0;
 				String name = formatter.formatCellValue(row.getCell(i++));
 				// We'll drop rows without name
-				if (name == null || name.equals(""))
-					continue;
+				if (name == null || name.equals("")) {
+					LOGGER.log(Level.WARNING, "OpsdPoiDao.getSystems"
+							+ " found what looks like an empty row (#" + rowNum + ")"
+							+ " (empty name)");
+					continue;					
+				}
 				String alias = formatter.formatCellValue(row.getCell(i++));
 				String fqdnOrIp = formatter.formatCellValue(row.getCell(i++));
 				String deviceTypeStr = formatter.formatCellValue(row.getCell(i++));
@@ -700,14 +712,20 @@ public class OpsdPoiDao implements OpsdDataTap {
 		for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
 
 			// Get the row object
-			Row row = sheet.getRow(rowNum);
+			Row row;
+			row = sheet.getRow(rowNum);
+			if(row == null) continue;
 
 			int i = 0;
 			// String fields:
 			String name = formatter.formatCellValue(row.getCell(i++));
 			// We'll drop rows without name
-			if (name == null || name.equals(""))
+			if (name == null || name.equals("")) {
+				LOGGER.log(Level.WARNING, "OpsdPoiDao.getMonitoredHosts"
+						+ " found what looks like an empty row (#" + rowNum + ")"
+						+ " (empty name)");
 				continue;
+			}
 			String ip = formatter.formatCellValue(row.getCell(i++));
 			String systemStr = formatter.formatCellValue(row.getCell(i++));
 			String forManagingStr = formatter.formatCellValue(row.getCell(i++));
@@ -840,7 +858,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 				 */
 
 				// Get the row object
-				Row row = sheet.getRow(rowNum);
+				Row row;
+				row = sheet.getRow(rowNum);
+				if(row == null) continue;
 
 				int i = 0;
 				String name = null;
@@ -853,22 +873,21 @@ public class OpsdPoiDao implements OpsdDataTap {
 				OpsdRole role = null;
 				String serviceTemplateName = formatter.formatCellValue(row.getCell(i++));
 				OpsdServiceTemplate serviceTemplate = null;
-				String[] macroAndValueArray = new String[7];
-				macroAndValueArray[0] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[1] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[2] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[3] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[4] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[5] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[6] = formatter.formatCellValue(row.getCell(i++));
-				String scaleTo = formatter.formatCellValue(row.getCell(i++));
-				
-				if((name == null || name.equals(""))
-						&& (serviceTemplateName == null
-						||  serviceTemplateName.equals(""))) {
-					// It must be an empty row
-					continue;
+				String[] macroAndValueArray = new String[OpsdConf.getNumMacros()];
+				for(int j = 0; j < OpsdConf.getNumMacros(); j++) {
+					macroAndValueArray[j] = formatter.formatCellValue(row.getCell(i++));
 				}
+				String scaleTo = formatter.formatCellValue(row.getCell(i++));
+
+//				if((name == null || name.equals(""))
+//						&& (serviceTemplateName == null
+//						||  serviceTemplateName.equals(""))) {
+//					// It must be an empty row
+//					LOGGER.log(Level.WARNING, "OpsdPoiDao.getRoleServices"
+//							+ " found what looks like an empty row (#" + rowNum + ")"
+//							+ " (empty name and hasn't ServiceTemplate)");
+//					continue;
+//				}
 				
 				if(serviceTemplateName == null || serviceTemplateName.equals("")) {
 					// it will appear as an error in validation
@@ -882,10 +901,14 @@ public class OpsdPoiDao implements OpsdDataTap {
 				else {
 					serviceTemplate = getServiceTemplate(serviceTemplateName);
 				}
+				
 				if (proposedName == null || proposedName.equals("")) {
 					// it will appear as an error in validation
 					if(serviceTemplate == null) {
-						name = null;
+						LOGGER.log(Level.SEVERE, "OpsdPoiDao.getRoleServices: "
+								+ "Role Service without name and without serviceTemplate "
+								+ " when loading the RoleService #" + rowNum);
+						continue;
 					}
 					else {
 						name = serviceTemplate.getDefaultName();
@@ -894,6 +917,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 				else {
 					name = proposedName;
 				}
+				
 				if(criticityName == null || criticityName.equals("")) {
 					// it will appear as an error in validation
 					criticity = null;
@@ -914,6 +938,19 @@ public class OpsdPoiDao implements OpsdDataTap {
 				}
 				
 				serviceTemplate = getServiceTemplate(serviceTemplateName);
+				
+				// Substitute macros:
+				int numMacros = OpsdConf.getNumMacros();
+				for(int j = 0; j < numMacros; j++) {
+					if(
+							macroAndValueArray != null
+							&& macroAndValueArray.length > j
+							&& macroAndValueArray[j] != null) {
+						String source = "$MACRO" + (j+1) + "$";
+						String dest   = macroAndValueArray[j];
+						name = name.replace(source, dest);
+					}
+				}
 
 				// Let's create the OpsdSystem object:
 				OpsdRoleService roleService = new OpsdRoleService(name,
@@ -996,7 +1033,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 				 */
 
 				// Get the row object
-				Row row = sheet.getRow(rowNum);
+				Row row;
+				row = sheet.getRow(rowNum);
+				if(row == null) continue;
 
 				int i = 0;
 				String name = null;
@@ -1009,22 +1048,21 @@ public class OpsdPoiDao implements OpsdDataTap {
 				OpsdMonitoredHost host = null;
 				String serviceTemplateName = formatter.formatCellValue(row.getCell(i++));
 				OpsdServiceTemplate serviceTemplate = null;
-				String[] macroAndValueArray = new String[7];
-				macroAndValueArray[0] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[1] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[2] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[3] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[4] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[5] = formatter.formatCellValue(row.getCell(i++));
-				macroAndValueArray[6] = formatter.formatCellValue(row.getCell(i++));
+				String[] macroAndValueArray = new String[OpsdConf.getNumMacros()];
+				for(int j = 0; j < OpsdConf.getNumMacros(); j++) {
+					macroAndValueArray[j] = formatter.formatCellValue(row.getCell(i++));
+				}
 				String scaleTo = formatter.formatCellValue(row.getCell(i++));
 				
-				if((name == null || name.equals(""))
-						&& (serviceTemplateName == null
-						||  serviceTemplateName.equals(""))) {
-					// It must be an empty row
-					continue;
-				}
+//				if((name == null || name.equals(""))
+//						&& (serviceTemplateName == null
+//						||  serviceTemplateName.equals(""))) {
+//					// It must be an empty row
+//					LOGGER.log(Level.WARNING, "OpsdPoiDao.getHostServices"
+//							+ " found what looks like an empty row (#" + rowNum + ")"
+//							+ " (empty name and hasn't ServiceTemplate)");
+//					continue;
+//				}
 				
 				if(serviceTemplateName == null || serviceTemplateName.equals("")) {
 					// it will appear as an error in validation
@@ -1038,10 +1076,14 @@ public class OpsdPoiDao implements OpsdDataTap {
 				else {
 					serviceTemplate = getServiceTemplate(serviceTemplateName);
 				}
+				
 				if (proposedName == null || proposedName.equals("")) {
 					// it will appear as an error in validation
 					if(serviceTemplate == null) {
-						name = null;
+						LOGGER.log(Level.SEVERE, "OpsdPoiDao.getHostServices: "
+								+ "Host Service without name and without serviceTemplate "
+								+ " when loading the HostService #" + rowNum);
+						continue;
 					}
 					else {
 						name = serviceTemplate.getDefaultName();
@@ -1068,6 +1110,19 @@ public class OpsdPoiDao implements OpsdDataTap {
 					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getHostServices: "
 						+ "the HostService #" + rowNum
 						+ " has null monitoredHost");
+				}
+				
+				// Substitute macros:
+				int numMacros = OpsdConf.getNumMacros();
+				for(int j = 0; j < numMacros; j++) {
+					if(
+							macroAndValueArray != null
+							&& macroAndValueArray.length > j
+							&& macroAndValueArray[j] != null) {
+						String source = "$MACRO" + (j+1) + "$";
+						String dest   = macroAndValueArray[j];
+						name = name.replace(source, dest);
+					}
 				}
 
 				// Let's create the OpsdSystem object:
@@ -1136,13 +1191,19 @@ public class OpsdPoiDao implements OpsdDataTap {
 			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
 
 				// Get the row object
-				Row row = sheet.getRow(rowNum);
+				Row row;
+				row = sheet.getRow(rowNum);
+				if(row == null) continue;
 
 				int i = 0;
 				String name = formatter.formatCellValue(row.getCell(i++));
 				// We'll drop rows without name
-				if (name == null || name.equals(""))
+				if (name == null || name.equals("")) {
+					LOGGER.log(Level.WARNING, "OpsdPoiDao.getRequests"
+							+ " found what looks like an empty row (#" + rowNum + ")"
+							+ " (empty name)");
 					continue;
+				}
 				String authorized = formatter.formatCellValue(row.getCell(i++));
 				String procedure = formatter.formatCellValue(row.getCell(i++));
 				String scaleTo = formatter.formatCellValue(row.getCell(i++));
@@ -1213,13 +1274,20 @@ public class OpsdPoiDao implements OpsdDataTap {
 			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
 
 				// Get the row object
-				Row row = sheet.getRow(rowNum);
+				Row row;
+				row = sheet.getRow(rowNum);
+				if(row == null) continue;
+
 
 				int i = 0;
 				String name = formatter.formatCellValue(row.getCell(i++));
 				// We'll drop rows without name
-				if (name == null || name.equals(""))
+				if (name == null || name.equals("")) {
+					LOGGER.log(Level.WARNING, "OpsdPoiDao.getPeriodicTasks"
+							+ " found what looks like an empty row (#" + rowNum + ")"
+							+ " (empty name)");
 					continue;
+				}
 				String periodicity = formatter.formatCellValue(row.getCell(i++));
 				String procedure = formatter.formatCellValue(row.getCell(i++));
 				String scaleTo = formatter.formatCellValue(row.getCell(i++));
@@ -1257,7 +1325,9 @@ public class OpsdPoiDao implements OpsdDataTap {
 			for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
 
 				// Get the row object
-				Row row = sheet.getRow(rowNum);
+				Row row;
+				row = sheet.getRow(rowNum);
+				if(row == null) continue;
 
 				int i = 0;
 				String systemStr = formatter.formatCellValue(row.getCell(i++));
@@ -1270,8 +1340,13 @@ public class OpsdPoiDao implements OpsdDataTap {
 				
 				OpsdSystem system = getSystemByName(project, systemStr);
 				OpsdRole role = getRoleByName(project, roleStr);
-				if(system == null && role == null)
+				if(system == null && role == null) {
+					LOGGER.log(Level.WARNING, "OpsdPoiDao.getFilePolicies"
+							+ " found what looks like an empty row (#" + rowNum + ")"
+							+ " (no system nor role)");
 					continue;
+					
+				}
 				
 				Integer minDays;
 				if (minDaysStr == null) {

@@ -3,9 +3,14 @@
  */
 package org.zoquero.opsd.entities.vo;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.management.RuntimeErrorException;
 
+import org.zoquero.opsd.OpsdException;
 import org.zoquero.opsd.dao.OpsdConf;
+import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdProject;
@@ -18,6 +23,8 @@ import org.zoquero.opsd.entities.OpsdServiceMacroDefinition;
  */
 public class OpsdMonitoredServiceCommands {
 
+	private static Logger LOGGER = Logger.getLogger(OpsdMonitoredServiceCommands.class.getName());
+	
 	/** Service to which these commands are related .*/
 	private OpsdMonitoredService monitoredService;
 	
@@ -103,6 +110,16 @@ public class OpsdMonitoredServiceCommands {
 		
 		String _delServiceFormat = OpsdConf.getProperty("monitoring.command.delService");
 		
+		int numMacros;
+		try {
+			numMacros = OpsdConf.getNumMacros();
+		} catch (Throwable e) {
+			LOGGER.log(Level.SEVERE, "Can't read the number of macros: "
+					+ e.getMessage(), e);
+			// Will be detected
+			numMacros = 100;
+		}
+		
 		String _name;
 		if(getMonitoredService() == null
 				|| getMonitoredService().getName() == null
@@ -143,7 +160,8 @@ public class OpsdMonitoredServiceCommands {
 		StringBuilder macros = new StringBuilder("-M ");
 		String macrosStr;
 		boolean found = false;
-		for(int i = 0; i < 7; i ++) {
+		
+		for(int i = 0; i < numMacros; i ++) {
 			String[] mva = getMonitoredService().getMacroValuesArray();
 			if( mva != null && mva[i] != null) {
 				if(getMonitoredService().getServiceTemplate() != null

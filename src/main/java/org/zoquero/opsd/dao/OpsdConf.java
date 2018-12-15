@@ -71,4 +71,14 @@ public class OpsdConf {
 		String propertyName = "wiki.template." + name;		
 		return getProperty(propertyName, false);
 	}
+
+	public static int getNumMacros() throws OpsdException {
+		int numMacros;
+		try {
+			numMacros = Integer.parseInt(getProperty("monitoring.serviceTemplate.numMacros"));
+		} catch (Throwable e) {
+			throw new OpsdException("Can't get numMacros: " + e.getMessage(), e);
+		}
+		return numMacros;
+	}
 }

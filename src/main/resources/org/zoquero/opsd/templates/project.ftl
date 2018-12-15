@@ -457,24 +457,17 @@ ${monitoredServiceCommands.addServiceCommand}
     <table border="1">
       <tr>
         <td bgcolor="#F0F0F0"></td>
-        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#1</td>
-        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#2</td>
-        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#3</td>
-        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#4</td>
-        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#5</td>
-        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#6</td>
-        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#7</td>
+<#list 1..numMacros as i>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#${i}</td>
+</#list>
       </tr>
       <tr>
         <td bgcolor="#C0C0C0">Service<br/>Name</td>
-
-        <#assign seq = ['1', '2', '3', '4', '5', '6', '7']>
-        <#list seq as row>
+<#list 1..numMacros as i>
           <td bgcolor="#D0D0D0">Name</td>
           <td bgcolor="#DBDBDB">Description</td>
           <td bgcolor="#EAEAEA">Default<br/>value</td>
-        </#list>
-
+</#list>
       </tr>
 <#list serviceTemplates as serviceTemplate>
       <tr>
@@ -489,12 +482,13 @@ ${monitoredServiceCommands.addServiceCommand}
       </#if>
     </#list>
   <#else>
-        <#assign seq = ['1', '2', '3', '4', '5', '6', '7']>
-        <#list seq as row>
+  
+    <#list 1..numMacros as i>
           <td bgcolor="#F0F0F0"> &nbsp </td>
           <td bgcolor="#F0F0F0"> &nbsp </td>
           <td bgcolor="#F0F0F0"> &nbsp </td>
-        </#list>
+    </#list>
+  
   </#if>
       </tr>
 </#list>
