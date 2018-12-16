@@ -14,7 +14,7 @@
           <li> <a href="#validation">1) Validation Project data</a> </li>
           <li> <a href="#gd">2) Generated documentation</a> </li>
           <ul>
-            <li> <a href="#ap">Article for project '<em>${project.name}</em>'</a> </li>
+            <li> <a href="#ap">Article for project '<em>${opsdProject.name}</em>'</a> </li>
             <li> <a href="#asp">Article for service procedures</a> </li>
             <li> <a href="#requests">Article for requests (requestable tasks)</a> </li>
             <li> <a href="#periodictasks">Article for periodic tasks</a> </li>
@@ -93,15 +93,15 @@
     <h2 id="gd">2) Generated documentation</h2>
     <p>You can test it in <a href="https://www.mediawiki.org/w/index.php?title=Project:Sandbox&action=edit">MediaWiki's sandbox</a>. Be carefull if it contains sensible information.</p>
 
-    <h3 id="ap">Article for project '<em>${project.name}</em>'</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/${project.name}'>${wikiUrlBase}/${project.name}</a></p>
+    <h3 id="ap">Article for project '<em>${opsdProject.name}</em>'</h3>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/${opsdProject.name}'>${wikiUrlBase}/${opsdProject.name}</a></p>
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
 
 __FORCETOC__
 
-Documentation for the project '<em>${project.name}</em>' generated using '[https://github.com/zoquero/opsd Operations Descriptor]' on ${genDate} with ${report.errors?size} errors and ${report.warnings?size} warnings
+Documentation for the project '<em>${opsdProject.name}</em>' generated using '[https://github.com/zoquero/opsd Operations Descriptor]' (${project.artifactId}-${project.version}) on ${genDate} with ${report.errors?size} errors and ${report.warnings?size} warnings
 
 == Project description ==
 
@@ -148,7 +148,7 @@ ${roleWiki}
 
 == Services and its procedures ==
 
-Article for service procedures: [[Procedures for ${project.name}]]
+Article for service procedures: [[Procedures for ${opsdProject.name}]]
 
 <#--
 We'll remove it in a future code cleanup, by now it will help here
@@ -203,7 +203,7 @@ We'll remove it in a future code cleanup, by now it will help here
     <br/><hr/><br/>
 
     <h3 id="asp">Article for service procedures</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Procedures for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Procedures for ${project.name}'>${wikiUrlBase}/Procedures for ${project.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Procedures for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/Procedures for ${opsdProject.name}'>${wikiUrlBase}/Procedures for ${opsdProject.name}</a></p>
     
 <#--
 We'll remove it in a future code cleanup, by now it will help here
@@ -212,7 +212,7 @@ We'll remove it in a future code cleanup, by now it will help here
       <tr><td bgcolor="#F0F0F0">
         <pre>
 __FORCETOC__
-Procedures for the services of the project [[${project.name}]]:
+Procedures for the services of the project [[${opsdProject.name}]]:
 == Effective Services for monitoredHosts (mixing direct services + role services) ==
 <#list hosteffectiveServicesMap as host, hostServices> 
 === MonitoredHost '${host.name}' ===
@@ -248,7 +248,7 @@ DOESN'T WORK, CAN'T INTERPOLATE USING VARIABLES AS INDEXES, JUST STATIC CONTENT
         <pre>
 
 __FORCETOC__
-Procedures for the services of the project [[${project.name}]], grouping together for each host both the explicit services for each host and the services for its roles.
+Procedures for the services of the project [[${opsdProject.name}]], grouping together for each host both the explicit services for each host and the services for its roles.
 
 <#list host2effectiveServiceWikiVOMap as host, hostServiceWikis> 
 === MonitoredHost '${host.name}' ===
@@ -274,13 +274,13 @@ ${aServiceWikiVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="requests">Article for requests (requestable tasks)</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Requests for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Requests for ${project.name}'>${wikiUrlBase}/Requests for ${project.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Requests for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/Requests for ${opsdProject.name}'>${wikiUrlBase}/Requests for ${opsdProject.name}</a></p>
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
 __FORCETOC__
-Tasks that can be requested (hopefully by ticketing) for the project '''[[${project.name}]]'''
+Tasks that can be requested (hopefully by ticketing) for the project '''[[${opsdProject.name}]]'''
 
 <#list requestVOs as aRequestVO> 
 == Request '${aRequestVO.request.name}' ==
@@ -295,13 +295,13 @@ ${aRequestVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="periodictasks">Article for periodic tasks</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Periodic tasks for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/Periodic tasks for ${project.name}'>${wikiUrlBase}/Periodic tasks for ${project.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Periodic tasks for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/Periodic tasks for ${opsdProject.name}'>${wikiUrlBase}/Periodic tasks for ${opsdProject.name}</a></p>
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
         <pre>
 __FORCETOC__
-Periodic tasks for the project '''[[${project.name}]]'''
+Periodic tasks for the project '''[[${opsdProject.name}]]'''
 
 <#list periodicTaskVOs as aPeriodicTaskVO> 
 == Periodic task '${aPeriodicTaskVO.periodicTask.name}' ==
@@ -316,7 +316,7 @@ ${aPeriodicTaskVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="filepolicies">Article for file policies</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>File policies for ${project.name}</em></span>' and URL: <a href='${wikiUrlBase}/File policies for ${project.name}'>${wikiUrlBase}/File policies for ${project.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>File policies for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/File policies for ${opsdProject.name}'>${wikiUrlBase}/File policies for ${opsdProject.name}</a></p>
 
 <#list wikiFilePolicies as filePolicy, filePolicyWiki> 
 
