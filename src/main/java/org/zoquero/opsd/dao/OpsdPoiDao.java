@@ -539,7 +539,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 				// We will drop empty rows
 				if ((name == null || name.equals(""))
 						&& (description == null || description.equals(""))) {
-					LOGGER.log(Level.WARNING, "OpsdPoiDao.getRoles"
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getRoles"
 							+ " found what looks like an empty row (#" + rowNum + ")"
 							+ " (no name nor description)");
 					continue;
@@ -588,7 +588,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 				String name = formatter.formatCellValue(row.getCell(i++));
 				// We'll drop rows without name
 				if (name == null || name.equals("")) {
-					LOGGER.log(Level.WARNING, "OpsdPoiDao.getSystems"
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getSystems"
 							+ " found what looks like an empty row (#" + rowNum + ")"
 							+ " (empty name)");
 					continue;					
@@ -610,7 +610,16 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 				OpsdDeviceType dt = getDeviceTypeByName(deviceTypeStr);
 				OpsdOSType ost = getOSTypeByName(osStr);
-				OpsdRole role = getRoleByName(project, roleName);
+				OpsdRole role = null;
+				if(roleName == null || roleName.equals("")) {
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getSystems: "
+							+ " will not try to load an empty role"
+							+ " for row (#" + rowNum + ")");
+					role = null;
+				}
+				else {
+					role = getRoleByName(project, roleName);
+				}
 				OpsdResponsible responsible = getResponsible(responsibleName);
 
 				// Let's create the OpsdSystem object:
@@ -657,7 +666,11 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public OpsdRole getRoleByName(OpsdProject project, String roleName)
 			throws OpsdException {
-		LOGGER.log(Level.FINEST, "OpsdPoiDao.getRoleByName loading role "
+		if(roleName == null || roleName.equals("")) {
+			LOGGER.log(Level.WARNING, "OpsdPoiDao.getRoleByName: null role");
+			return null;
+		}
+		LOGGER.log(Level.FINEST, "OpsdPoiDao.getRoleByName loading the role "
 			+ roleName);
 		for (OpsdRole aRole : getRoles(project)) {
 			if (aRole.getName().equals(roleName)) {
@@ -674,6 +687,10 @@ public class OpsdPoiDao implements OpsdDataTap {
 	@Override
 	public OpsdMonitoredHost getHostByName(OpsdProject project, String hostName)
 			throws OpsdException {
+		if(hostName == null || hostName.equals("")) {
+			LOGGER.log(Level.WARNING, "OpsdPoiDao.getHostByName: null hostName");
+			return null;
+		}
 		LOGGER.log(Level.FINEST, "OpsdPoiDao.getHostByName loading host "
 			+ hostName);
 		for (OpsdMonitoredHost aHost : getMonitoredHosts(project)) {
@@ -721,7 +738,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 			String name = formatter.formatCellValue(row.getCell(i++));
 			// We'll drop rows without name
 			if (name == null || name.equals("")) {
-				LOGGER.log(Level.WARNING, "OpsdPoiDao.getMonitoredHosts"
+				LOGGER.log(Level.FINE, "OpsdPoiDao.getMonitoredHosts"
 						+ " found what looks like an empty row (#" + rowNum + ")"
 						+ " (empty name)");
 				continue;
@@ -793,8 +810,17 @@ public class OpsdPoiDao implements OpsdDataTap {
 				defaultChecksNeeded = new Boolean(true);
 			else
 				defaultChecksNeeded = null;
-			role = getRoleByName(project, roleStr);
-
+			
+			if(roleStr== null || roleStr.equals("")) {
+				LOGGER.log(Level.FINE, "OpsdPoiDao.getMonitoredHosts: "
+						+ " will not try to load an empty role"
+						+ " for row (#" + rowNum + ")");
+				role = null;
+			}
+			else {
+				role = getRoleByName(project, roleStr);
+			}
+			
 			// Let's create the OpsdSystem object:
 			OpsdMonitoredHost monitoredHost = new OpsdMonitoredHost(name, ip,
 					system, forManaging, forService, forBackup, forNas,
@@ -883,7 +909,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 //						&& (serviceTemplateName == null
 //						||  serviceTemplateName.equals(""))) {
 //					// It must be an empty row
-//					LOGGER.log(Level.WARNING, "OpsdPoiDao.getRoleServices"
+//					LOGGER.log(Level.FINE, "OpsdPoiDao.getRoleServices"
 //							+ " found what looks like an empty row (#" + rowNum + ")"
 //							+ " (empty name and hasn't ServiceTemplate)");
 //					continue;
@@ -892,10 +918,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 				if(serviceTemplateName == null || serviceTemplateName.equals("")) {
 					// it will appear as an error in validation
 					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getRoleServices: "
-							+ "Can't find the "
-							+ "service template serviceTemplate called "
-							+ serviceTemplateName
-							+ " when loading the RoleService #" + rowNum);
+							+ "Role without ServiceTemplate "
+							+ "when loading the RoleService #" + rowNum);
 					serviceTemplate = null;
 				}
 				else {
@@ -907,6 +931,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 					if(serviceTemplate == null) {
 						LOGGER.log(Level.SEVERE, "OpsdPoiDao.getRoleServices: "
 								+ "Role Service without name and without serviceTemplate "
+								+ "to look for a default name"
 								+ " when loading the RoleService #" + rowNum);
 						continue;
 					}
@@ -1058,7 +1083,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 //						&& (serviceTemplateName == null
 //						||  serviceTemplateName.equals(""))) {
 //					// It must be an empty row
-//					LOGGER.log(Level.WARNING, "OpsdPoiDao.getHostServices"
+//					LOGGER.log(Level.FINE, "OpsdPoiDao.getHostServices"
 //							+ " found what looks like an empty row (#" + rowNum + ")"
 //							+ " (empty name and hasn't ServiceTemplate)");
 //					continue;
@@ -1067,9 +1092,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 				if(serviceTemplateName == null || serviceTemplateName.equals("")) {
 					// it will appear as an error in validation
 					LOGGER.log(Level.SEVERE, "OpsdPoiDao.getHostServices: "
-							+ "Can't find the "
-							+ "service template serviceTemplate called "
-							+ serviceTemplateName
+							+ "Host Service without serviceTemplate "
 							+ " when loading the HostService #" + rowNum);
 					serviceTemplate = null;
 				}
@@ -1082,6 +1105,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 					if(serviceTemplate == null) {
 						LOGGER.log(Level.SEVERE, "OpsdPoiDao.getHostServices: "
 								+ "Host Service without name and without serviceTemplate "
+								+ "to look for a default name"
 								+ " when loading the HostService #" + rowNum);
 						continue;
 					}
@@ -1199,7 +1223,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 				String name = formatter.formatCellValue(row.getCell(i++));
 				// We'll drop rows without name
 				if (name == null || name.equals("")) {
-					LOGGER.log(Level.WARNING, "OpsdPoiDao.getRequests"
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getRequests"
 							+ " found what looks like an empty row (#" + rowNum + ")"
 							+ " (empty name)");
 					continue;
@@ -1283,7 +1307,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 				String name = formatter.formatCellValue(row.getCell(i++));
 				// We'll drop rows without name
 				if (name == null || name.equals("")) {
-					LOGGER.log(Level.WARNING, "OpsdPoiDao.getPeriodicTasks"
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getPeriodicTasks"
 							+ " found what looks like an empty row (#" + rowNum + ")"
 							+ " (empty name)");
 					continue;
@@ -1339,9 +1363,19 @@ public class OpsdPoiDao implements OpsdDataTap {
 				String actionStr = formatter.formatCellValue(row.getCell(i++));
 				
 				OpsdSystem system = getSystemByName(project, systemStr);
-				OpsdRole role = getRoleByName(project, roleStr);
+				OpsdRole role;
+				if(roleStr== null || roleStr.equals("")) {
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getFilePolicies: "
+							+ " will not try to load an empty role"
+							+ " for row (#" + rowNum + ")");
+					role = null;
+				}
+				else {
+					role = getRoleByName(project, roleStr);
+				}
+				
 				if(system == null && role == null) {
-					LOGGER.log(Level.WARNING, "OpsdPoiDao.getFilePolicies"
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getFilePolicies"
 							+ " found what looks like an empty row (#" + rowNum + ")"
 							+ " (no system nor role)");
 					continue;
