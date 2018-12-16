@@ -4,23 +4,19 @@
 package org.zoquero.opsd.entities;
 
 /**
- * Something that can be requested by a Ticket
- * 
  * @author agalindo
- * 
+ *
  */
-public class OpsdRequest {
+public class OpsdPeriodicTask {
 
 	/* Fields */
 	
 	/** Field "name" */
 	private String name;
 
-	/** Field "authorized", who can launch this request.
-	 * In a future release it all will be in the database
-	 * and the authorized ones will be a list of identities.
+	/** Periodicity in crontab (5) format.
 	 **/
-	private String authorized;
+	private String periodicity;
 
 	/** Field "procedure", how to serve this request */
 	private String procedure;
@@ -32,7 +28,6 @@ public class OpsdRequest {
 	private String scaleTo;
 
 	/* Accessors */
-
 
 	/**
 	 * @return the name
@@ -49,17 +44,17 @@ public class OpsdRequest {
 	}
 
 	/**
-	 * @return the authorized
+	 * @return the periodicity
 	 */
-	public String getAuthorized() {
-		return authorized;
+	public String getPeriodicity() {
+		return periodicity;
 	}
 
 	/**
-	 * @param authorized the authorized to set
+	 * @param periodicity the periodicity to set
 	 */
-	private void setAuthorized(String authorized) {
-		this.authorized = authorized;
+	private void setAuthorized(String periodicity) {
+		this.periodicity = periodicity;
 	}
 
 	/**
@@ -94,14 +89,14 @@ public class OpsdRequest {
 
 	/**
 	 * @param name
-	 * @param authorized
+	 * @param periodicity
 	 * @param procedure
 	 * @param scaleTo
 	 */
-	public OpsdRequest(String name, String authorized, String procedure,
+	public OpsdPeriodicTask(String name, String periodicity, String procedure,
 			String scaleTo) {
 		this.name = name;
-		this.authorized = authorized;
+		this.periodicity = periodicity;
 		this.procedure = procedure;
 		this.scaleTo = scaleTo;
 	}
@@ -109,8 +104,8 @@ public class OpsdRequest {
 	public String toString() {
 		return getClass().getSimpleName() + " with " +
 				"name = '" + getName()
-				+ "', authorized = '"
-				+ (getAuthorized() == null? " null" : getAuthorized())
+				+ "', periodicity = '"
+				+ (getPeriodicity() == null ? "null" : getPeriodicity())
 			    + "' procedure = '"
 				+ (getProcedure() == null ? " null " : getProcedure())
 			    + "' scaleTo = '"

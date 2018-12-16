@@ -27,8 +27,11 @@ public abstract class OpsdMonitoredService {
 	/** Field "serviceTemplate" */
 	private OpsdServiceTemplate serviceTemplate;
 
-	/** Field "macroAndValueArray" */
-	private String[] macroAndValueArray;
+	/** Field "macroValuesArray".
+	 * Each field is the value for the corresponding field
+	 * in the serviceTemplate list
+	 */
+	private String[] macroValuesArray;
 
 	/** Field "scaleTo" */
 	private String scaleTo;
@@ -111,18 +114,18 @@ public abstract class OpsdMonitoredService {
 	}
 
 	/**
-	 * @return the macroAndValueArray
+	 * @return the macroValuesArray
 	 */
-	public String[] getMacroAndValueArray() {
-		return macroAndValueArray;
+	public String[] getMacroValuesArray() {
+		return macroValuesArray;
 	}
 
 	/**
-	 * @param macroAndValueArray
-	 *            the macroAndValueArray to set
+	 * @param macroValuesArray
+	 *            the macroValuesArray to set
 	 */
-	private void setMacroAndValueArray(String[] macroAndValueArray) {
-		this.macroAndValueArray = macroAndValueArray;
+	private void setMacroValuesArray(String[] macroValuesArray) {
+		this.macroValuesArray = macroValuesArray;
 	}
 
 	/**
@@ -146,7 +149,7 @@ public abstract class OpsdMonitoredService {
 	 * @param procedure
 	 * @param criticity
 	 * @param serviceTemplate
-	 * @param macroAndValueArray
+	 * @param macroValuesArray
 	 * @param scaleTo
 	 */
 	public OpsdMonitoredService(String name, String description,
@@ -158,8 +161,19 @@ public abstract class OpsdMonitoredService {
 		this.procedure = procedure;
 		this.criticity = criticity;
 		this.serviceTemplate = serviceTemplate;
-		this.macroAndValueArray = macroAndValueArray;
+		this.macroValuesArray = macroAndValueArray;
 		this.scaleTo = scaleTo;
 	}
 
+	/**
+	 * Tell if this is a Premium Service (has Premium criticity)
+	 * @return
+	 */
+	public boolean isPremium() {
+		if(getCriticity() != null
+				&& getCriticity().isPremium()) {
+			return true;
+		}
+		return false;
+	}
 }

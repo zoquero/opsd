@@ -1,16 +1,21 @@
 package org.zoquero.opsd.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.zoquero.opsd.OpsdException;
+import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdDeviceType;
+import org.zoquero.opsd.entities.OpsdPeriodicTask;
+import org.zoquero.opsd.entities.OpsdPollerType;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdOSType;
 import org.zoquero.opsd.entities.OpsdRole;
 import org.zoquero.opsd.entities.OpsdProject;
+import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 
 public interface OpsdDataTap {
@@ -148,4 +153,75 @@ public interface OpsdDataTap {
 	 */
 	List<OpsdRequest> getRequests(OpsdProject project) throws OpsdException;
 	
+
+	/**
+	 * Gets the name of the environments of a Project
+	 * @param project
+	 * @return Set of environments
+	 * @throws OpsdException
+	 */
+	List<String> getEnvironments(OpsdProject project) throws OpsdException;
+	
+
+	/**
+	 * Gets the periodic tasks of a Project
+	 * @param project
+	 * @return List of periodic tasks
+	 * @throws OpsdException
+	 */
+	List<OpsdPeriodicTask> getPeriodicTasks(OpsdProject project) throws OpsdException;
+	
+	/**
+	 * Gets the file policies of a Project
+	 * @param project
+	 * @return List of file policies
+	 * @throws OpsdException
+	 */
+	List<OpsdFilePolicy> getFilePolicies(OpsdProject project) throws OpsdException;
+
+	/**
+	 * Tells if a MonitoredHost has any premium service
+	 * @param project
+	 * @param aHost
+	 * @return
+	 * @throws OpsdException
+	 */
+	boolean hasPremiumServices(OpsdProject project, OpsdMonitoredHost aHost) throws OpsdException;
+	
+	/**
+	 * Get all the OpsdServiceTemplate objects. On a future release all data
+	 * will be on a Relational Database. By now, the allowed
+	 * cachedServiceTemplates must be described here, not in the Excel file.
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	public List<OpsdServiceTemplate> getServiceTemplates() throws OpsdException;
+
+	/**
+	 * Get a ServiceTemplate
+	 * @param serviceTemplateName name of the service template
+	 * @return
+	 * @throws OpsdException
+	 */
+	public OpsdServiceTemplate getServiceTemplate(String serviceTemplateName) throws OpsdException;
+
+	/**
+	 * Get all the PollerType objects. On a future release all data
+	 * will be on a Relational Database. By now, the allowed
+	 * pollerTypes must be described here, not in the Excel file.
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	public List<OpsdPollerType> getPollerTypes() throws OpsdException;
+
+	/**
+	 * Get a PollerType
+	 * 
+	 * @return
+	 * @throws OpsdException 
+	 */
+	public OpsdPollerType getPollerType(int id) throws OpsdException;
+
 }

@@ -63,4 +63,10 @@ public class OpsdServiceMacroDefinition {
 		this.defaultValue = defaultValue;
 	}
 	
+	public String toString() {
+		return getClass().getSimpleName() + " with name = " + getName()
+				+ " description = " + getDescription()
+				+ " and defaultValue = " + getDefaultValue();
+	}
+	
 }

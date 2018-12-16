@@ -5,8 +5,10 @@ package org.zoquero.opsd;
 
 import java.util.List;
 
+import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
+import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
@@ -222,9 +224,17 @@ public class OpsdValidator {
 			}
 			if(roleService.getProcedure() == null
 						|| roleService.getProcedure().equals("")) {
-				oReport.pushWarning("RoleService #" + i
-						+ " has null procedure."
-						+ " Incidences just will be able to be scaled out");
+				// Just acceptable if it's not Premium
+				if(roleService.getCriticity() != null
+						&& roleService.getCriticity().isPremium()) {
+					oReport.pushError("RoleService #" + i
+							+ " is Premium has hasn't any procedure");
+				}
+				else {
+					oReport.pushWarning("RoleService #" + i
+							+ " has null procedure."
+							+ " Incidences just will be able to be scaled out");
+				}
 			}
 			if(roleService.getCriticity() == null) {
 				oReport.pushError("RoleService #"
@@ -238,11 +248,11 @@ public class OpsdValidator {
 				oReport.pushError("RoleService #"
 						+ i + " has null ServiceTemplate or it can't be found");
 			}
-			if(roleService.getMacroAndValueArray() == null
-						|| roleService.getMacroAndValueArray().length < 1) {
-				oReport.pushError("RoleService #"
-						+ i + " has null or empty MacroAndValueArray");
-			}
+//			if(roleService.getMacroAndValueArray() == null
+//						|| roleService.getMacroAndValueArray().length < 1) {
+//				oReport.pushError("RoleService #"
+//						+ i + " has null or empty MacroAndValueArray");
+//			}
 //			if(roleService.getScaleTo() == null
 //						|| roleService.getScaleTo().equals("")) {
 //				oReport.pushWarning("RoleService #"
@@ -269,10 +279,18 @@ public class OpsdValidator {
 				oReport.pushError("HostService #" + i + " has null description");
 			}
 			if(hostService.getProcedure() == null
-						|| hostService.getProcedure().equals("")) {
-				oReport.pushWarning("HostService #" + i
-						+ " has null procedure."
-						+ " Incidences just will be able to be scaled out");
+					|| hostService.getProcedure().equals("")) {
+				// Just acceptable if it's not Premium
+				if(hostService.getCriticity() != null
+						&& hostService.getCriticity().isPremium()) {
+					oReport.pushError("HostService #" + i
+							+ " is Premium has hasn't any procedure");
+				}
+				else {
+					oReport.pushWarning("HostService #" + i
+							+ " has null procedure."
+							+ " Incidences just will be able to be scaled out");
+				}
 			}
 			if(hostService.getCriticity() == null) {
 				oReport.pushError("HostService #"
@@ -286,11 +304,11 @@ public class OpsdValidator {
 				oReport.pushError("HostService #"
 						+ i + " has null ServiceTemplate or it can't be found");
 			}
-			if(hostService.getMacroAndValueArray() == null
-						|| hostService.getMacroAndValueArray().length < 1) {
-				oReport.pushError("HostService #"
-						+ i + " has null or empty MacroAndValueArray");
-			}
+//			if(hostService.getMacroAndValueArray() == null
+//						|| hostService.getMacroAndValueArray().length < 1) {
+//				oReport.pushError("HostService #"
+//						+ i + " has null or empty MacroAndValueArray");
+//			}
 //			if(roleService.getScaleTo() == null
 //						|| roleService.getScaleTo().equals("")) {
 //				oReport.pushWarning("HostService #"
@@ -315,7 +333,7 @@ public class OpsdValidator {
 			}
 			if(request.getAuthorized() == null
 					|| request.getAuthorized().trim().equals("")) {
-				oReport.pushError("Request #" + i + " has null fqdnOrIp");
+				oReport.pushError("Request #" + i + " has null authorized");
 			}
 			if(request.getProcedure() == null) {
 				oReport.pushError("Request #" + i + " has null procedure or it can't be found");
@@ -323,6 +341,67 @@ public class OpsdValidator {
 //			if(request.getScaleTo() == null || request.getScaleTo().trim().equals("")) {
 //				oReport.pushWarning("Request #" + i + " has null scaleTo");
 //			}
+		}
+	}
+	
+
+	private static void validatePeriodicTasks(OpsdFullProjectData fpd) {
+		OpsdReport oReport = fpd.getReport();
+		List<OpsdPeriodicTask> periodicTasks = fpd.getPeriodicTasks();
+		for (int i = 0; i < periodicTasks.size(); i++) {
+			OpsdPeriodicTask periodicTask = periodicTasks.get(i);
+			if(periodicTask == null) {
+				oReport.pushError("PeriodicTask #" + i + " is null");
+				continue;
+			}
+			if(periodicTask.getName() == null
+					|| periodicTask.getName().trim().equals("")) {
+				oReport.pushError("PeriodicTask #" + i + " has null name");
+			}
+			if(periodicTask.getPeriodicity() == null
+					|| periodicTask.getPeriodicity().trim().equals("")) {
+				oReport.pushError("PeriodicTask #" + i + " has null periodicity");
+			}
+			if(periodicTask.getProcedure() == null) {
+				oReport.pushError("PeriodicTask #" + i + " has null procedure or it can't be found");
+			}
+//			if(periodicTask.getScaleTo() == null || periodicTask.getScaleTo().trim().equals("")) {
+//				oReport.pushWarning("PeriodicTask #" + i + " has null scaleTo");
+//			}
+		}
+	}
+
+	private static void validateFilePolicies(OpsdFullProjectData fpd) {
+		OpsdReport oReport = fpd.getReport();
+		List<OpsdFilePolicy> filePolicies = fpd.getFilePolicies();
+		for (int i = 0; i < filePolicies.size(); i++) {
+			OpsdFilePolicy filePolicy = filePolicies.get(i);
+			if(filePolicy == null) {
+				oReport.pushError("FilePolicy #" + i + " is null");
+				continue;
+			}
+			if(filePolicy.getSystem() == null && filePolicy.getRole() == null) {
+				oReport.pushError("FilePolicy #" + i + " has null system & role (need one!)");
+			}
+
+			if(filePolicy.getBaseFolder() == null
+					|| filePolicy.getBaseFolder().trim().equals("")) {
+				oReport.pushError("FilePolicy #" + i + " has null BaseFolder");
+			}
+			if(filePolicy.getPrefix()== null
+					|| filePolicy.getPrefix().trim().equals("")) {
+				oReport.pushWarning("FilePolicy #" + i + " has null Prefix");
+			}
+			if(filePolicy.getSufix()== null
+					|| filePolicy.getSufix().trim().equals("")) {
+				oReport.pushWarning("FilePolicy #" + i + " has null Sufix");
+			}
+			if(filePolicy.getMinDays() == null) {
+				oReport.pushError("FilePolicy #" + i + " has null MinDays");
+			}
+			if(filePolicy.getAction() == null) {
+				oReport.pushError("FilePolicy #" + i + " has null Action");
+			}
 		}
 	}
 	
@@ -334,5 +413,6 @@ public class OpsdValidator {
 		validateRoleServices(fpd);
 		validateHostServices(fpd);
 		validateRequests(fpd);
+		validateFilePolicies(fpd);
 	}
 }

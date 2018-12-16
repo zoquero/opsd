@@ -21,7 +21,6 @@ public class OpsdConf {
 	/**
 	 * Gets the minimum log level
 	 * 
-	 * @param className
 	 * @return
 	 */
 	public static int getMinLogLevel() throws OpsdException {
@@ -34,5 +33,52 @@ public class OpsdConf {
 		}
 		return i;
 	}
+	
+	/**
+	 * Gets the URL base to construct the URL of an article.
+	 * 
+	 * @return
+	 */
+	public static String getWikiUrlBase() throws OpsdException {
+		return getProperty("wiki.urlbase", false);
+	}
+	
+	/**
+	 * Gets a value from the conf properties file
+	 * 
+	 * @return
+	 */
+	public static String getProperty(String name) {
+		return getProperty(name, false);
+	}
+	
+	/**
+	 * Gets a value from the conf properties file
+	 * 
+	 * @return
+	 */
+	public static String getProperty(String name, boolean allowNull) {
+		ResourceBundle rb = ResourceBundle.getBundle(CONF_PROPERTIES);
+		String s = rb.getString(name);
+		if(s == null) {
+			throw new RuntimeException("Can't fine " + name
+				+ " in " + CONF_PROPERTIES + ".properties");
+		}
+		return s;
+	}
 
+	public static String getWikiTemplateName(String name) {
+		String propertyName = "wiki.template." + name;		
+		return getProperty(propertyName, false);
+	}
+
+	public static int getNumMacros() throws OpsdException {
+		int numMacros;
+		try {
+			numMacros = Integer.parseInt(getProperty("monitoring.serviceTemplate.numMacros"));
+		} catch (Throwable e) {
+			throw new OpsdException("Can't get numMacros: " + e.getMessage(), e);
+		}
+		return numMacros;
+	}
 }

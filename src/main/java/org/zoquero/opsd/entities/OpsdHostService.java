@@ -3,6 +3,8 @@
  */
 package org.zoquero.opsd.entities;
 
+import org.apache.commons.collections4.functors.ComparatorPredicate.Criterion;
+
 /**
  * A Monitored Service that will be held
  * by a croncret MonitoredHost.
@@ -52,5 +54,11 @@ public class OpsdHostService extends OpsdMonitoredService {
 				serviceTemplate, macroAndValueArray, scaleTo);
 		setHost(host);
 	}
-
+	
+	public OpsdHostService(OpsdMonitoredHost host,
+			OpsdMonitoredService service) {
+		super(service.getName(), service.getDescription(), service.getProcedure(), service.getCriticity(),
+				service.getServiceTemplate(), service.getMacroValuesArray(), service.getScaleTo());
+		setHost(host);
+	}
 }

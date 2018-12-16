@@ -3,6 +3,8 @@
  */
 package org.zoquero.opsd;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.logging.Formatter;
@@ -75,6 +77,15 @@ public class OpsdHtmlLogFormatter extends Formatter {
         buf.append("</td>\n");
         buf.append("\t<td>");
         buf.append(formatMessage(rec));
+        if(rec.getThrown() != null) {
+        	StringWriter sw = new StringWriter();
+        	PrintWriter pw = new PrintWriter(sw);
+        	rec.getThrown().printStackTrace(pw);
+        	String stackTrace = sw.toString();
+            buf.append("<br/>Stack trace:<br/>\n"
+            		+ stackTrace.replace(System.getProperty("line.separator"),
+            				"<br/>\n"));
+        }
         buf.append("</td>\n");
         buf.append("</tr>\n");
 

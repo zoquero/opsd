@@ -16,14 +16,17 @@ public class OpsdServiceTemplate {
 	/** Will it be a service invoked though NRPE? */
 	private boolean nrpe;
 	/** Default name to be shown in monitoring,
-	 * if it's not set when it's instantiated. */
+	 * if it's not set when it's instantiated.
+	 * It can be a format string to be substituted by macro values,
+	 * macro values can be $MACRO1$ ,  $MACRO2$ , ...  $MACRO7$
+	 * Ex.: Service_$MACRO1$ or Check_Jmeter_$MACRO2$ */
 	private String defaultName;
 	/** Description of the ServiceTemplate and some help to who
 	 * is thinking about the possibility of instantiating
 	 * a service based in this template. */
 	private String description;
-	/** List of macros */
-	private List<OpsdServiceMacroDefinition> macros;
+	/** List of macroDefinitions */
+	private List<OpsdServiceMacroDefinition> macroDefinitions;
 	/**
 	 * @return the name
 	 */
@@ -73,31 +76,44 @@ public class OpsdServiceTemplate {
 		this.description = description;
 	}
 	/**
-	 * @return the macros
+	 * @return the macroDefinitions
 	 */
-	public List<OpsdServiceMacroDefinition> getMacros() {
-		return macros;
+	public List<OpsdServiceMacroDefinition> getMacroDefinitions() {
+		return macroDefinitions;
 	}
 	/**
-	 * @param macros the macros to set
+	 * @param macroDefinitions the macroDefinitions to set
 	 */
-	private void setMacros(List<OpsdServiceMacroDefinition> macros) {
-		this.macros = macros;
+	private void setMacroDefinitions(List<OpsdServiceMacroDefinition> macroDefinitions) {
+		this.macroDefinitions = macroDefinitions;
 	}
 	/**
 	 * @param name
 	 * @param nrpe
 	 * @param defaultName
 	 * @param description
-	 * @param macros
+	 * @param macroDefinitions
 	 */
 	public OpsdServiceTemplate(String name, boolean nrpe, String defaultName,
-			String description, List<OpsdServiceMacroDefinition> macros) {
+			String description, List<OpsdServiceMacroDefinition> macroDefinitions) {
 		this.name = name;
 		this.nrpe = nrpe;
 		this.defaultName = defaultName;
 		this.description = description;
-		this.macros = macros;
+		this.macroDefinitions = macroDefinitions;
+	}
+	
+	public String toString() {
+		StringBuilder mDefs = new StringBuilder("Macro definitions: ");
+		for(OpsdServiceMacroDefinition smd: getMacroDefinitions()) {
+			mDefs.append("* name = " + smd.getName()
+						+ " * description = " + smd.getDescription()
+						+ " * default value = " + smd.getDefaultValue());
+		}
+		return getClass().getSimpleName() + " with name = " + getName()
+				+ ", nrpe = " + nrpe + ", defaultName = " + defaultName
+				+ " description = " + description
+				+ " and ServiceMacroDefinitions= " + mDefs.toString();
 	}
 
 }
