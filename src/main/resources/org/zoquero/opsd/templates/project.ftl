@@ -101,7 +101,7 @@
 
 __FORCETOC__
 
-Documentation for the project '<em>${opsdProject.name}</em>' generated using '[https://github.com/zoquero/opsd Operations Descriptor]' (${project.artifactId}-${project.version}) on ${genDate} with ${report.errors?size} errors and ${report.warnings?size} warnings
+Documentation for the project '<em>${opsdProject.name}</em>' generated using '[https://github.com/zoquero/opsd Operations Descriptor]' (${mavenProjectArtifactId}-${mavenProjectVersion}) on ${genDate} with ${report.errors?size} errors and ${report.warnings?size} warnings
 
 == Project description ==
 

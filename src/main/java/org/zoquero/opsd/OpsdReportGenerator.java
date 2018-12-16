@@ -114,8 +114,12 @@ public class OpsdReportGenerator {
 		
 		String mavenProjectVersion    = OpsdConf.getProperty("project.version");
 		String mavenProjectArtifactId = OpsdConf.getProperty("project.artifactId");
-		if (mavenProjectVersion == null) mavenProjectVersion = "(build it using Maven, please)";
-		if (mavenProjectArtifactId == null) mavenProjectArtifactId = "(build it using Maven, please)";
+		if (mavenProjectVersion == null
+				|| mavenProjectVersion.equals("${project.version}"))
+			mavenProjectVersion = "(build it using Maven, please)";
+		if (mavenProjectArtifactId == null
+				|| mavenProjectArtifactId.equals("${project.artifactId}"))
+			mavenProjectArtifactId = "(build it using Maven, please)";
 
 		// Let's process the template
 		Map<String, Object> input = new HashMap<String, Object>();
@@ -123,8 +127,8 @@ public class OpsdReportGenerator {
 				+ "and generation of monitoring and documentation");
 		input.put("wikiUrlBase",      OpsdConf.getWikiUrlBase());
 		input.put("genDate",          now);
-		input.put("project.version",  mavenProjectVersion);
-		input.put("project.artifactId",  mavenProjectArtifactId);
+		input.put("mavenProjectVersion",  mavenProjectVersion);
+		input.put("mavenProjectArtifactId",  mavenProjectArtifactId);
 		// Can't use 'project', it would be overwritten by Maven properties with Resource Filtering
 		input.put("opsdProject",      getFullProjectData().getProject());
 		input.put("wikiProject",      getWikiFromProject());
