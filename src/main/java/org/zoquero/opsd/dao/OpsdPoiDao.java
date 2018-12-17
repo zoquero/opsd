@@ -383,6 +383,15 @@ public class OpsdPoiDao implements OpsdDataTap {
 				if (key.startsWith("serviceTemplate.")) {
 					String value = rb.getString(key);
 					String[] parts = value.split(";", -1);
+					if(parts == null) {
+						throw new OpsdException(
+								"Can't parse the ServiceTemplate " + value);
+					}
+					if(parts.length < 4+3*OpsdConf.getNumMacros()) {
+						throw new OpsdException(
+								"Can't parse the ServiceTemplate " + value
+								+ ", it has " + parts.length + " fields");
+					}
 					if(parts.length < 11) {
 						throw new OpsdException(
 								"Can't parse the ServiceTemplate with value '"
