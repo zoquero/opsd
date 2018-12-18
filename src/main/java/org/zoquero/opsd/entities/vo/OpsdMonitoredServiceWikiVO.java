@@ -16,6 +16,7 @@ public class OpsdMonitoredServiceWikiVO {
 
 	private OpsdMonitoredService service = null;
 	private String wiki = null;
+	private String addServiceCommand = null;
 
 	/**
 	 * @return the service
@@ -42,12 +43,27 @@ public class OpsdMonitoredServiceWikiVO {
 		this.wiki = wiki;
 	}
 	/**
-	 * @param service
-	 * @param wiki
+	 * @return the addServiceCommand
 	 */
-	public OpsdMonitoredServiceWikiVO(OpsdMonitoredService service, String wiki) {
-		this.service = service;
-		this.wiki = wiki;
+	public String getAddCommand() {
+		return addServiceCommand;
+	}
+	/**
+	 * @param addServiceCommand the addServiceCommand to set
+	 */
+	public void setAddCommand(String addServiceCommand) {
+		this.addServiceCommand = addServiceCommand;
 	}
 	
+	/**
+	 * @param service
+	 * @param wiki
+	 * @param addServiceCommand
+	 */
+	public OpsdMonitoredServiceWikiVO(OpsdMonitoredService service,
+			String wiki, String addServiceCommand) {
+		this.service = service;
+		this.wiki = wiki;
+		this.addServiceCommand = addServiceCommand;
+	}
 }

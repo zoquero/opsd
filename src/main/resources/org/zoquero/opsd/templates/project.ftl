@@ -2,6 +2,11 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>${title}</title>
+    <style>
+      pre {
+        overflow: auto;
+      }
+    </style>
   </head>
   <body>
     <h1>${title}</h1>
@@ -19,14 +24,17 @@
             <li> <a href="#requests">Article for requests (requestable tasks)</a> </li>
             <li> <a href="#periodictasks">Article for periodic tasks</a> </li>
             <li> <a href="#filepolicies">Article for file policies</a> </li>
+<#--
+  -- We'll embed system's body in project's body
+  --
             <li> <a href="#systems">Articles for systems (assets)</a> </li>
+-->
             <li> <a href="#monitoredhosts">Articles for MonitoredHosts</a> </li>
           </ul>
           <li> <a href="#monitoring">3) Script to setup monitoring</a> </li>
           <ul>
             <li> <a href="#addHosts">Script to setup monitored hosts</a> </li>
             <li> <a href="#addServices">Script to setup monitored services</a> </li>
-            <li> <a href="#servicesToAddManually">Custom services to be added manually</a> </li>
           </ul>
           <li> <a href="#serv_tmplt_def">4) Service Template definitions</a> </li>
         </ul>
@@ -97,7 +105,7 @@
     <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/${opsdProject.name}'>${wikiUrlBase}/${opsdProject.name}</a></p>
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 
 __FORCETOC__
 
@@ -116,6 +124,26 @@ ${roleWiki}
 
 </#list>
 
+<#--
+  -- It will not be used, it's a flat list.
+  -- we rather show it in a environment > role > system fashion
+  --
+== Systems ==
+
+<#list systems2wiki as system, systemStr>
+=== ${system.name} ===
+${systemStr}
+
+</#list>
+-->
+
+<#--
+  --
+  -- Commented out
+  -- To reduce the number of articles
+  -- we'll embed the Systems (assets) body
+  -- in Project's body
+  --
 == Systems by environment and role ==
 
 <#list env2role2systems as env, role2systems> 
@@ -130,6 +158,24 @@ ${roleWiki}
     
   </#list>
 </#list>
+-->
+
+== Systems by environment and role ==
+
+<#list env2role2systemsEmbeddedWiki as env, role2systems> 
+=== Environment '${env}' ===
+
+  <#list role2systems as role, systems> 
+==== Role '${role.name}' ====
+
+    <#list systems as system>
+${system}
+
+    </#list>
+    
+  </#list>
+</#list>
+
 
 == MonitoredHosts by environment and role ==
 
@@ -151,7 +197,8 @@ ${roleWiki}
 Article for service procedures: [[Procedures for ${opsdProject.name}]]
 
 <#--
-We'll remove it in a future code cleanup, by now it will help here
+  -- We'll remove it in a future code cleanup, by now it will help here
+  --
 
 == Services for roles (legacy, will be deleted) ==
 
@@ -196,7 +243,7 @@ We'll remove it in a future code cleanup, by now it will help here
 
 -->
 
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
 
@@ -206,11 +253,12 @@ We'll remove it in a future code cleanup, by now it will help here
     <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Procedures for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/Procedures for ${opsdProject.name}'>${wikiUrlBase}/Procedures for ${opsdProject.name}</a></p>
     
 <#--
-We'll remove it in a future code cleanup, by now it will help here
+  -- We'll remove it in a future code cleanup, by now it will help here
+  --
 
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 __FORCETOC__
 Procedures for the services of the project [[${opsdProject.name}]]:
 == Effective Services for monitoredHosts (mixing direct services + role services) ==
@@ -237,7 +285,7 @@ DOESN'T WORK, CAN'T INTERPOLATE USING VARIABLES AS INDEXES, JUST STATIC CONTENT
   </#if>
 </#list>
 
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
 
@@ -245,7 +293,7 @@ DOESN'T WORK, CAN'T INTERPOLATE USING VARIABLES AS INDEXES, JUST STATIC CONTENT
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 
 __FORCETOC__
 Procedures for the services of the project [[${opsdProject.name}]], grouping together for each host both the explicit services for each host and the services for its roles.
@@ -267,7 +315,7 @@ ${aServiceWikiVO.wiki}
   </#if>
 </#list>
 
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
     
@@ -278,7 +326,7 @@ ${aServiceWikiVO.wiki}
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 __FORCETOC__
 Tasks that can be requested (hopefully by ticketing) for the project '''[[${opsdProject.name}]]'''
 
@@ -288,7 +336,7 @@ Tasks that can be requested (hopefully by ticketing) for the project '''[[${opsd
 ${aRequestVO.wiki}
   
 </#list>
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
     
@@ -299,7 +347,7 @@ ${aRequestVO.wiki}
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 __FORCETOC__
 Periodic tasks for the project '''[[${opsdProject.name}]]'''
 
@@ -309,7 +357,7 @@ Periodic tasks for the project '''[[${opsdProject.name}]]'''
 ${aPeriodicTaskVO.wiki}
   
 </#list>
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
     
@@ -334,16 +382,19 @@ and all the hosts belonging to the role (none)
 
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 ${filePolicyWiki}
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
 
 </#list>
     
     <br/><hr/><br/>
-    
+
+<#--
+  -- Finally we'll embed Systems in Project's article
+  --    
     <h3 id="systems">Articles for Systems (assets)</h3>
     
 <#list systems2wiki as system, systemStr>
@@ -351,15 +402,16 @@ ${filePolicyWiki}
     <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${assetArticleNamePrefix}${system.name}</em></span>' and URL: <a href='${wikiUrlBase}/${assetArticleNamePrefix}${system.name}'>${wikiUrlBase}/${assetArticleNamePrefix}${system.name}</a></p> 
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 ${systemStr}
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
 
 </#list>
     
     <br/><hr/><br/>
+-->
 
     <h3 id="monitoredhosts">Articles for MonitoredHosts</h3>
 
@@ -368,9 +420,9 @@ ${systemStr}
     <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${monitoredHost.name}</em></span>' and URL: <a href='${wikiUrlBase}/${monitoredHost.name}'>${wikiUrlBase}/${monitoredHost.name}</a></p> 
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 ${monitoredHostStr}
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
 
@@ -382,7 +434,7 @@ ${monitoredHostStr}
     <h3 id="addHosts">Script to setup monitored hosts</h3>
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
 
 # Delete host commands:
 <#list monitoredHost2script as monitoredHost, monitoringHostCommands> 
@@ -394,36 +446,22 @@ ${monitoringHostCommands.delHostCommand}
 ${monitoringHostCommands.addHostCommand}
 </#list>
 
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
     
     <h3 id="addServices">Script to setup monitored services</h3>
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
-        <pre>
+        <pre><code>
         
 <#list monitoredEffectiveHostServiceCommands as hostService, monitoredServiceCommands>
 ${monitoredServiceCommands.addServiceCommand}
 </#list>
 
-        </pre>
+        </code></pre>
       </td></tr>
     </table>
-    
-    <h3 id="servicesToAddManually">Custom services to be added manually</h3>
-
-    <table border="1">
-      <tr><td bgcolor="#F0F0F0">
-        <pre>
-... PENDING...
-... PENDING...
-... PENDING...
-... PENDING...
-        </pre>
-      </td></tr>
-    </table>
- 
     
    <h2 id="serv_tmplt_def">4) Service Template definitions </h2>
 

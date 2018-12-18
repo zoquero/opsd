@@ -140,7 +140,6 @@ public class OpsdExtractor {
 			// /Troubleshooting Just for troubleshooting purposes
 		}
 		fpd.setHost2effectiveServicesMap(host2effectiveServicesMap);
-		
 
 		// host2effectiveServicesMap: Mixing host2servicesMap and role2servicesMap
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>>
@@ -154,14 +153,18 @@ public class OpsdExtractor {
 				StringBuilder servicesDump = new StringBuilder("Services from its role '" + role.getName() + "': ");
 				for(OpsdRoleService aRoleService: dt.getRoleServicesByRole(project, role)) {
 					// Lazy initialization, OpsdReportGenerator will set the wiki code.
-					monitoredServicesAndWikis.add(new OpsdMonitoredServiceWikiVO(aRoleService, "unset, lazy init"));
+					OpsdMonitoredServiceCommands msc =
+							new OpsdMonitoredServiceCommands(aRoleService, aHost, project);
+					monitoredServicesAndWikis.add(new OpsdMonitoredServiceWikiVO(aRoleService, "unset, lazy init", msc.getAddServiceCommand()));
 					servicesDump.append(aRoleService.getName() + ", ");
 				}
 				LOGGER.finer(servicesDump.toString());
 				
 			}
 			for(OpsdMonitoredService service: host2servicesMap.get(aHost)) {
-				monitoredServicesAndWikis.add(new OpsdMonitoredServiceWikiVO(service, "unset, lazy init"));
+				OpsdMonitoredServiceCommands msc =
+						new OpsdMonitoredServiceCommands(service, aHost, project);
+				monitoredServicesAndWikis.add(new OpsdMonitoredServiceWikiVO(service, "unset, lazy init", msc.getAddServiceCommand()));
 			}
 			host2effectiveServiceWikiVOMap.put(aHost, monitoredServicesAndWikis);
 
