@@ -109,6 +109,10 @@ public class OpsdReportGenerator {
 		// Some other recommended settings:
 		cfg.setIncompatibleImprovements(new Version(2, 3, 28));
 		cfg.setDefaultEncoding("UTF-8");
+		/*
+		 * ... Locale.getDefault() should be changed
+		 * for httpServletRequest.getLocale() if moved to webapp
+		 */
 		cfg.setLocale(Locale.getDefault());
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
@@ -720,7 +724,12 @@ public class OpsdReportGenerator {
 		}
 		s.append("|hostDownRecoveryProcedure=" + toNullableString(system.getHostDownRecoveryProcedure()));
 		if(system.getResponsible() == null) {
-			s.append("|responsible=" + toNonNullableString(getFullProjectData().getProject().getResponsible().getName()));
+			if(getFullProjectData().getProject().getResponsible() == null) {
+				s.append("|responsible=" + MSG_NULL);				
+			}
+			else {
+				s.append("|responsible=" + toNonNullableString(getFullProjectData().getProject().getResponsible().getName()));				
+			}
 		}
 		else {
 			s.append("|responsible=" + toNonNullableString(system.getResponsible().getName()));
