@@ -895,7 +895,14 @@ public class OpsdPoiDao implements OpsdDataTap {
 				// Get the row object
 				Row row;
 				row = sheet.getRow(rowNum);
-				if(row == null) continue;
+				
+				// Let's nop on empty rows
+				if(row == null) {
+					// Too much logging (>100MB log)
+//					LOGGER.log(Level.FINEST, "OpsdPoiDao.getRoleServices: "
+//							+ "Empty row #" + rowNum);
+					continue;
+				}
 
 				int i = 0;
 				String name = null;
@@ -913,6 +920,20 @@ public class OpsdPoiDao implements OpsdDataTap {
 					macroAndValueArray[j] = formatter.formatCellValue(row.getCell(i++));
 				}
 				String scaleTo = formatter.formatCellValue(row.getCell(i++));
+				
+				// Let's nop on empty rows
+				if((proposedName == null || proposedName.equals("")) &&
+						(description == null || description.equals("")) &&
+						(procedure == null || procedure.equals("")) &&
+						(criticityName == null || criticityName.equals("")) &&
+						(roleName == null || roleName.equals("")) &&
+						(serviceTemplateName == null || serviceTemplateName.equals(""))
+						&& (scaleTo == null || scaleTo.equals(""))) {
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getRoleServices: "
+							+ "Empty row #" + rowNum);
+					continue;
+				}
+				
 
 //				if((name == null || name.equals(""))
 //						&& (serviceTemplateName == null
@@ -1069,7 +1090,14 @@ public class OpsdPoiDao implements OpsdDataTap {
 				// Get the row object
 				Row row;
 				row = sheet.getRow(rowNum);
-				if(row == null) continue;
+				
+                // Let's nop on empty rows
+				if(row == null) {
+					// Too much logging (>100MB log)
+//					LOGGER.log(Level.FINE, "OpsdPoiDao.getHostServices: "
+//							+ "Empty row #" + rowNum);
+					continue;
+				}
 
 				int i = 0;
 				String name = null;
@@ -1087,6 +1115,19 @@ public class OpsdPoiDao implements OpsdDataTap {
 					macroAndValueArray[j] = formatter.formatCellValue(row.getCell(i++));
 				}
 				String scaleTo = formatter.formatCellValue(row.getCell(i++));
+				
+                // Let's nop on empty rows
+				if((proposedName == null || proposedName.equals("")) &&
+						(description == null || description.equals("")) &&
+						(procedure == null || procedure.equals("")) &&
+						(criticityName == null || criticityName.equals("")) &&
+						(hostName == null || hostName.equals("")) &&
+						(serviceTemplateName == null || serviceTemplateName.equals("")) &&
+						(scaleTo == null || scaleTo.equals(""))) {
+					LOGGER.log(Level.FINE, "OpsdPoiDao.getHostServices: "
+							+ "Empty row #" + rowNum);
+					continue;
+				}
 				
 //				if((name == null || name.equals(""))
 //						&& (serviceTemplateName == null
