@@ -34,17 +34,22 @@ It generates an HTML page with:
 
 # Build and install
 
+It's recommended, but not indispensable, to be build using Maven to get the version of Opsd on build time.
+
 `cd opsd`
 `mvn package`
 `cp target/opsd-1.1-SNAPSHOT-jar-with-dependencies.jar /wherever/`
 
 # Usage
 
+* (optional) Set locale, to select the localized Freemarker template if the desired locale differs from the current locale. Assegura't prèviament que existeixi la plantilla traduida per a tal idioma (ex.: src/main/resources/org/zoquero/opsd/templates/project_ca_ES.ftl):
+`export LANG=ca_ES.UTF-8`
+
+* Execution:
 `java -cp target/opsd-1.1-SNAPSHOT-jar-with-dependencies.jar org.zoquero.opsd.App /path/to/project_file.xlsx 'projectName'`
 
 ## Dependencies
 
-* Maven
 * Apache POI
 
 # Source
