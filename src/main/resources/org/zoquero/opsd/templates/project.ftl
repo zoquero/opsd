@@ -260,7 +260,7 @@ Article for service procedures: [[Procedures for ${opsdProject.name}]]
       <tr><td bgcolor="#F0F0F0">
         <pre><code>
 __FORCETOC__
-Procedures for the services of the project [[${opsdProject.name}]]:
+Here are the procedures for the services of the project [[${opsdProject.name}]], grouped by MonitoredHost:
 == Effective Services for monitoredHosts (mixing direct services + role services) ==
 <#list hosteffectiveServicesMap as host, hostServices> 
 === MonitoredHost '${host.name}' ===
@@ -296,23 +296,24 @@ DOESN'T WORK, CAN'T INTERPOLATE USING VARIABLES AS INDEXES, JUST STATIC CONTENT
         <pre><code>
 
 __FORCETOC__
-Procedures for the services of the project [[${opsdProject.name}]], grouping together for each host both the explicit services for each host and the services for its roles.
+Here are the procedures for the services of the project [[${opsdProject.name}]], grouping together for each host both the explicit services for each MonitoredHost and the services for its roles:
 
 <#list host2effectiveServiceWikiVOMap as host, hostServiceWikis> 
-=== MonitoredHost '${host.name}' ===
-
+=== ${host.name} ===
   <#if hostServiceWikis?hasContent>
+Procedures for the services of the host '''[[${host.name}]]''':
+
     <#list hostServiceWikis as aServiceWikiVO>
-==== Service '${aServiceWikiVO.service.name}' ====
+==== Service ' ''${aServiceWikiVO.service.name}'' ' ====
 
 ${aServiceWikiVO.wiki}
   
     </#list>
   <#else>
-  
-  <p><strong>Host without services</strong></p>
-  
+    <strong>Host without services</strong>
+    
   </#if>
+&lt;hr/>
 </#list>
 
         </code></pre>
@@ -328,10 +329,10 @@ ${aServiceWikiVO.wiki}
       <tr><td bgcolor="#F0F0F0">
         <pre><code>
 __FORCETOC__
-Tasks that can be requested (hopefully by ticketing) for the project '''[[${opsdProject.name}]]'''
+Tasks that can be requested (hopefully by ticketing) for the project '''[[${opsdProject.name}]]''':
 
 <#list requestVOs as aRequestVO> 
-== Request '${aRequestVO.request.name}' ==
+== Request ' ''${aRequestVO.request.name}'' ' ==
 
 ${aRequestVO.wiki}
   
