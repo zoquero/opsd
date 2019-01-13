@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.zoquero.opsd.dao.OpsdPoiConf;
 import org.zoquero.opsd.entities.OpsdFilePolicy;
 import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;

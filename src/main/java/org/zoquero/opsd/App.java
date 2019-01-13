@@ -7,7 +7,6 @@ import java.text.Normalizer;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.zoquero.opsd.dao.DaoFactory;
@@ -85,6 +84,7 @@ public class App {
 		String projectName = args[1];
 		DaoFactory df = new DaoFactory();
 		OpsdDataTap dt = null;
+		String htmlLogFile = null;
 		try {
 			// Create an output folder and output file with a normalized name
 			String prefix = ("ProjectInfo."
@@ -92,7 +92,7 @@ public class App {
 							.replaceAll("[^\\p{ASCII}]", "") + ".").replaceAll(
 					"[^a-zA-Z0-9\\. _-]", "").replaceAll("[ ]", "_");
 			Path outputFolder = OpsdReportGenerator.createDirectory(prefix);
-			String htmlLogFile = outputFolder + File.separator + "output.html";
+			htmlLogFile = outputFolder + File.separator + "output.html";
 
 			// Initialize logging
 			try {
@@ -140,8 +140,17 @@ public class App {
 			System.out.println("* Execution log:  " + htmlLogFile);
 			// htmlLogFile
 		} catch (OpsdException e) {
-			System.out.println("Errors accessing data: " + e.getMessage());
+			System.err.println("Errors accessing data: " + e.getMessage());
 			LOGGER.log(Level.SEVERE, "Exception thrown in template, probably by wrong data: " + e.getMessage(), e);
+			if(htmlLogFile == null) {
+				System.err.println("The problem appeared in an early stage, " +
+						"there's still not an output folder, so ther'es " +
+						"no troubleshooting info. Review the input data");
+			}
+			else {
+				System.err.println("You'll find troubleshooting information " +
+						"in the execution log:  " + htmlLogFile);				
+			}
 		}		
 	}
 

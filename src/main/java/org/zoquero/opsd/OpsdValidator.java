@@ -39,7 +39,8 @@ public class OpsdValidator {
 		}
 		if(project.getResponsible() == null
 				|| project.getResponsible().getName().trim().equals("")) {
-			oReport.pushError("Project has null responsible name");
+			oReport.pushError("Project has null responsible name " +
+					"or it could not be found in the list of responsibles");
 		}
 		if(project.getDateIn() == null) {
 			oReport.pushError("Project has null dateIn");

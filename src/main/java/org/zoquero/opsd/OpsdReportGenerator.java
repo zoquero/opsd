@@ -24,17 +24,20 @@ import java.util.logging.Logger;
 import org.zoquero.opsd.dao.OpsdConf;
 import org.zoquero.opsd.dao.OpsdPoiDao;
 import org.zoquero.opsd.entities.OpsdFilePolicy;
+import org.zoquero.opsd.entities.OpsdHostService;
 import org.zoquero.opsd.entities.OpsdMonitoredHost;
 import org.zoquero.opsd.entities.OpsdMonitoredService;
 import org.zoquero.opsd.entities.OpsdPeriodicTask;
 import org.zoquero.opsd.entities.OpsdProject;
 import org.zoquero.opsd.entities.OpsdRequest;
 import org.zoquero.opsd.entities.OpsdRole;
+import org.zoquero.opsd.entities.OpsdRoleService;
 import org.zoquero.opsd.entities.OpsdServiceMacroDefinition;
 import org.zoquero.opsd.entities.OpsdServiceTemplate;
 import org.zoquero.opsd.entities.OpsdSystem;
 import org.zoquero.opsd.entities.OpsdFilePolicy.ACTION_TYPE;
 import org.zoquero.opsd.entities.vo.OpsdFilePolicyVO;
+import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceCommands;
 import org.zoquero.opsd.entities.vo.OpsdMonitoredServiceWikiVO;
 import org.zoquero.opsd.entities.vo.OpsdPeriodicTaskVO;
 import org.zoquero.opsd.entities.vo.OpsdRequestVO;
@@ -106,6 +109,10 @@ public class OpsdReportGenerator {
 		// Some other recommended settings:
 		cfg.setIncompatibleImprovements(new Version(2, 3, 28));
 		cfg.setDefaultEncoding("UTF-8");
+		/*
+		 * ... Locale.getDefault() should be changed
+		 * for httpServletRequest.getLocale() if moved to webapp
+		 */
 		cfg.setLocale(Locale.getDefault());
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
@@ -116,10 +123,12 @@ public class OpsdReportGenerator {
 		String mavenProjectArtifactId = OpsdConf.getProperty("project.artifactId");
 		if (mavenProjectVersion == null
 				|| mavenProjectVersion.equals("${project.version}"))
-			mavenProjectVersion = "(build it using Maven, please)";
+			mavenProjectVersion = "(build it using Maven "
+					+ "to populate project properties, please)";
 		if (mavenProjectArtifactId == null
 				|| mavenProjectArtifactId.equals("${project.artifactId}"))
-			mavenProjectArtifactId = "(build it using Maven, please)";
+			mavenProjectArtifactId = "(build it using Maven "
+					+ "to populate project properties, please)";
 
 		// Let's process the template
 		Map<String, Object> input = new HashMap<String, Object>();
@@ -139,9 +148,12 @@ public class OpsdReportGenerator {
 		input.put("systems2wiki",     getWikiFromSystems());
 		
 		// env > role > system
-		input.put("env2role2systems", getEnvToRoleToSystems());
+		input.put("env2role2systemsEmbeddedWiki", getEnvToRoleToSystemsEmbeddedWiki());
 		input.put("env2role2monitoredHosts",   getEnvToRoleToMonitoredHosts());
-		input.put("assetArticleNamePrefix", OpsdConf.getProperty("assetArticleNamePrefix"));
+		
+		// Finally we'll embed system's body in project's body 
+		// input.put("env2role2systems", getEnvToRoleToSystems());
+		// input.put("assetArticleNamePrefix", OpsdConf.getProperty("assetArticleNamePrefix"));
 		
 		input.put("monitoredHosts",   getFullProjectData().getMonitoredHosts());
 		input.put("monitoredHosts2wiki", getWikiFromMonitoredHosts());
@@ -185,6 +197,7 @@ public class OpsdReportGenerator {
 		input.put("monitoredHost2script", getFullProjectData().getMonitoredHostCommands());
 		input.put("numMacros", OpsdConf.getNumMacros());
 		input.put("serviceTemplates", getFullProjectData().getServiceTemplates());
+		input.put("monitoredEffectiveHostServiceCommands", getFullProjectData().getMonitoredEffectiveHostServiceCommands());
 		input.put("monitoredEffectiveHostServiceCommands", getFullProjectData().getMonitoredEffectiveHostServiceCommands());
 
 		// Let's get the template
@@ -261,7 +274,7 @@ public class OpsdReportGenerator {
 		}
 	}
 
-	private void fillWikiInHost2effectiveServiceWikiVOMap() {
+	private void fillWikiInHost2effectiveServiceWikiVOMap() throws OpsdException {
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredServiceWikiVO>> h
 			= getFullProjectData().getHost2effectiveServiceWikiVOMap();
 		if(h == null) {
@@ -286,7 +299,7 @@ public class OpsdReportGenerator {
 		
 	}
 
-	private Map<OpsdMonitoredService, String> getEffectiveService2wikiMap() {
+	private Map<OpsdMonitoredService, String> getEffectiveService2wikiMap() throws OpsdException {
 		Map<OpsdMonitoredService, String> effectiveService2wikiMap = new HashMap<OpsdMonitoredService, String>(); 
 		HashMap<OpsdMonitoredHost, List<OpsdMonitoredService>> host2effectiveServicesMap = getFullProjectData().getHost2effectiveServicesMap();
 		for(List<OpsdMonitoredService> serviceList: host2effectiveServicesMap.values()) {
@@ -297,7 +310,7 @@ public class OpsdReportGenerator {
 		return effectiveService2wikiMap;
 	}
 
-	private String service2wiki(OpsdMonitoredService service) {
+	private String service2wiki(OpsdMonitoredService service) throws OpsdException {
 		if(service == null) {
 			return MSG_NULL;
 		}
@@ -319,6 +332,7 @@ public class OpsdReportGenerator {
 			s.append("|criticity="
 					+ toNullableString(service.getCriticity().getName()));
 		}
+		
 		if(service.getServiceTemplate() == null) {
 			s.append("|serviceTemplate=" + MSG_NULL);
 		}
@@ -326,6 +340,22 @@ public class OpsdReportGenerator {
 			s.append("|serviceTemplate="
 					+ toNullableString(service.getServiceTemplate().getName()));
 		}
+		// macroValuesArray, let's plot it json-like
+		StringBuilder mva = new StringBuilder("macros: [");
+		if(service.getMacroValuesArray() != null) {
+			for(int i = 0; i < OpsdConf.getNumMacros(); i++) {
+				String mv = service.getMacroValuesArray()[i];
+				mva.append("\"" + mv + "\"");
+				if(i != OpsdConf.getNumMacros() - 1) {
+					mva.append(", ");
+				}
+			}
+			s.append("|macroValues=" + mva.toString() + " ]");
+		}
+		else {
+			s.append("|macroValues=" + MSG_NULL);
+		}
+		
 		if(service.getScaleTo() == null || service.getScaleTo().equals("")) {
 			if(getFullProjectData().getProject().getResponsible() == null) {
 				s.append("|scaleTo=" + MSG_NULL);
@@ -397,6 +427,61 @@ public class OpsdReportGenerator {
 		}
 		return h;
 	}
+	
+	/**
+	 * Get a hashmap from String (env) to a hashmap of role to SystemWikiString
+	 * @return
+	 */
+	private HashMap<String, HashMap<OpsdRole, List<String>>> getEnvToRoleToSystemsEmbeddedWiki() {
+		HashMap<String, HashMap<OpsdRole, List<String>>> h = new HashMap<String, HashMap<OpsdRole, List<String>>>();
+		
+		// First let's create the first level hashmap
+		for(String aEnv: getFullProjectData().getEnvironments()) {
+			h.put(aEnv, new HashMap<OpsdRole, List<String>>());
+		}
+		
+		/* Now let's traverse all the systems
+		 * and let's push each role+system to its environment
+		 */
+		for(OpsdSystem system: getFullProjectData().getSystems()) {
+			/* Create the HashMap role2system if doesn't exist 
+			 * and push it to the corresponding environment.
+			 */
+			boolean systemRoleFound = false;
+			/* Will not print wrong data,
+			 * it will be detected previously, during the validation
+			 */
+			if(system == null)
+				continue;
+			if(system.getEnvironment() == null
+					|| system.getEnvironment().equals(""))
+				continue;
+			if(system.getRole() == null
+					|| system.getRole().getName() == null
+					|| system.getRole().getName().equals(""))
+				continue;
+			if(h.get(system.getEnvironment()) != null) {
+				for(OpsdRole aRole: h.get(system.getEnvironment()).keySet()) {
+					if(aRole == null || aRole.getName() == null)
+						continue;
+					if(aRole.getName().equals(system.getRole().getName())) {
+						systemRoleFound = true;
+					}
+				}				
+			}
+			// Let's create the ArrayLists if needed
+			if(! systemRoleFound) {
+				if(h.get(system.getEnvironment()) == null) {
+					// Probably an 'application host'
+					continue;
+				}
+				h.get(system.getEnvironment()).put(system.getRole(), new ArrayList<String>());
+			}
+			h.get(system.getEnvironment()).get(system.getRole()).add(system2wiki(system));
+		}
+		return h;
+	}
+
 	
 
 	/**
@@ -639,7 +724,12 @@ public class OpsdReportGenerator {
 		}
 		s.append("|hostDownRecoveryProcedure=" + toNullableString(system.getHostDownRecoveryProcedure()));
 		if(system.getResponsible() == null) {
-			s.append("|responsible=" + toNonNullableString(getFullProjectData().getProject().getResponsible().getName()));
+			if(getFullProjectData().getProject().getResponsible() == null) {
+				s.append("|responsible=" + MSG_NULL);				
+			}
+			else {
+				s.append("|responsible=" + toNonNullableString(getFullProjectData().getProject().getResponsible().getName()));				
+			}
 		}
 		else {
 			s.append("|responsible=" + toNonNullableString(system.getResponsible().getName()));
