@@ -470,14 +470,8 @@ ${monitoredServiceCommands.addServiceCommand}
 
     <table border="1">
       <tr>
-        <td bgcolor="#F0F0F0"></td>
-        <td bgcolor="#F0F0F0"></td>
-        <td bgcolor="#F0F0F0"></td>
-        <td bgcolor="#F0F0F0"></td>
-      </tr>
-      <tr>
         <td bgcolor="#F5F5F5">Service Name</td>
-        <td bgcolor="#C0C0C0">NRPE</td>
+        <td bgcolor="#C0C0C0">NRPE?</td>
         <td bgcolor="#C0C0C0">Default service name</td>
         <td bgcolor="#C0C0C0">Description</td>
       </tr>
