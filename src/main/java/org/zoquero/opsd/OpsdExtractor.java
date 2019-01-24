@@ -285,7 +285,8 @@ public class OpsdExtractor {
 			LOGGER.log(Level.SEVERE,"Asked to get a monitoring host template for a null host");
 			return "ERROR_null";
 		}
-		if(! aHost.isDefaultChecksNeeded()) {
+
+		if(aHost.isDefaultChecksNeeded() == null || ! aHost.isDefaultChecksNeeded()) {
 			LOGGER.log(Level.FINER,"Asked to get a monitoring host template "
 					+ "for a host that hasn't checked 'defaultChecksNeeded'");
 			return OpsdConf.getProperty("monitoring.serviceTemplate.minimum");
