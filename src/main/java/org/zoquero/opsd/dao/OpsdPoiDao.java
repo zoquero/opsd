@@ -1,5 +1,6 @@
 package org.zoquero.opsd.dao;
 
+import java.awt.geom.GeneralPath;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
@@ -174,6 +175,11 @@ public class OpsdPoiDao implements OpsdDataTap {
 
 	@Override
 	public OpsdProject getProject(String projectName) throws OpsdException {
+		LOGGER.log(Level.FINE, this.getClass().getName() + ": Before getting project "
+				+ projectName + " we'll verify the existence of all sheets");
+		// throw new OpsdException("Looks like there are missing sheets or them are in the invalid order. Verify that you are using the latest supported spreadsheet version");			
+		assertSheetNames();
+		
 		LOGGER.log(Level.FINE, this.getClass().getName() + ": Getting project "
 				+ projectName);
 		DataFormatter formatter = new DataFormatter();
@@ -183,8 +189,8 @@ public class OpsdPoiDao implements OpsdDataTap {
 		int sheetPosition = OpsdPoiConf.getSheetPosition(OpsdProject.class.getSimpleName());
 		if (sheetPosition > numberOfSheets - 1) {
 			throw new OpsdException("The sheet " + path + " has "
-					+ numberOfSheets + " and OpsdProject objects should be"
-					+ " in sheet position # " + sheetPosition + " (0..N-1)");
+					+ numberOfSheets + " sheets and OpsdProject objects should be"
+					+ " in sheet position # " + sheetPosition + " (0..N-1). ");
 		}
 
 		// Get the nth sheet from the workbook
@@ -270,6 +276,60 @@ public class OpsdPoiDao implements OpsdDataTap {
 		// }
 
 		return op;
+	}
+
+	private void assertSheetNames() throws OpsdException {
+		LOGGER.log(Level.FINE, this.getClass().getName() + ": Verifying sheets");
+		final String genericErrorMessage = "Verify that you are using the latest supported spreadsheet version, please";
+		// throw new OpsdException("Looks like there are missing sheets or them are in the invalid order. Verify that you are using the latest supported spreadsheet version");			
+
+		// Get the number of sheets in the xlsx file
+		int numberOfSheets = workbook.getNumberOfSheets(); // cachable ...
+		
+		int numberOfNeededSheets = OpsdPoiConf.getMinimumNumberOfSpreedsheetSheetsNeeded();
+		if(numberOfNeededSheets > numberOfSheets) {
+			throw new OpsdException("The number of sheets contained in the "
+					+ " spreedsheet (" + numberOfSheets
+					+ ") is smaller than needed ("
+					+ numberOfNeededSheets + "). " + genericErrorMessage);
+		}
+		
+		assertSheetForClass(OpsdProject.class.getSimpleName());
+		assertSheetForClass(OpsdRole.class.getSimpleName());
+		assertSheetForClass(OpsdSystem.class.getSimpleName());
+		assertSheetForClass(OpsdMonitoredHost.class.getSimpleName());
+		assertSheetForClass(OpsdRoleService.class.getSimpleName());
+		assertSheetForClass(OpsdHostService.class.getSimpleName());
+		assertSheetForClass(OpsdRequest.class.getSimpleName());
+		assertSheetForClass(OpsdPeriodicTask.class.getSimpleName());
+		assertSheetForClass(OpsdFilePolicy.class.getSimpleName());
+	}
+	
+	private void assertSheetForClass(final String className) throws OpsdException {
+		final String genericErrorMessage = "Verify that you are using "
+				+ "the latest supported spreadsheet version, please";
+
+		// Let's test the position for each object
+		int neededPos;
+		String neededName;
+		Sheet sheet;
+		
+		neededPos = OpsdPoiConf.getSheetPosition(className);
+		neededName = OpsdPoiConf.getSheetName(className);
+		if(neededName == null || neededName.equals("") || neededPos < 0)
+			throw new OpsdException("Can't find position or name name for "
+					+ className + ". " + genericErrorMessage);
+		sheet = workbook.getSheetAt(neededPos);
+		if(sheet == null)
+			throw new OpsdException("Can't get the sheet for "
+					+ className + ". " + genericErrorMessage);
+		if(! neededName.equals(sheet.getSheetName())) {
+			throw new OpsdException("The sheet for " + className
+					+ "(called " + neededName + ")"
+					+ " should be the number " + neededPos + " (0..N-1) "
+					+ "and there we found '" + sheet.getSheetName() + "'. "
+					+ genericErrorMessage);
+		}
 	}
 
 	/**
@@ -612,8 +672,7 @@ public class OpsdPoiDao implements OpsdDataTap {
 				String moreInfo = formatter.formatCellValue(row.getCell(i++));
 				String environment = formatter.formatCellValue(row.getCell(i++));
 				String roleName = formatter.formatCellValue(row.getCell(i++));
-				String hostDownRecoveryProcedure = row.getCell(i++)
-						.getStringCellValue();
+				String hostDownRecoveryProcedure = formatter.formatCellValue(row.getCell(i++));
 				String responsibleName = formatter.formatCellValue(row.getCell(i++));
 				String scaleTo = formatter.formatCellValue(row.getCell(i++));
 

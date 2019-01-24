@@ -4,12 +4,15 @@
   <groupId>org.zoquero.opsd</groupId>
   <artifactId>opsd</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2.1</version>
   <name>opsd</name>
   <url>https://github.com/zoquero/opsd</url>
 
   <properties>
+<!--
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+-->
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
