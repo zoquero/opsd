@@ -194,7 +194,7 @@ ${system}
 
 == Services and its procedures ==
 
-Article for service procedures: [[Procedures for ${opsdProject.name}]]
+Article for service procedures: [[${opsdProject.name}. Procedures for incidents]]
 
 <#--
   -- We'll remove it in a future code cleanup, by now it will help here
@@ -250,7 +250,7 @@ Article for service procedures: [[Procedures for ${opsdProject.name}]]
     <br/><hr/><br/>
 
     <h3 id="asp">Article for service procedures</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Procedures for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/Procedures for ${opsdProject.name}'>${wikiUrlBase}/Procedures for ${opsdProject.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. Procedures for incidents</em></span>' and URL: <a href='${wikiUrlBase}/${opsdProject.name}. Procedures for incidents'>${wikiUrlBase}/${opsdProject.name}. Procedures for incidents</a></p>
     
 <#--
   -- We'll remove it in a future code cleanup, by now it will help here
@@ -323,7 +323,7 @@ ${aServiceWikiVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="requests">Article for requests (requestable tasks)</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Requests for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/Requests for ${opsdProject.name}'>${wikiUrlBase}/Requests for ${opsdProject.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. Procedures for petitions</em></span>' and URL: <a href='${wikiUrlBase}/${opsdProject.name}. Procedures for petitions'>${wikiUrlBase}/${opsdProject.name}. Procedures for petitions</a></p>
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
@@ -344,7 +344,7 @@ ${aRequestVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="periodictasks">Article for periodic tasks</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>Periodic tasks for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/Periodic tasks for ${opsdProject.name}'>${wikiUrlBase}/Periodic tasks for ${opsdProject.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. Periodic tasks</em></span>' and URL: <a href='${wikiUrlBase}/${opsdProject.name}. Periodic tasks'>${wikiUrlBase}/${opsdProject.name}. Periodic tasks</a></p>
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
@@ -365,7 +365,7 @@ ${aPeriodicTaskVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="filepolicies">Article for file policies</h3>
-    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>File policies for ${opsdProject.name}</em></span>' and URL: <a href='${wikiUrlBase}/File policies for ${opsdProject.name}'>${wikiUrlBase}/File policies for ${opsdProject.name}</a></p>
+    <p>Body for the article with name: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. File policies</em></span>' and URL: <a href='${wikiUrlBase}/${opsdProject.name}. File policies'>${wikiUrlBase}/${opsdProject.name}. File policies</a></p>
 
 <#list wikiFilePolicies as filePolicy, filePolicyWiki> 
 

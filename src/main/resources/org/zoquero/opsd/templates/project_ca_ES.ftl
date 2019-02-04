@@ -194,7 +194,7 @@ ${system}
 
 == Serveis i els seus procediments ==
 
-Article amb els procediments pels serveis: [[Procediments per ${opsdProject.name}]]
+Article amb els procediments pels serveis: [[${opsdProject.name}. Procediments per incidències]]
 
 <#--
   -- We'll remove it in a future code cleanup, by now it will help here
@@ -250,7 +250,7 @@ Article amb els procediments pels serveis: [[Procediments per ${opsdProject.name
     <br/><hr/><br/>
 
     <h3 id="asp">Article dels procediments pels serveis</h3>
-    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Procediments per ${opsdProject.name}</em></span>' i URL: <a href='${wikiUrlBase}/Procediments per ${opsdProject.name}'>${wikiUrlBase}/Procediments per ${opsdProject.name}</a></p>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. Procediments per incidències</em></span>' i URL: <a href='${wikiUrlBase}/${opsdProject.name}. Procediments per incidències'>${wikiUrlBase}/${opsdProject.name}. Procediments per incidències</a></p>
     
 <#--
   -- We'll remove it in a future code cleanup, by now it will help here
@@ -323,7 +323,7 @@ ${aServiceWikiVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="requests">Article de les peticions sol·licitables</h3>
-    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Peticions per ${opsdProject.name}</em></span>' i URL: <a href='${wikiUrlBase}/Peticions per ${opsdProject.name}'>${wikiUrlBase}/Peticions per ${opsdProject.name}</a></p>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. Procediments per peticions</em></span>' i URL: <a href='${wikiUrlBase}/${opsdProject.name}. Procediments per peticions'>${wikiUrlBase}/${opsdProject.name}. Procediments per peticions</a></p>
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
@@ -344,7 +344,7 @@ ${aRequestVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="periodictasks">Article de les tasques periòdiques</h3>
-    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Tasques periòdiques per ${opsdProject.name}</em></span>' i URL: <a href='${wikiUrlBase}/Tasques periòdiques per ${opsdProject.name}'>${wikiUrlBase}/Tasques periòdiques per ${opsdProject.name}</a></p>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. Tasques periòdiques</em></span>' i URL: <a href='${wikiUrlBase}/${opsdProject.name}. Tasques periòdiques'>${wikiUrlBase}/${opsdProject.name}. Tasques periòdiques</a></p>
     
     <table border="1">
       <tr><td bgcolor="#F0F0F0">
@@ -365,7 +365,7 @@ ${aPeriodicTaskVO.wiki}
     <br/><hr/><br/>
     
     <h3 id="filepolicies">Article de les polítiques per a fitxers</h3>
-    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Polítiques de fitxers per ${opsdProject.name}</em></span>' i URL: <a href='${wikiUrlBase}/Polítiques de fitxers per ${opsdProject.name}'>${wikiUrlBase}/Polítiques de fitxers per ${opsdProject.name}</a></p>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>${opsdProject.name}. Polítiques de fitxers</em></span>' i URL: <a href='${wikiUrlBase}/${opsdProject.name}. Polítiques de fitxers'>${wikiUrlBase}/${opsdProject.name}. Polítiques de fitxers</a></p>
 
 <#list wikiFilePolicies as filePolicy, filePolicyWiki> 
 
