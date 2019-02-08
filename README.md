@@ -40,6 +40,13 @@ It's recommended, but not indispensable, to be build using Maven to get the vers
 `mvn package`
 `cp target/opsd-1.1-SNAPSHOT-jar-with-dependencies.jar /wherever/`
 
+## Source
+It's source can be found at GitHub: [https://github.com/zoquero/opsd/](https://github.com/zoquero/opsd/).
+
+## Dependencies
+
+* Apache POI
+
 # Usage
 
 * (optional) Set locale, to select the localized Freemarker template if the desired locale differs from the current locale. Now there are just two templates for projectes: English and Catalan. Add templates for more languages. For example: to use Catalan language and display using src/main/resources/org/zoquero/opsd/templates/project_ca_ES.ftl before running opsd you must do:
@@ -49,11 +56,3 @@ It's recommended, but not indispensable, to be build using Maven to get the vers
 `java -cp target/opsd-...-jar-with-dependencies.jar org.zoquero.opsd.App /path/to/project_file.xlsx 'projectName'`
 
 Note: Even though the project name may appear in the project data you must specify it in the call. This is because the output folder is created before reading the project data and it contains the project name to ease its access. That project name in the call is just to name the folder, so if it's a problem for you just specify 'SomeProject'.
-
-## Dependencies
-
-* Apache POI
-
-# Source
-It's source can be found at GitHub: [https://github.com/zoquero/opsd/](https://github.com/zoquero/opsd/).
-
