@@ -243,6 +243,18 @@ Article for service procedures: [[${opsdProject.name}. Procedures for incidents]
 
 -->
 
+== Requestable tasks and its procedures ==
+
+Article containing the procedures for requestable tasks: [[${opsdProject.name}. Procedures for incidents]]
+
+== Periodic tasks and its procedures ==
+
+Article containing the procedures periodic tasks: [[${opsdProject.name}. Periodic tasks]]
+
+== File policies ==
+
+Article containing the aging policies to apply to files: [[${opsdProject.name}. File policies]]
+
         </code></pre>
       </td></tr>
     </table>

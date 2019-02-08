@@ -243,6 +243,18 @@ Article amb els procediments pels serveis: [[${opsdProject.name}. Procediments p
 
 -->
 
+== Peticions sol·licitables i els seus procediments ==
+
+Article amb els procediments per les peticions sol·licitables: [[${opsdProject.name}. Procediments per peticions]]
+
+== Tasques periòdiques i els seus procediments ==
+
+Article amb els procediments per les peticions sol·licitables: [[${opsdProject.name}. Tasques periòdiques]]
+
+== Polítiques per a fitxers ==
+
+Article amb les polítiques per a fitxers: [[${opsdProject.name}. Polítiques de fitxers]]
+
         </code></pre>
       </td></tr>
     </table>
