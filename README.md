@@ -37,7 +37,9 @@ It generates an HTML page with:
 It's recommended, but not indispensable, to be build using Maven to get the version of Opsd on build time. Recommended because we're getting project version from the pom.xml file.
 
 `cd opsd`
+
 `mvn package`
+
 `cp target/opsd-1.1-SNAPSHOT-jar-with-dependencies.jar /wherever/`
 
 ## Source
