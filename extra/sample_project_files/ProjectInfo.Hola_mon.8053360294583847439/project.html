@@ -1,0 +1,1045 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Validació del projecte i generació de monitoratge i documentació</title>
+    <style>
+      pre {
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Validació del projecte i generació de monitoratge i documentació</h1>
+    Continguts:
+    
+    <table border="1" width="95%">
+      <tr><td bgcolor="#F5F5F0">
+        <ul>
+          <li> <a href="#log">0) Log de sortida</a> </li>
+          <li> <a href="#validation">1) Validació de les dades del Project</a> </li>
+          <li> <a href="#gd">2) Documentació generada</a> </li>
+          <ul>
+            <li> <a href="#ap">Article del projecte '<em>Hola, món!</em>'</a> </li>
+            <li> <a href="#asp">Article dels procediments pels serveis</a> </li>
+            <li> <a href="#requests">Article de les peticions sol·licitables</a> </li>
+            <li> <a href="#periodictasks">Article de les tasques periòdiques</a> </li>
+            <li> <a href="#filepolicies">Article de les polítiques per a fitxers</a> </li>
+            <li> <a href="#monitoredhosts">Articles dels HostsMonitorats</a> </li>
+          </ul>
+          <li> <a href="#monitoring">3) Script per a establir el monitoratge</a> </li>
+          <ul>
+            <li> <a href="#addHosts">Script per a establir el monitoratge dels hosts</a> </li>
+            <li> <a href="#addServices">Script per a establir el monitoratge dels serveis</a> </li>
+          </ul>
+          <li> <a href="#serv_tmplt_def">4) Definicions de les plantilles de serveis</a> </li>
+        </ul>
+      </td></tr>
+    </table>
+
+    <br/><hr/><br/>
+    
+    <h2 id="log">0) Log de sortida</h2>
+    <p>Aquí està el <a href="./output.html">log de sortida</a>.</p>
+
+    <br/><hr/><br/>
+
+
+    <h2 id="validation">1) Validació de les dades del Project </h2>
+
+    <p>
+        El projecte <span style="background-color: #EEEE88"><strong>és formalment vàlid</strong></span>
+        però té algunes <strong>advertències</strong>.
+    :
+    </p>
+    
+    <h3>0 errors </h3>
+    
+    
+    <table border="1">
+    </table>
+    
+    <h3>4 advertències (warnings) </h3>
+    
+      Nota: L'ordinal de les files és 0..N-1
+	
+    <table border="1">
+        <tr><td bgcolor="#FFFFCC">
+          FilePolicy #2 has null Sufix
+        </td></tr>
+        <tr><td bgcolor="#FFFFCC">
+          FilePolicy #3 has null Sufix
+        </td></tr>
+        <tr><td bgcolor="#FFFFCC">
+          FilePolicy #4 has null Sufix
+        </td></tr>
+        <tr><td bgcolor="#FFFFCC">
+          FilePolicy #5 has null Sufix
+        </td></tr>
+    </table>
+    
+    <br/><hr/><br/>
+    
+    <h2 id="gd">2) Documentació generada</h2>
+    <p>Pots provar-ho a <a href="https://www.mediawiki.org/w/index.php?title=Project:Sandbox&action=edit">MediaWiki's sandbox</a>, però tingues cura si conté informació sensible.</p>
+
+    <h3 id="ap">Article del projecte '<em>Hola, món!</em>'</h3>
+    <p>Cos per l'article del projecte anomenat: '<span style="background-color: #F0F0F0"><em>Hola, món!</em></span>' i amb URL: <a href='http://site.org/procs/index.php/Hola, món!'>http://site.org/procs/index.php/Hola, món!</a></p>
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+
+__FORCETOC__
+
+Documentació pel projecte '<em>Hola, món!</em>' generada utilitzant '[https://github.com/zoquero/opsd Operations Descriptor]' (opsd-1.3.3-SNAPSHOT) a dg., 10 de febr. 2019 22:50:12 CET amb 0 errors i 4 advertències (warnings)
+
+== Descripció del projecte ==
+
+{{Project|name=Hola, món!|description=Aquest Projecte té com a motivació donar un exemple d'ús del [[Model de documentació d'Explotació]], implantant a principis de 2018.|dependencies=Del Projecte [[Hola, móndb!]]|moreInfo=Es tracta d'un projecte amb dos frontends que es connecten contra un espai de taules "''holamone''" al servei compartit de bases de dades fictici [[ubdbpro]], que tenen davant dos balancejadors de càrrega, que exposen un servei privat amb alta disponibilitat, al que accedeixen els usuaris finals a través del proxy invers [[webprox05]] / [[webprox06]], on hi ha aixecada una IP pública. 
+
+Cal destacar que ni els equips servidors de Bases de Dades ni els equips que fan de Proxy Invers estan dedicats a aquest projecte. És per això que NO apareixen a la llista de Sistemes (''actius''), ni són monitorats de forma explícita, simplement són utilitzats, com és el DNS o NTP, per exemple.|recoveryProcedure=Recuperar de còpia de seguretat els sistemes i reiniciar primer els Frontends i després els balancejadors|responsible=[[Barney Rubble]]|dateIn=01/d’abr./2018|dateOut=Error (null)}}
+
+== Rols ==
+
+=== Rol '' 'Balancejador'' ' ===
+
+{{Role|name=Balancejador|project=Hola, món!|description=Balancejadors de tràfic HTTP}}
+
+=== Rol '' 'Frontend'' ' ===
+
+{{Role|name=Frontend|project=Hola, món!|description=Frontends de l'aplicació, són Servidors Web Apache amb PHP i memcached}}
+
+=== Rol '' 'ServeiPúblic'' ' ===
+
+{{Role|name=ServeiPúblic|project=Hola, món!|description=Servei per a l'usuari final publicat pel Proxy Invers}}
+
+=== Rol '' 'Balancejador'' ' ===
+
+{{Role|name=Balancejador|project=Hola, món!|description=Balancejadors de tràfic HTTP}}
+
+=== Rol '' 'Admin'' ' ===
+
+{{Role|name=Admin|project=Hola, món!|description=Serveis d'administració}}
+
+=== Rol '' 'Frontend'' ' ===
+
+{{Role|name=Frontend|project=Hola, món!|description=Frontends de l'aplicació, són Servidors Web Apache amb PHP i memcached}}
+
+=== Rol '' 'ServeiPrivat'' ' ===
+
+{{Role|name=ServeiPrivat|project=Hola, món!|description=Servei ofert des dels FrontEnds amb IPs privades i accedit només pel Proxy Invers}}
+
+
+
+== Sistemes per entorn i rol ==
+
+=== Entorn '' 'PRO' '' ===
+
+==== Rol '' 'Balancejador' '' ====
+
+{{System|name=meubal01|project=Hola, món!|alias=&nbsp;|fqdnOrIp=meubal01.adm.cpd.local|deviceType=virt_vCenter02|os=sles12|lomIP=&nbsp;|lomAccess=&nbsp;|osAccess=SSH des de bastió de l'espai de bastions de Sistemes o d'Explotació|moreInfo=Triga +5m en arrencar i aturar, és per quelcom del init script del software|environment=PRO|role=Balancejador|hostDownRecoveryProcedure=&nbsp;|responsible=Barney Rubble|scaleTo=SysAdmins}}
+
+{{System|name=meubal02|project=Hola, món!|alias=&nbsp;|fqdnOrIp=meubal02.adm.cpd.local|deviceType=virt_vCenter02|os=sles12|lomIP=&nbsp;|lomAccess=&nbsp;|osAccess=SSH des de bastió de l'espai de bastions de Sistemes o d'Explotació|moreInfo=Triga +5m en arrencar i aturar, és per quelcom del init script del software|environment=PRO|role=Balancejador|hostDownRecoveryProcedure=&nbsp;|responsible=Barney Rubble|scaleTo=SysAdmins}}
+
+    
+==== Rol '' 'Frontend' '' ====
+
+{{System|name=meufe01|project=Hola, món!|alias=&nbsp;|fqdnOrIp=meufe01.adm.cpd.local|deviceType=virt_vCenter02|os=sles12|lomIP=&nbsp;|lomAccess=&nbsp;|osAccess=SSH des de bastió de l'espai de bastions de Sistemes o d'Explotació|moreInfo=Pot tenir moments de càrrega de CPU força alta|environment=PRO|role=Frontend|hostDownRecoveryProcedure=&nbsp;|responsible=Barney Rubble|scaleTo=SysAdmins}}
+
+{{System|name=meufe02|project=Hola, món!|alias=&nbsp;|fqdnOrIp=meufe02.adm.cpd.local|deviceType=virt_vCenter02|os=sles12|lomIP=&nbsp;|lomAccess=&nbsp;|osAccess=SSH des de bastió de l'espai de bastions de Sistemes o d'Explotació|moreInfo=Pot tenir moments de càrrega de CPU força alta|environment=PRO|role=Frontend|hostDownRecoveryProcedure=&nbsp;|responsible=Barney Rubble|scaleTo=SysAdmins}}
+
+    
+
+
+== HostsMonitorats per entorn i rol ==
+
+=== Entorn '' 'PRO' '' ===
+
+==== Rol '' 'Frontend' '' ====
+
+* [[meufe01.fe.cpd.local]]
+* [[meufe02.fe.cpd.local]]
+    
+==== Rol '' 'ServeiPúblic' '' ====
+
+* [[holamon.ub.edu]]
+    
+==== Rol '' 'Admin' '' ====
+
+* [[meufe01.adm.cpd.local]]
+* [[meufe02.adm.cpd.local]]
+* [[meubal01.adm.cpd.local]]
+* [[meubal02.adm.cpd.local]]
+    
+==== Rol '' 'ServeiPrivat' '' ====
+
+* [[meubal01.fe.cpd.local]]
+* [[meubal02.fe.cpd.local]]
+* [[holamonpriv.fe.cpd.local]]
+    
+
+== Serveis i els seus procediments ==
+
+Article amb els procediments pels serveis: [[Hola, món!. Procediments per incidències]]
+
+
+== Peticions sol·licitables i els seus procediments ==
+
+Article amb els procediments per les peticions sol·licitables: [[Hola, món!. Procediments per peticions]]
+
+== Tasques periòdiques i els seus procediments ==
+
+Article amb els procediments per les peticions sol·licitables: [[Hola, món!. Tasques periòdiques]]
+
+== Polítiques per a fitxers ==
+
+Article amb les polítiques per a fitxers: [[Hola, món!. Polítiques de fitxers]]
+
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <br/><hr/><br/>
+
+    <h3 id="asp">Article dels procediments pels serveis</h3>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Hola, món!. Procediments per incidències</em></span>' i URL: <a href='http://site.org/procs/index.php/Hola, món!. Procediments per incidències'>http://site.org/procs/index.php/Hola, món!. Procediments per incidències</a></p>
+    
+    
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+
+__FORCETOC__
+Aquests són els procediments pels serveis del projecte [[Hola, món!]], agrupats per cada host, tant els serveis definits explícitament per al host, com els serveis definits pel rol al que el host pertany.
+
+=== meufe01.fe.cpd.local ===
+Procediments pels serveis del host '''[[meufe01.fe.cpd.local]]''':
+
+==== Servei ' ''memcaché'' ' ====
+
+{{MonitoredService|name=memcaché|project=Hola, món!|description=Servei de Memcaché per mantenir les sessions als FrontEnds|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="memcached"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Memcache|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+==== Servei ' ''Apache HTTPD'' ' ====
+
+{{MonitoredService|name=Apache HTTPD|project=Hola, món!|description=Servei Apache HTTPD 2.4|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="httpd"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Apache|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== meufe01.adm.cpd.local ===
+Procediments pels serveis del host '''[[meufe01.adm.cpd.local]]''':
+
+==== Servei ' ''SSHD'' ' ====
+
+{{MonitoredService|name=SSHD|project=Hola, món!|description=Servei de SSH|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="sshd"|criticity=Normal|serviceTemplate=OS-Generic-Check_SSHD|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== holamon.ub.edu ===
+Procediments pels serveis del host '''[[holamon.ub.edu]]''':
+
+==== Servei ' ''Servei públic Tararí'' ' ====
+
+{{MonitoredService|name=Servei públic Tararí|project=Hola, món!|description=Servei públic ‘’Tararí‘’ ofert pel servei de Proxy Invers compost per [[webprox05]] / [[webprox06]]|procedure=Fes verificacions mínimes de salut d'ambdós proxies, assegura't que algun dels 2 tingui aixecada la IP de servei (si trobes quelcom extrany atura i engega alternadament el servei de proxy a ambdós equips) i atura i engega a ambdós proxies l'apache fent [[Procediment genèric d'aturada i engegada de servei]] per proc="/usr/sbin/httpd -c tarari.conf" i init_script=/etc/init.d/httpd_tarari|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Tarari|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== meufe02.adm.cpd.local ===
+Procediments pels serveis del host '''[[meufe02.adm.cpd.local]]''':
+
+==== Servei ' ''SSHD'' ' ====
+
+{{MonitoredService|name=SSHD|project=Hola, món!|description=Servei de SSH|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="sshd"|criticity=Normal|serviceTemplate=OS-Generic-Check_SSHD|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+==== Servei ' ''Estadístisques de Tararí'' ' ====
+
+{{MonitoredService|name=Estadístisques de Tararí|project=Hola, món!|description=És un script que extreu certes estadístiques del servei i que només pot córrer a un dels servidors.|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="tarari_stats"|criticity=Normal|serviceTemplate=OS-Generic-Check_Tarari|macroValues=macros: ["AdvancedMode", "", "", "", "", "", "" ]|scaleTo=[[Barney Rubble]]}}
+  
+&lt;hr/>
+=== meubal01.adm.cpd.local ===
+Procediments pels serveis del host '''[[meubal01.adm.cpd.local]]''':
+
+==== Servei ' ''SSHD'' ' ====
+
+{{MonitoredService|name=SSHD|project=Hola, món!|description=Servei de SSH|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="sshd"|criticity=Normal|serviceTemplate=OS-Generic-Check_SSHD|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== meufe02.fe.cpd.local ===
+Procediments pels serveis del host '''[[meufe02.fe.cpd.local]]''':
+
+==== Servei ' ''memcaché'' ' ====
+
+{{MonitoredService|name=memcaché|project=Hola, món!|description=Servei de Memcaché per mantenir les sessions als FrontEnds|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="memcached"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Memcache|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+==== Servei ' ''Apache HTTPD'' ' ====
+
+{{MonitoredService|name=Apache HTTPD|project=Hola, món!|description=Servei Apache HTTPD 2.4|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="httpd"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Apache|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== holamonpriv.fe.cpd.local ===
+Procediments pels serveis del host '''[[holamonpriv.fe.cpd.local]]''':
+
+==== Servei ' ''ngnix'' ' ====
+
+{{MonitoredService|name=ngnix|project=Hola, món!|description=Proxy i balancejador de càrrega basat en el software ngnix|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="ngnix"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Nginx|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+==== Servei ' ''Servei privat Tararí'' ' ====
+
+{{MonitoredService|name=Servei privat Tararí|project=Hola, món!|description=Servei privat ‘’Tararí‘’ cap a Proxy Invers, amb adreçament privat. Utilitza un espai de taules "''holamone''" al servei compartit de bases de dades fictici [[ubdbpro]]|procedure=Aplicar primer el [[Procediment genèric d'aturada i engegada de servei]] per proc="ngnix" i init_script=/etc/init.d/ngnix als Sistemes amb rol "Balancejador" i si no ho arregla aplica després el [[Procediment genèric d'aturada i engegada de servei]] per proc="httpd" i init_script=/etc/init.d/httpd a tots els equips del rol "Frontend"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Tarari|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== meubal02.fe.cpd.local ===
+Procediments pels serveis del host '''[[meubal02.fe.cpd.local]]''':
+
+==== Servei ' ''ngnix'' ' ====
+
+{{MonitoredService|name=ngnix|project=Hola, món!|description=Proxy i balancejador de càrrega basat en el software ngnix|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="ngnix"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Nginx|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+==== Servei ' ''Servei privat Tararí'' ' ====
+
+{{MonitoredService|name=Servei privat Tararí|project=Hola, món!|description=Servei privat ‘’Tararí‘’ cap a Proxy Invers, amb adreçament privat. Utilitza un espai de taules "''holamone''" al servei compartit de bases de dades fictici [[ubdbpro]]|procedure=Aplicar primer el [[Procediment genèric d'aturada i engegada de servei]] per proc="ngnix" i init_script=/etc/init.d/ngnix als Sistemes amb rol "Balancejador" i si no ho arregla aplica després el [[Procediment genèric d'aturada i engegada de servei]] per proc="httpd" i init_script=/etc/init.d/httpd a tots els equips del rol "Frontend"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Tarari|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== meubal01.fe.cpd.local ===
+Procediments pels serveis del host '''[[meubal01.fe.cpd.local]]''':
+
+==== Servei ' ''ngnix'' ' ====
+
+{{MonitoredService|name=ngnix|project=Hola, món!|description=Proxy i balancejador de càrrega basat en el software ngnix|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="ngnix"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Nginx|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+==== Servei ' ''Servei privat Tararí'' ' ====
+
+{{MonitoredService|name=Servei privat Tararí|project=Hola, món!|description=Servei privat ‘’Tararí‘’ cap a Proxy Invers, amb adreçament privat. Utilitza un espai de taules "''holamone''" al servei compartit de bases de dades fictici [[ubdbpro]]|procedure=Aplicar primer el [[Procediment genèric d'aturada i engegada de servei]] per proc="ngnix" i init_script=/etc/init.d/ngnix als Sistemes amb rol "Balancejador" i si no ho arregla aplica després el [[Procediment genèric d'aturada i engegada de servei]] per proc="httpd" i init_script=/etc/init.d/httpd a tots els equips del rol "Frontend"|criticity=PremiumB|serviceTemplate=OS-Generic-Check_Tarari|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+=== meubal02.adm.cpd.local ===
+Procediments pels serveis del host '''[[meubal02.adm.cpd.local]]''':
+
+==== Servei ' ''SSHD'' ' ====
+
+{{MonitoredService|name=SSHD|project=Hola, món!|description=Servei de SSH|procedure=[[Procediment genèric d'aturada i engegada de servei via systemd]] per service_name="sshd"|criticity=Normal|serviceTemplate=OS-Generic-Check_SSHD|macroValues=macros: ["", "", "", "", "", "", "" ]|scaleTo=Sistemes Servidors}}
+  
+&lt;hr/>
+
+        </code></pre>
+      </td></tr>
+    </table>
+    
+    <br/><hr/><br/>
+    
+    <h3 id="requests">Article de les peticions sol·licitables</h3>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Hola, món!. Procediments per peticions</em></span>' i URL: <a href='http://site.org/procs/index.php/Hola, món!. Procediments per peticions'>http://site.org/procs/index.php/Hola, món!. Procediments per peticions</a></p>
+    
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+__FORCETOC__
+Peticions que poden ser sol·licitades (tant de bo que via tiquet) pel projecte '''[[Hola, món!]]''':
+
+== Petició ' ''Reindexació de memcached'' ' ==
+
+{{Request|name=Reindexació de memcached|project=Hola, món!|authorized=fulano@ub.edu zotano@ub.edu|procedure=[[Procediment fictici de reindexació de memcached]]|scaleTo=Sistemes Servidors}}
+  
+        </code></pre>
+      </td></tr>
+    </table>
+    
+    <br/><hr/><br/>
+    
+    <h3 id="periodictasks">Article de les tasques periòdiques</h3>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Hola, món!. Tasques periòdiques</em></span>' i URL: <a href='http://site.org/procs/index.php/Hola, món!. Tasques periòdiques'>http://site.org/procs/index.php/Hola, món!. Tasques periòdiques</a></p>
+    
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+__FORCETOC__
+Tasques periòdiques pel projecte '''[[Hola, món!]]'''
+
+== Tasca periòdica 'Reinici mensual dels FrontEnds' ==
+
+{{PeriodicTask|name=Reinici mensual dels FrontEnds|project=Hola, món!|periodicity=El primer dia de mes preferiblement a primera hora del matí|procedure=Reiniciar [[Asset.meufe01|meufe01]] i un cop estigui recuperat reiniciar [[Asset.meufe02|meufe02]]|scaleTo=Frontend}}
+  
+        </code></pre>
+      </td></tr>
+    </table>
+    
+    <br/><hr/><br/>
+    
+    <h3 id="filepolicies">Article de les polítiques per a fitxers</h3>
+    <p>Cos de l'article anomenat: '<span style="background-color: #F0F0F0"><em>Hola, món!. Polítiques de fitxers</em></span>' i URL: <a href='http://site.org/procs/index.php/Hola, món!. Polítiques de fitxers'>http://site.org/procs/index.php/Hola, món!. Polítiques de fitxers</a></p>
+
+
+Una política de fitxers
+pel sistema (cap en concret)
+i tots els hosts que pertanyin al rol 'Frontend'
+:
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+find "/var/log/memcache" -name "memcache.*.log" -type f -mtime +2 -exec gzip {} \; 
+        </code></pre>
+      </td></tr>
+    </table>
+
+
+Una política de fitxers
+pel sistema (cap en concret)
+i tots els hosts que pertanyin al rol 'Frontend'
+:
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+find "/var/log/apache2" -name "error.*" -type f -mtime +30 -exec rm -f {} \; 
+        </code></pre>
+      </td></tr>
+    </table>
+
+
+Una política de fitxers
+pel sistema (cap en concret)
+i tots els hosts que pertanyin al rol 'Frontend'
+:
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+find "/var/log/apache2" -name "access.*" -type f -mtime +90 -exec rm -f {} \; 
+        </code></pre>
+      </td></tr>
+    </table>
+
+
+Una política de fitxers
+pel sistema (cap en concret)
+i tots els hosts que pertanyin al rol 'Frontend'
+:
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+find "/var/log/memcache" -name "memcache.*.log" -type f -mtime +30 -exec rm -f {} \; 
+        </code></pre>
+      </td></tr>
+    </table>
+
+
+Una política de fitxers
+pel sistema (cap en concret)
+i tots els hosts que pertanyin al rol 'Frontend'
+:
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+find "/var/log/apache2" -name "access.*" -type f -mtime +7 -exec gzip {} \; 
+        </code></pre>
+      </td></tr>
+    </table>
+
+
+Una política de fitxers
+pel sistema (cap en concret)
+i tots els hosts que pertanyin al rol 'Frontend'
+:
+
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+find "/var/log/apache2" -name "error.*" -type f -mtime +2 -exec gzip {} \; 
+        </code></pre>
+      </td></tr>
+    </table>
+
+    
+    <br/><hr/><br/>
+
+
+    <h3 id="monitoredhosts">Articles dels HostsMonitorats</h3>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meufe01.fe.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meufe01.fe.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meufe01.fe.cpd.local'>http://site.org/procs/index.php/meufe01.fe.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meufe01.fe.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meufe01|isForManaging=false|isForService=true|isForBackup=true|isForNas=true|isDefaultChecksNeeded=false|moreInfo=N/A|environment=PRO|role=Frontend|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meufe01.adm.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meufe01.adm.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meufe01.adm.cpd.local'>http://site.org/procs/index.php/meufe01.adm.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meufe01.adm.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meufe01|isForManaging=true|isForService=false|isForBackup=false|isForNas=false|isDefaultChecksNeeded=true|moreInfo=N/A|environment=PRO|role=Admin|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>holamon.ub.edu</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>holamon.ub.edu</em></span>' i URL: <a href='http://site.org/procs/index.php/holamon.ub.edu'>http://site.org/procs/index.php/holamon.ub.edu</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=holamon.ub.edu|project=Hola, món!|ip=127.0.0.1|system=Host d'aplicació|isForManaging=false|isForService=true|isForBackup=true|isForNas=true|isDefaultChecksNeeded=false|moreInfo=La IP de servei pot estar aixecada a [[Asset.webprox05|webprox05]] o [[Asset.webprox06|webprox06]]|environment=PRO|role=ServeiPúblic|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meufe02.adm.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meufe02.adm.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meufe02.adm.cpd.local'>http://site.org/procs/index.php/meufe02.adm.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meufe02.adm.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meufe02|isForManaging=true|isForService=false|isForBackup=false|isForNas=false|isDefaultChecksNeeded=true|moreInfo=N/A|environment=PRO|role=Admin|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meubal01.adm.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meubal01.adm.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meubal01.adm.cpd.local'>http://site.org/procs/index.php/meubal01.adm.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meubal01.adm.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meubal01|isForManaging=true|isForService=false|isForBackup=false|isForNas=false|isDefaultChecksNeeded=true|moreInfo=N/A|environment=PRO|role=Admin|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meufe02.fe.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meufe02.fe.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meufe02.fe.cpd.local'>http://site.org/procs/index.php/meufe02.fe.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meufe02.fe.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meufe02|isForManaging=false|isForService=true|isForBackup=true|isForNas=true|isDefaultChecksNeeded=false|moreInfo=N/A|environment=PRO|role=Frontend|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>holamonpriv.fe.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>holamonpriv.fe.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/holamonpriv.fe.cpd.local'>http://site.org/procs/index.php/holamonpriv.fe.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=holamonpriv.fe.cpd.local|project=Hola, món!|ip=127.0.0.1|system=Host d'aplicació|isForManaging=false|isForService=true|isForBackup=true|isForNas=true|isDefaultChecksNeeded=false|moreInfo=La IP de servei pot estar aixecada a [[Asset.meubal01|meubal01]] o [[Asset.meubal02|meubal02]]|environment=PRO|role=ServeiPrivat|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meubal02.fe.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meubal02.fe.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meubal02.fe.cpd.local'>http://site.org/procs/index.php/meubal02.fe.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meubal02.fe.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meubal02|isForManaging=false|isForService=true|isForBackup=true|isForNas=true|isDefaultChecksNeeded=false|moreInfo=N/A|environment=PRO|role=ServeiPrivat|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meubal01.fe.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meubal01.fe.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meubal01.fe.cpd.local'>http://site.org/procs/index.php/meubal01.fe.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meubal01.fe.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meubal01|isForManaging=false|isForService=true|isForBackup=true|isForNas=true|isDefaultChecksNeeded=false|moreInfo=N/A|environment=PRO|role=ServeiPrivat|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+    <h4>Article pel HostMonitorat '<span style="background-color: #F0F0F0"><em>meubal02.adm.cpd.local</em></span>'</h4>
+    <p>Cos per l'article anomenat: '<span style="background-color: #F0F0F0"><em>meubal02.adm.cpd.local</em></span>' i URL: <a href='http://site.org/procs/index.php/meubal02.adm.cpd.local'>http://site.org/procs/index.php/meubal02.adm.cpd.local</a></p> 
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+{{MonitoredHost|name=meubal02.adm.cpd.local|project=Hola, món!|ip=127.0.0.1|system=meubal02|isForManaging=true|isForService=false|isForBackup=false|isForNas=false|isDefaultChecksNeeded=true|moreInfo=N/A|environment=PRO|role=Admin|scaleTo=Sistemes Servidors}}
+        </code></pre>
+      </td></tr>
+    </table>
+
+
+    <br/><hr/><br/>
+    
+    <h2 id="monitoring">3) Script per a establir el monitoratge</h2>
+    <h3 id="addHosts">Script per a establir el monitoratge dels hosts:</h3>
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+
+# Comandes per esborrar hosts:
+/opt/AddItem/DelHost.pl -H meufe01.fe.cpd.local
+/opt/AddItem/DelHost.pl -H meufe01.adm.cpd.local
+/opt/AddItem/DelHost.pl -H holamon.ub.edu
+/opt/AddItem/DelHost.pl -H meufe02.adm.cpd.local
+/opt/AddItem/DelHost.pl -H meubal01.adm.cpd.local
+/opt/AddItem/DelHost.pl -H meufe02.fe.cpd.local
+/opt/AddItem/DelHost.pl -H holamonpriv.fe.cpd.local
+/opt/AddItem/DelHost.pl -H meubal02.fe.cpd.local
+/opt/AddItem/DelHost.pl -H meubal01.fe.cpd.local
+/opt/AddItem/DelHost.pl -H meubal02.adm.cpd.local
+
+# Comanes per afegir hosts:
+/opt/AddItem/AddHost.pl -H meufe01.fe.cpd.local -I 127.0.0.1 -T DefaultServiceTemplate -R construction -E 3 -P
+/opt/AddItem/AddHost.pl -H meufe01.adm.cpd.local -I 127.0.0.1 -T os_sles12 -R construction -E 3 
+/opt/AddItem/AddHost.pl -H holamon.ub.edu -I 127.0.0.1 -T DefaultServiceTemplate -R construction -E 3 -P
+/opt/AddItem/AddHost.pl -H meufe02.adm.cpd.local -I 127.0.0.1 -T os_sles12 -R construction -E 3 
+/opt/AddItem/AddHost.pl -H meubal01.adm.cpd.local -I 127.0.0.1 -T os_sles12 -R construction -E 3 
+/opt/AddItem/AddHost.pl -H meufe02.fe.cpd.local -I 127.0.0.1 -T DefaultServiceTemplate -R construction -E 3 -P
+/opt/AddItem/AddHost.pl -H holamonpriv.fe.cpd.local -I 127.0.0.1 -T DefaultServiceTemplate -R construction -E 3 -P
+/opt/AddItem/AddHost.pl -H meubal02.fe.cpd.local -I 127.0.0.1 -T DefaultServiceTemplate -R construction -E 3 -P
+/opt/AddItem/AddHost.pl -H meubal01.fe.cpd.local -I 127.0.0.1 -T DefaultServiceTemplate -R construction -E 3 -P
+/opt/AddItem/AddHost.pl -H meubal02.adm.cpd.local -I 127.0.0.1 -T os_sles12 -R construction -E 3 
+
+        </code></pre>
+      </td></tr>
+    </table>
+    
+    <h3 id="addServices">Script per a establir el monitoratge dels serveis:</h3>
+    <table border="1">
+      <tr><td bgcolor="#F0F0F0">
+        <pre><code>
+        
+/opt/AddItem/AddService.pl -G -H meubal01.adm.cpd.local -s "SSHD" -T OS-Generic-Check_SSHD 
+/opt/AddItem/AddService.pl -G -H holamonpriv.fe.cpd.local -s "Servei privat Tararí" -T OS-Generic-Check_Tarari -M MODE="" 
+/opt/AddItem/AddService.pl -G -H meubal01.fe.cpd.local -s "Servei privat Tararí" -T OS-Generic-Check_Tarari -M MODE="" 
+/opt/AddItem/AddService.pl -G -H meufe02.fe.cpd.local -s "memcaché" -T OS-Generic-Check_Memcache 
+/opt/AddItem/AddService.pl -G -H meufe02.adm.cpd.local -s "Estadístisques de Tararí" -T OS-Generic-Check_Tarari -M MODE="AdvancedMode" 
+/opt/AddItem/AddService.pl -G -H meubal01.fe.cpd.local -s "ngnix" -T OS-Generic-Check_Nginx 
+/opt/AddItem/AddService.pl -G -H meufe01.adm.cpd.local -s "SSHD" -T OS-Generic-Check_SSHD 
+/opt/AddItem/AddService.pl -G -H holamonpriv.fe.cpd.local -s "ngnix" -T OS-Generic-Check_Nginx 
+/opt/AddItem/AddService.pl -G -H meufe02.adm.cpd.local -s "SSHD" -T OS-Generic-Check_SSHD 
+/opt/AddItem/AddService.pl -G -H meubal02.adm.cpd.local -s "SSHD" -T OS-Generic-Check_SSHD 
+/opt/AddItem/AddService.pl -G -H meubal02.fe.cpd.local -s "Servei privat Tararí" -T OS-Generic-Check_Tarari -M MODE="" 
+/opt/AddItem/AddService.pl -G -H meufe01.fe.cpd.local -s "memcaché" -T OS-Generic-Check_Memcache 
+/opt/AddItem/AddService.pl -G -H holamon.ub.edu -s "Servei públic Tararí" -T OS-Generic-Check_Tarari -M MODE="" 
+/opt/AddItem/AddService.pl -G -H meufe01.fe.cpd.local -s "Apache HTTPD" -T OS-Generic-Check_Apache 
+/opt/AddItem/AddService.pl -G -H meubal02.fe.cpd.local -s "ngnix" -T OS-Generic-Check_Nginx 
+/opt/AddItem/AddService.pl -G -H meufe02.fe.cpd.local -s "Apache HTTPD" -T OS-Generic-Check_Apache 
+
+        </code></pre>
+      </td></tr>
+    </table>
+    
+   <h2 id="serv_tmplt_def">4) Definicions de les plantilles de serveis </h2>
+
+<p>Atributs generals:</p>
+
+    <table border="1">
+      <tr>
+        <td bgcolor="#F5F5F5">Nom de servei</td>
+        <td bgcolor="#C0C0C0">NRPE?</td>
+        <td bgcolor="#C0C0C0">Nom de servei per defecte</td>
+        <td bgcolor="#C0C0C0">Descripció</td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_HTTP</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> HTTP </td>
+        <td bgcolor="#F0F0F0"> HTTP check to the HostAdress of the equipment </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_HTTPS</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> HTTPS </td>
+        <td bgcolor="#F0F0F0"> HTTPS check to the HostAdress of the equipment </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>Custom plugin</strong> </td>
+        <td bgcolor="#F0F0F0"> true </td>
+        <td bgcolor="#F0F0F0"> Custom plugin </td>
+        <td bgcolor="#F0F0F0"> Custom plugin developed by the project (should be delivered aside) </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>CustomPremium</strong> </td>
+        <td bgcolor="#F0F0F0"> true </td>
+        <td bgcolor="#F0F0F0"> customPremium </td>
+        <td bgcolor="#F0F0F0"> Custom premium service </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>Just-a-test</strong> </td>
+        <td bgcolor="#F0F0F0"> true </td>
+        <td bgcolor="#F0F0F0"> Just a test def name $MACRO1$ $MACRO2$ end </td>
+        <td bgcolor="#F0F0F0"> A demo service </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_TCP</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> Check_port_tcp </td>
+        <td bgcolor="#F0F0F0"> Can you stablish a connection to the port? </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>Custom</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> custom </td>
+        <td bgcolor="#F0F0F0"> Custom service </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_Nginx</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> nginx </td>
+        <td bgcolor="#F0F0F0"> nginx check </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_Memcache</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> Memcache </td>
+        <td bgcolor="#F0F0F0"> Memcache check </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_Apache</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> Apache </td>
+        <td bgcolor="#F0F0F0"> Apache check </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_SSHD</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> SSHD </td>
+        <td bgcolor="#F0F0F0"> SSHD check </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F0F0F0"> <strong>OS-Generic-Check_Tarari</strong> </td>
+        <td bgcolor="#F0F0F0"> false </td>
+        <td bgcolor="#F0F0F0"> Tarari Stats </td>
+        <td bgcolor="#F0F0F0"> Tarari Stats check </td>
+      </tr>
+    </table>
+
+<p>Macros (opcions per les Plantilles de Servei):</p>
+
+    <table border="1">
+      <tr>
+        <td bgcolor="#F0F0F0"></td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#1</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#2</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#3</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#4</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#5</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#6</td>
+        <td bgcolor="#D0D0D0" colspan=3 align="center">macro#7</td>
+      </tr>
+      <tr>
+        <td bgcolor="#C0C0C0">Nom de<br/>Servei</td>
+          <td bgcolor="#D0D0D0">Nom</td>
+          <td bgcolor="#DBDBDB">Descripció</td>
+          <td bgcolor="#EAEAEA">Valor per<br/>defecte</td>
+          <td bgcolor="#D0D0D0">Nom</td>
+          <td bgcolor="#DBDBDB">Descripció</td>
+          <td bgcolor="#EAEAEA">Valor per<br/>defecte</td>
+          <td bgcolor="#D0D0D0">Nom</td>
+          <td bgcolor="#DBDBDB">Descripció</td>
+          <td bgcolor="#EAEAEA">Valor per<br/>defecte</td>
+          <td bgcolor="#D0D0D0">Nom</td>
+          <td bgcolor="#DBDBDB">Descripció</td>
+          <td bgcolor="#EAEAEA">Valor per<br/>defecte</td>
+          <td bgcolor="#D0D0D0">Nom</td>
+          <td bgcolor="#DBDBDB">Descripció</td>
+          <td bgcolor="#EAEAEA">Valor per<br/>defecte</td>
+          <td bgcolor="#D0D0D0">Nom</td>
+          <td bgcolor="#DBDBDB">Descripció</td>
+          <td bgcolor="#EAEAEA">Valor per<br/>defecte</td>
+          <td bgcolor="#D0D0D0">Nom</td>
+          <td bgcolor="#DBDBDB">Descripció</td>
+          <td bgcolor="#EAEAEA">Valor per<br/>defecte</td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_HTTP </td>
+
+        <td bgcolor="#D0D0D0"> <strong>a</strong> </td>
+        <td bgcolor="#DBDBDB"> b </td>
+        <td bgcolor="#EAEAEA"> c </td>
+        <td bgcolor="#D0D0D0"> <strong>d</strong> </td>
+        <td bgcolor="#DBDBDB"> e </td>
+        <td bgcolor="#EAEAEA"> f </td>
+        <td bgcolor="#D0D0D0"> <strong>g</strong> </td>
+        <td bgcolor="#DBDBDB"> h </td>
+        <td bgcolor="#EAEAEA"> i </td>
+        <td bgcolor="#D0D0D0"> <strong>j</strong> </td>
+        <td bgcolor="#DBDBDB"> k </td>
+        <td bgcolor="#EAEAEA"> l </td>
+        <td bgcolor="#D0D0D0"> <strong>m</strong> </td>
+        <td bgcolor="#DBDBDB"> n </td>
+        <td bgcolor="#EAEAEA"> o </td>
+        <td bgcolor="#D0D0D0"> <strong>p</strong> </td>
+        <td bgcolor="#DBDBDB"> q </td>
+        <td bgcolor="#EAEAEA"> r </td>
+        <td bgcolor="#D0D0D0"> <strong>s</strong> </td>
+        <td bgcolor="#DBDBDB"> t </td>
+        <td bgcolor="#EAEAEA"> u </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_HTTPS </td>
+
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> Custom plugin </td>
+
+        <td bgcolor="#D0D0D0"> <strong>test1</strong> </td>
+        <td bgcolor="#DBDBDB"> test2 </td>
+        <td bgcolor="#EAEAEA"> test3 </td>
+        <td bgcolor="#D0D0D0"> <strong>test4</strong> </td>
+        <td bgcolor="#DBDBDB"> test5 </td>
+        <td bgcolor="#EAEAEA"> test6 </td>
+        <td bgcolor="#D0D0D0"> <strong>test7</strong> </td>
+        <td bgcolor="#DBDBDB"> test8 </td>
+        <td bgcolor="#EAEAEA"> test9 </td>
+        <td bgcolor="#D0D0D0"> <strong>test0</strong> </td>
+        <td bgcolor="#DBDBDB"> test1 </td>
+        <td bgcolor="#EAEAEA"> test2 </td>
+        <td bgcolor="#D0D0D0"> <strong>test3</strong> </td>
+        <td bgcolor="#DBDBDB"> test4 </td>
+        <td bgcolor="#EAEAEA"> test5 </td>
+        <td bgcolor="#D0D0D0"> <strong>test6</strong> </td>
+        <td bgcolor="#DBDBDB"> test7 </td>
+        <td bgcolor="#EAEAEA"> test8 </td>
+        <td bgcolor="#D0D0D0"> <strong>test9</strong> </td>
+        <td bgcolor="#DBDBDB"> test0 </td>
+        <td bgcolor="#EAEAEA"> test1 </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> CustomPremium </td>
+
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> Just-a-test </td>
+
+        <td bgcolor="#D0D0D0"> <strong>name1</strong> </td>
+        <td bgcolor="#DBDBDB"> description1 </td>
+        <td bgcolor="#EAEAEA"> defVal1 </td>
+        <td bgcolor="#D0D0D0"> <strong>name2</strong> </td>
+        <td bgcolor="#DBDBDB"> description2 </td>
+        <td bgcolor="#EAEAEA"> defVal2 </td>
+        <td bgcolor="#D0D0D0"> <strong>name3</strong> </td>
+        <td bgcolor="#DBDBDB"> description3 </td>
+        <td bgcolor="#EAEAEA"> defVal3 </td>
+        <td bgcolor="#D0D0D0"> <strong>name4</strong> </td>
+        <td bgcolor="#DBDBDB"> description4 </td>
+        <td bgcolor="#EAEAEA"> defVal4 </td>
+        <td bgcolor="#D0D0D0"> <strong>name5</strong> </td>
+        <td bgcolor="#DBDBDB"> description5 </td>
+        <td bgcolor="#EAEAEA"> defVal5 </td>
+        <td bgcolor="#D0D0D0"> <strong>name6</strong> </td>
+        <td bgcolor="#DBDBDB"> description6 </td>
+        <td bgcolor="#EAEAEA"> defVal6 </td>
+        <td bgcolor="#D0D0D0"> <strong>name7</strong> </td>
+        <td bgcolor="#DBDBDB"> description7 </td>
+        <td bgcolor="#EAEAEA"> defVal7 </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_TCP </td>
+
+        <td bgcolor="#D0D0D0"> <strong>PORT</strong> </td>
+        <td bgcolor="#DBDBDB"> Port number </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong>LLWARN</strong> </td>
+        <td bgcolor="#DBDBDB"> Warning level </td>
+        <td bgcolor="#EAEAEA"> 5 </td>
+        <td bgcolor="#D0D0D0"> <strong>LLCRIT</strong> </td>
+        <td bgcolor="#DBDBDB"> Critical level </td>
+        <td bgcolor="#EAEAEA"> 10 </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> Custom </td>
+
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_Nginx </td>
+
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_Memcache </td>
+
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_Apache </td>
+
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_SSHD </td>
+
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+      <tr>
+        <td bgcolor="#F5F5F5"> OS-Generic-Check_Tarari </td>
+
+        <td bgcolor="#D0D0D0"> <strong>MODE</strong> </td>
+        <td bgcolor="#DBDBDB"> Execuction mode for stats </td>
+        <td bgcolor="#EAEAEA"> GenericStats </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+        <td bgcolor="#D0D0D0"> <strong></strong> </td>
+        <td bgcolor="#DBDBDB">  </td>
+        <td bgcolor="#EAEAEA">  </td>
+      </tr>
+    </table>
+
+   <br/>
+  </body>
+</html>

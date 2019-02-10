@@ -58,3 +58,11 @@ It's source can be found at GitHub: [https://github.com/zoquero/opsd/](https://g
 `java -cp target/opsd-...-jar-with-dependencies.jar org.zoquero.opsd.App /path/to/project_file.xlsx 'projectName'`
 
 Note: Even though the project name may appear in the project data you must specify it in the call. This is because the output folder is created before reading the project data and it contains the project name to ease its access. That project name in the call is just to name the folder, so if it's a problem for you just specify 'SomeProject'.
+
+# Sample files:
+
+* `extra/sample_project_files/empty_project_file.xlsx` : An empty project spreadsheet file
+
+* `extra/sample_project_files/Hola, món.xlsx` : A sample project spreadsheet file
+
+* `extra/sample_project_files/ProjectInfo.Hola_mon.8053360294583847439` : Generated output for the sample project 'Hola, món'.

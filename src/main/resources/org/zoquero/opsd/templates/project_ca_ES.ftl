@@ -61,7 +61,7 @@
     <#else>
       <#if report.warnings?hasContent>
         El projecte <span style="background-color: #EEEE88"><strong>és formalment vàlid</strong></span>
-        but has some <strong>warnings</strong>.
+        però té algunes <strong>advertències</strong>.
       <#else>
         El projecte <span style="background-color: #00FF00"><strong>és formalment vàlid</strong></span>
       </#if>

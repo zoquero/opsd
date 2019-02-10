@@ -4,7 +4,7 @@
   <groupId>org.zoquero.opsd</groupId>
   <artifactId>opsd</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.3-SNAPSHOT</version>
+  <version>1.3.3</version>
   <name>opsd</name>
   <url>https://github.com/zoquero/opsd</url>
 
