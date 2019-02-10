@@ -1,0 +1,5 @@
+* Charset is not correctly set in Project output when run from Windows, it doesn't happen in Linux
+* Macro values and macro default values need deeper tests
+* The documentation for Service Templates generated needs deeper tests
+* Generate cron lines for periodic tasks
+* Generate cron lines for file policies
